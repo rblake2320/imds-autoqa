@@ -43,12 +43,7 @@
       <artifactId>selenium-java</artifactId>
       <version>${selenium.version}</version>
     </dependency>
-    <!-- Selenium DevTools (CDP) support for Edge -->
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-devtools-v124</artifactId>
-      <version>${selenium.version}</version>
-    </dependency>
+    <!-- selenium-java already bundles devtools support; no separate artifact needed -->
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- JSON / SERIALIZATION                                            -->
@@ -92,12 +87,7 @@
       <artifactId>okhttp</artifactId>
       <version>${okhttp.version}</version>
     </dependency>
-    <!-- WebSocket support for CDP connector -->
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp-ws</artifactId>
-      <version>2.7.5</version>
-    </dependency>
+    <!-- WebSocket is bundled in okhttp 4.x (no separate artifact needed) -->
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- CLI FRAMEWORK                                                   -->

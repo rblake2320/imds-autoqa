@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/rblake2320/imds-autoqa/event-schema.json",
+  "title": "RecordedSession",
+  "description": "Schema for IMDS AutoQA recorded sessions",
+  "version": "1.0",
+  "type": "object",
+  "required": ["schemaVersion", "sessionId", "startTimestamp", "events"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Schema version for forward compatibility checks",
+      "enum": ["1.0"]
+    },
+    "sessionId": {
+      "type": "string",
+      "description": "Unique identifier for this recording session (UUID)"
+    },
+    "startTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when recording started"
+    },
+    "endTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when recording stopped"
+    },
+    "browserName": {
+      "type": "string",
+      "description": "Browser used for recording",
+      "default": "Microsoft Edge"
+    },
+    "browserVersion": {
+      "type": "string"
+    },
+    "osName": {
+      "type": "string"
+    },
+    "recordedBy": {
+      "type": "string",
+      "description": "Username or machine that performed the recording"
+    },
+    "encrypted": {
+      "type": "boolean",
+      "description": "Whether the events array is AES-encrypted",
+      "default": false
+    },
+    "events": {
+      "type": "array",
+      "description": "Ordered list of user interaction events",
+      "items": { "$ref": "#/definitions/RecordedEvent" }
+    }
+  },
+  "definitions": {
+    "RecordedEvent": {
+      "type": "object",
+      "required": ["eventType", "timestamp"],
+      "additionalProperties": false,
+      "properties": {
+        "eventType": {
+          "type": "string",
+          "description": "Type of interaction captured",
+          "enum": [
+            "CLICK",
+            "DOUBLE_CLICK",
+            "CONTEXT_MENU",
+            "INPUT",
+            "KEY_PRESS",
+            "SELECT",
+            "SCROLL",
+            "NAVIGATE",
+            "ALERT",
+            "WINDOW_SWITCH",
+            "FRAME_SWITCH",
+            "HOVER",
+            "DRAG_DROP",
+            "WAIT"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of the page when the event occurred"
+        },
+        "pageTitle": {
+          "type": "string"
+        },
+        "element": {
+          "$ref": "#/definitions/ElementInfo"
+        },
+        "inputData": {
+          "$ref": "#/definitions/InputData"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/Coordinates"
+        },
+        "frameChain": {
+          "type": "array",
+          "description": "Ordered list of frame locators to reach the element",
+          "items": { "type": "string" }
+        },
+        "windowHandle": {
+          "type": "string",
+          "description": "Browser window handle identifier"
+        },
+        "screenshotBase64": {
+          "type": "string",
+          "description": "Optional base64 screenshot at moment of event"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Human-readable description of what this step does"
+        }
+      }
+    },
+    "ElementInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tagName": { "type": "string" },
+        "id":      { "type": "string" },
+        "name":    { "type": "string" },
+        "className": { "type": "string" },
+        "css":     { "type": "string", "description": "CSS selector" },
+        "xpath":   { "type": "string", "description": "Absolute XPath" },
+        "text":    { "type": "string", "description": "Visible text content" },
+        "value":   { "type": "string" },
+        "type":    { "type": "string", "description": "Input type attribute" },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "boundingBox": { "$ref": "#/definitions/BoundingBox" }
+      }
+    },
+    "InputData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keys": {
+          "type": "string",
+          "description": "Text typed or keys pressed"
+        },
+        "keyCode": {
+          "type": "string",
+          "description": "Named key code (e.g. ENTER, TAB, ESCAPE)"
+        },
+        "modifiers": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["CTRL", "SHIFT", "ALT", "META"] }
+        },
+        "selectedOption": { "$ref": "#/definitions/SelectedOption" },
+        "alertAction": {
+          "type": "string",
+          "enum": ["ACCEPT", "DISMISS", "SEND_KEYS"]
+        },
+        "alertText": {
+          "type": "string",
+          "description": "Text to send to prompt dialog"
+        }
+      }
+    },
+    "SelectedOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text":  { "type": "string" },
+        "value": { "type": "string" },
+        "index": { "type": "integer" }
+      }
+    },
+    "BoundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x":      { "type": "number" },
+        "y":      { "type": "number" },
+        "width":  { "type": "number" },
+        "height": { "type": "number" }
+      }
+    },
+    "Coordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      }
+    }
+  }
+}
