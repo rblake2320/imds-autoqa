@@ -1,0 +1,92 @@
+version: '3.9'
+
+services:
+  # ─── Healenium self-healing selector DB ──────────────────────────────
+  healenium-postgres:
+    image: postgres:16-alpine
+    container_name: healenium-postgres
+    environment:
+      POSTGRES_DB:       healenium
+      POSTGRES_USER:     healenium
+      POSTGRES_PASSWORD: healenium
+    ports:
+      - "5433:5432"
+    volumes:
+      - healenium_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healenium"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  healenium-backend:
+    image: healenium/hlm-backend:3.4.4
+    container_name: healenium-backend
+    depends_on:
+      healenium-postgres:
+        condition: service_healthy
+    environment:
+      spring.datasource.url:      jdbc:postgresql://healenium-postgres:5432/healenium
+      spring.datasource.username: healenium
+      spring.datasource.password: healenium
+    ports:
+      - "7878:7878"
+    restart: unless-stopped
+
+  # ─── Ollama (local LLM server — optional, for Docker-based setups) ──
+  # Remove or comment this section if Ollama runs natively on the host.
+  # Default config points ai.llm.base.url=http://localhost:11434/v1
+  # which reaches the native Ollama instance without Docker.
+  #
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: ollama
+  #   environment:
+  #     OLLAMA_MODELS: /root/.ollama/models
+  #   volumes:
+  #     - D:/ollama/models:/root/.ollama/models
+  #   ports:
+  #     - "11434:11434"
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   restart: unless-stopped
+
+  # ─── NVIDIA NIM Vision (optional — enable when vision.enabled=true) ──
+  # nim-vision:
+  #   image: nvcr.io/nim/microsoft/phi-3-vision-128k-instruct:latest
+  #   container_name: nim-vision
+  #   environment:
+  #     NGC_API_KEY: ${NVIDIA_API_KEY}
+  #   ports:
+  #     - "8003:8000"
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   restart: unless-stopped
+
+  # ─── Allure Docker Service (optional report viewer) ─────────────────
+  allure:
+    image: frankescobar/allure-docker-service:latest
+    container_name: allure-server
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 3
+      KEEP_HISTORY:                1
+    volumes:
+      - ./target/allure-results:/app/allure-results
+      - ./target/allure-reports:/app/default-reports
+    ports:
+      - "5050:5050"
+    restart: unless-stopped
+
+volumes:
+  healenium_data:

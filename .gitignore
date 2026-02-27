@@ -1,0 +1,76 @@
+# ─── Maven ──────────────────────────────────────────────────────────
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ─── Java ───────────────────────────────────────────────────────────
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ─── IDE ────────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.eclipse/
+.project
+.classpath
+.settings/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vscode/
+*.code-workspace
+
+# ─── Recordings (local only, do NOT commit sensitive flows) ─────────
+recordings/
+!recordings/.gitkeep
+
+# ─── Generated tests output ─────────────────────────────────────────
+generated-tests/
+!generated-tests/.gitkeep
+
+# ─── Allure / Reports ───────────────────────────────────────────────
+allure-results/
+allure-report/
+reports/
+
+# ─── Evidence screenshots / page sources ────────────────────────────
+evidence/
+screenshots/
+
+# ─── Encryption keys ────────────────────────────────────────────────
+*.key
+*.keystore
+*.jks
+*.p12
+
+# ─── OS ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# ─── Config overrides (keep template, ignore local) ─────────────────
+config.local.properties
+
+# ─── Logs ───────────────────────────────────────────────────────────
+*.log
+logs/
