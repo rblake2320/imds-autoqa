@@ -61,6 +61,12 @@ public class PlayerEngine {
     private ObjectRepository objectRepository;
 
     /**
+     * Optional screen recorder.  When non-null, a screenshot is taken after
+     * each step — equivalent to UFT One's "Screen Recorder" run setting.
+     */
+    private ScreenRecorder screenRecorder;
+
+    /**
      * All window handles seen and intentionally switched to during this
      * playback run. Used by {@link #handleWindowSwitch} to detect truly new
      * windows without relying on undefined HashSet iteration order.
@@ -88,6 +94,15 @@ public class PlayerEngine {
     /** Attaches a shared Object Repository used to resolve named test objects. */
     public void setObjectRepository(ObjectRepository or) {
         this.objectRepository = or;
+    }
+
+    /**
+     * Attaches a {@link ScreenRecorder}.  Call before {@link #play} to enable
+     * per-step screenshot capture (UFT "Screen Recorder" equivalent).
+     * The caller is responsible for starting and stopping the recorder.
+     */
+    public void setScreenRecorder(ScreenRecorder recorder) {
+        this.screenRecorder = recorder;
     }
 
     // ── Playback ──────────────────────────────────────────────────────────
@@ -137,6 +152,14 @@ public class PlayerEngine {
                 if (enteredFrame) {
                     frameNav.exitFrames();
                     enteredFrame = false;
+                }
+
+                // 5b. Screen recording — one frame per step
+                if (screenRecorder != null) {
+                    String label = event.getComment() != null
+                            ? event.getComment()
+                            : event.getEventType().toString();
+                    screenRecorder.captureStep(i, label);
                 }
 
                 // 6. Step pacing

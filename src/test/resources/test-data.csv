@@ -1,0 +1,4 @@
+username,password,expectedTitle
+admin,secret,Dashboard
+user1,pass123,Home Page
+testuser,abc456,Welcome

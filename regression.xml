@@ -41,4 +41,10 @@
     </packages>
   </test>
 
+  <test name="Data Tests">
+    <packages>
+      <package name="autoqa.data"/>
+    </packages>
+  </test>
+
 </suite>

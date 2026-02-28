@@ -32,6 +32,8 @@
     <wiremock.version>3.5.2</wiremock.version>
     <commons-io.version>2.16.1</commons-io.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
+    <poi.version>5.2.5</poi.version>
+    <opencsv.version>5.9</opencsv.version>
   </properties>
 
   <dependencies>
@@ -170,6 +172,25 @@
       <artifactId>assertj-core</artifactId>
       <version>3.25.3</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- DATA-DRIVEN TESTING: Apache POI (xlsx/xls) + OpenCSV          -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
     </dependency>
   </dependencies>
 
