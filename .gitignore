@@ -76,3 +76,15 @@ config.local.properties
 # ─── Logs ───────────────────────────────────────────────────────────
 *.log
 logs/
+
+# ─── Windows installer / jpackage output ────────────────────────────
+dist/
+packaging/*.exe
+packaging/*.msi
+
+# ─── Recording sentinel / lock files ────────────────────────────────
+.autoqa-recording.lock
+recordings/*.lock
+
+# ─── Process ID files ────────────────────────────────────────────────
+*.pid
