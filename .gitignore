@@ -13,6 +13,8 @@ buildNumber.properties
 # ─── Java ───────────────────────────────────────────────────────────
 *.class
 *.jar
+# Exception: the pre-built portable JAR in the project root
+!autoqa.jar
 *.war
 *.ear
 *.nar
