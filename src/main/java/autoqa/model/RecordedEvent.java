@@ -1,5 +1,6 @@
 package autoqa.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -97,9 +98,9 @@ public class RecordedEvent {
 
     // ── Convenience ──────────────────────────────────────────────────────
 
-    public boolean hasElement()   { return element != null; }
-    public boolean hasInputData() { return inputData != null; }
-    public boolean isInFrame()    { return frameChain != null && !frameChain.isEmpty(); }
+    @JsonIgnore public boolean hasElement()   { return element != null; }
+    @JsonIgnore public boolean hasInputData() { return inputData != null; }
+    @JsonIgnore public boolean isInFrame()    { return frameChain != null && !frameChain.isEmpty(); }
 
     @Override
     public String toString() {

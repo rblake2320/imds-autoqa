@@ -85,14 +85,14 @@ public class LocatorResolver {
     /**
      * Shared resolution path used by both {@link #resolve} and {@link #findElement}.
      * Tries ID → Name → CSS → XPath in order, each counted against
-     * {@code maxAttempts}.  Uses {@code <=} so that when {@code maxAttempts == 3}
-     * all four strategies are still reachable if the first three are absent.
+     * {@code maxAttempts}.  Uses {@code <} so that when {@code maxAttempts == 4}
+     * all four strategies are reachable.
      */
     private LocateMatch locateFirst(ElementInfo element) {
         int attempts = 0;
 
         // ── 1. ID ──────────────────────────────────────────────────────
-        if (isUsable(element.getId()) && attempts <= maxAttempts) {
+        if (isUsable(element.getId()) && attempts < maxAttempts) {
             attempts++;
             log.debug("Trying [ID]: {}", element.getId());
             LocateMatch m = tryLocator(Strategy.ID, By.id(element.getId()));
@@ -100,7 +100,7 @@ public class LocatorResolver {
         }
 
         // ── 2. Name ────────────────────────────────────────────────────
-        if (isUsable(element.getName()) && attempts <= maxAttempts) {
+        if (isUsable(element.getName()) && attempts < maxAttempts) {
             attempts++;
             log.debug("Trying [NAME]: {}", element.getName());
             LocateMatch m = tryLocator(Strategy.NAME, By.name(element.getName()));
@@ -108,7 +108,7 @@ public class LocatorResolver {
         }
 
         // ── 3. CSS ─────────────────────────────────────────────────────
-        if (isUsable(element.getCss()) && attempts <= maxAttempts) {
+        if (isUsable(element.getCss()) && attempts < maxAttempts) {
             attempts++;
             log.debug("Trying [CSS]: {}", element.getCss());
             LocateMatch m = tryLocator(Strategy.CSS, By.cssSelector(element.getCss()));
@@ -116,7 +116,7 @@ public class LocatorResolver {
         }
 
         // ── 4. XPath ───────────────────────────────────────────────────
-        if (isUsable(element.getXpath()) && attempts <= maxAttempts) {
+        if (isUsable(element.getXpath()) && attempts < maxAttempts) {
             attempts++;
             log.debug("Trying [XPATH]: {}", element.getXpath());
             LocateMatch m = tryLocator(Strategy.XPATH, By.xpath(element.getXpath()));

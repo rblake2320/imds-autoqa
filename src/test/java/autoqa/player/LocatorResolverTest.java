@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -84,9 +85,9 @@ public class LocatorResolverTest {
         assertThat(result.getValue()).isEqualTo("btn-submit");
         verify(driver, times(1)).findElement(By.id("btn-submit"));
         // Name / CSS / XPath should not have been attempted
-        verify(driver, never()).findElement(By.name(any()));
-        verify(driver, never()).findElement(By.cssSelector(any()));
-        verify(driver, never()).findElement(By.xpath(any()));
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.name")));
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.cssSelector")));
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.xpath")));
     }
 
     // ── Strategy priority: Name tried when ID fails ───────────────────────
@@ -118,7 +119,8 @@ public class LocatorResolverTest {
         ElementLocator result = r.resolve(ei);
 
         assertThat(result.getStrategy()).isEqualTo(Strategy.NAME);
-        verify(driver, never()).findElement(By.id(any()));
+        // By.id(any()) passes null to Selenium which throws; use argThat on toString instead
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.id")));
     }
 
     // ── Strategy priority: CSS tried when Name fails ──────────────────────
@@ -138,7 +140,7 @@ public class LocatorResolverTest {
         verify(driver, times(1)).findElement(By.id("x"));
         verify(driver, times(1)).findElement(By.name("x"));
         verify(driver, times(1)).findElement(By.cssSelector("#x"));
-        verify(driver, never()).findElement(By.xpath(any()));
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.xpath")));
     }
 
     // ── Strategy priority: XPath tried last ──────────────────────────────
@@ -203,7 +205,7 @@ public class LocatorResolverTest {
 
         // Only ID tried; name never reached
         verify(driver, times(1)).findElement(By.id("a"));
-        verify(driver, never()).findElement(By.name(any()));
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.name")));
     }
 
     @Test(description = "maxAttempts=2 tries ID then Name only")
@@ -221,7 +223,7 @@ public class LocatorResolverTest {
 
         verify(driver, times(1)).findElement(By.id("a"));
         verify(driver, times(1)).findElement(By.name("b"));
-        verify(driver, never()).findElement(By.cssSelector(any()));
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.cssSelector")));
     }
 
     // ── findElement delegates correctly ──────────────────────────────────
@@ -250,6 +252,7 @@ public class LocatorResolverTest {
         ElementLocator result = r.resolve(ei);
 
         assertThat(result.getStrategy()).isEqualTo(Strategy.NAME);
-        verify(driver, never()).findElement(By.id(any()));
+        // By.id(any()) passes null to Selenium which throws; use argThat on toString instead
+        verify(driver, never()).findElement(argThat(by -> by.toString().startsWith("By.id")));
     }
 }

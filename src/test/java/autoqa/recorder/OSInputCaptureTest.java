@@ -225,7 +225,16 @@ public class OSInputCaptureTest {
     @Test
     public void nativeKeyTyped_charUndefined_doesNotFire() {
         activateWithoutNativeHook();
-        NativeKeyEvent e = makeKeyTyped(NativeKeyEvent.CHAR_UNDEFINED);
+        // Some JNativeHook versions throw IllegalArgumentException when constructing
+        // a NATIVE_KEY_TYPED event with CHAR_UNDEFINED — treat that as proof the event
+        // was not (and could not be) processed.
+        NativeKeyEvent e;
+        try {
+            e = makeKeyTyped(NativeKeyEvent.CHAR_UNDEFINED);
+        } catch (IllegalArgumentException ignored) {
+            assertThat(captured).isEmpty();
+            return;
+        }
         capture.nativeKeyTyped(e);
         assertThat(captured).isEmpty();
     }

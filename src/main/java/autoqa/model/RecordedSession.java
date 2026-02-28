@@ -1,5 +1,6 @@
 package autoqa.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -91,10 +92,12 @@ public class RecordedSession {
         events.add(event);
     }
 
+    @JsonIgnore
     public int getEventCount() {
         return events == null ? 0 : events.size();
     }
 
+    @JsonIgnore
     public boolean isVersionSupported() {
         return CURRENT_SCHEMA_VERSION.equals(schemaVersion);
     }
