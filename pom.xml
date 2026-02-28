@@ -328,6 +328,43 @@
         </plugins>
       </build>
     </profile>
+    <!--
+      Healing integration profile — runs the Ollama AI self-healing integration
+      tests against a real Edge browser + local Ollama instance.
+      Activate with:  mvn test -Phealing
+      Requires Microsoft Edge and Ollama (qwen2.5-coder:32b) running locally.
+      Tests skip automatically when Ollama is not reachable.
+    -->
+    <profile>
+      <id>healing</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.2.5</version>
+            <configuration>
+              <suiteXmlFiles>
+                <suiteXmlFile>healing-integration.xml</suiteXmlFile>
+              </suiteXmlFiles>
+              <argLine>
+                -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.22/aspectjweaver-1.9.22.jar"
+              </argLine>
+              <systemPropertyVariables>
+                <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+              </systemPropertyVariables>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.9.22</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
