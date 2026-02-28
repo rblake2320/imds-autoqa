@@ -93,7 +93,7 @@ public class HealingIntegrationTest {
      * If Ollama is not reachable the LLM-dependent tests will be skipped.
      * If Edge cannot be started all tests will be skipped.
      */
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void setUp() throws URISyntaxException {
         ollamaAvailable = checkOllamaAvailable();
         if (!ollamaAvailable) {
@@ -231,10 +231,11 @@ public class HealingIntegrationTest {
         ElementInfo el = new ElementInfo();
         el.setTagName("input");
         el.setId(elementId);
-        // Provide a recognisable text hint so the LLM has context for the prompt
+        // Provide a visible-text hint so the LLM can identify the right element.
+        // Do NOT set name/css/xpath here — the only locator is the (possibly misspelled)
+        // id, which is what forces the resolver to fail and healing to kick in.
         el.setText("Username");
         el.setType("text");
-        el.setName("username");
 
         autoqa.model.InputData inputData = new autoqa.model.InputData();
         inputData.setKeys("test_heal");
