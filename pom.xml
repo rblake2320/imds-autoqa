@@ -183,16 +183,6 @@
         <configuration>
           <source>17</source>
           <target>17</target>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>info.picocli</groupId>
-              <artifactId>picocli-codegen</artifactId>
-              <version>${picocli.version}</version>
-            </path>
-          </annotationProcessorPaths>
-          <compilerArgs>
-            <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
-          </compilerArgs>
         </configuration>
       </plugin>
 

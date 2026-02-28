@@ -1,0 +1,437 @@
+{
+  "schemaVersion": "1.0",
+  "sessionId": "a3f7d291-0e4c-4b58-92d1-6fc8e14b3a07",
+  "startUrl": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+  "recordedAt": "2026-02-27T10:00:00.000Z",
+  "browser": "Chrome",
+  "events": [
+
+    {
+      "eventType": "NAVIGATE",
+      "timestamp": "2026-02-27T10:00:01.000Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": null,
+      "inputData": null,
+      "coordinates": null,
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 01 — Navigate to the test page"
+    },
+
+    {
+      "eventType": "HOVER",
+      "timestamp": "2026-02-27T10:00:02.500Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "a",
+        "id": "nav-forms",
+        "name": null,
+        "className": null,
+        "css": "#nav-forms",
+        "xpath": "/html/body/nav/a[2]",
+        "text": "Forms",
+        "value": null,
+        "type": null,
+        "attributes": { "href": "#" }
+      },
+      "inputData": null,
+      "coordinates": { "x": 145.0, "y": 24.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 02 — Hover over the Forms nav link"
+    },
+
+    {
+      "eventType": "INPUT",
+      "timestamp": "2026-02-27T10:00:04.200Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "input",
+        "id": "username",
+        "name": "username",
+        "className": null,
+        "css": "#username",
+        "xpath": "//*[@id='username']",
+        "text": null,
+        "value": "",
+        "type": "text",
+        "attributes": { "type": "text", "autocomplete": "off", "placeholder": "Enter username" }
+      },
+      "inputData": { "keys": "autoqa_tester" },
+      "coordinates": { "x": 280.0, "y": 310.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 03 — Type username"
+    },
+
+    {
+      "eventType": "INPUT",
+      "timestamp": "2026-02-27T10:00:05.800Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "input",
+        "id": "email",
+        "name": "email",
+        "className": null,
+        "css": "#email",
+        "xpath": "//*[@id='email']",
+        "text": null,
+        "value": "",
+        "type": "email",
+        "attributes": { "type": "email", "autocomplete": "off", "placeholder": "user@example.com" }
+      },
+      "inputData": { "keys": "tester@autoqa.io" },
+      "coordinates": { "x": 560.0, "y": 310.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 04 — Type email address"
+    },
+
+    {
+      "eventType": "INPUT",
+      "timestamp": "2026-02-27T10:00:07.100Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "input",
+        "id": "password",
+        "name": "password",
+        "className": null,
+        "css": "#password",
+        "xpath": "//*[@id='password']",
+        "text": null,
+        "value": "",
+        "type": "password",
+        "attributes": { "type": "password", "placeholder": "••••••••" }
+      },
+      "inputData": { "keys": "S3cur3P@ssw0rd!" },
+      "coordinates": { "x": 280.0, "y": 360.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 05 — Type password (will be logged as [REDACTED])"
+    },
+
+    {
+      "eventType": "SELECT",
+      "timestamp": "2026-02-27T10:00:09.000Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "select",
+        "id": "country",
+        "name": "country",
+        "className": null,
+        "css": "#country",
+        "xpath": "//*[@id='country']",
+        "text": null,
+        "value": null,
+        "type": null,
+        "attributes": {}
+      },
+      "inputData": {
+        "selectedOption": { "text": "Canada", "value": "ca", "index": 3 }
+      },
+      "coordinates": { "x": 280.0, "y": 410.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 06 — Select 'Canada' from the country dropdown"
+    },
+
+    {
+      "eventType": "CLICK",
+      "timestamp": "2026-02-27T10:00:10.500Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "input",
+        "id": "terms",
+        "name": "terms",
+        "className": null,
+        "css": "#terms",
+        "xpath": "//*[@id='terms']",
+        "text": null,
+        "value": null,
+        "type": "checkbox",
+        "attributes": { "type": "checkbox" }
+      },
+      "inputData": null,
+      "coordinates": { "x": 141.0, "y": 460.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 07 — Check the Terms checkbox"
+    },
+
+    {
+      "eventType": "KEY_PRESS",
+      "timestamp": "2026-02-27T10:00:11.800Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "div",
+        "id": "keyboard-target",
+        "name": null,
+        "className": null,
+        "css": "#keyboard-target",
+        "xpath": "//*[@id='keyboard-target']",
+        "text": "",
+        "value": null,
+        "type": null,
+        "attributes": { "tabindex": "0", "contenteditable": "true" }
+      },
+      "inputData": { "keyCode": "TAB", "modifiers": [] },
+      "coordinates": null,
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 08 — Press TAB key in keyboard test area"
+    },
+
+    {
+      "eventType": "KEY_PRESS",
+      "timestamp": "2026-02-27T10:00:12.500Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": null,
+      "inputData": { "keyCode": "ENTER", "modifiers": [] },
+      "coordinates": null,
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 09 — Press ENTER on the active element (no specific target)"
+    },
+
+    {
+      "eventType": "CLICK",
+      "timestamp": "2026-02-27T10:00:13.800Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "button",
+        "id": "submit-btn",
+        "name": null,
+        "className": "btn btn-primary",
+        "css": "#submit-btn",
+        "xpath": "//*[@id='submit-btn']",
+        "text": "Create Account",
+        "value": null,
+        "type": "submit",
+        "attributes": { "type": "submit" }
+      },
+      "inputData": null,
+      "coordinates": { "x": 200.0, "y": 500.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 10 — Click Submit button"
+    },
+
+    {
+      "eventType": "SCROLL",
+      "timestamp": "2026-02-27T10:00:15.200Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "div",
+        "id": "scroll-target",
+        "name": null,
+        "className": null,
+        "css": "#scroll-target",
+        "xpath": "//*[@id='scroll-target']",
+        "text": "Scroll target element",
+        "value": null,
+        "type": null,
+        "attributes": {}
+      },
+      "inputData": null,
+      "coordinates": null,
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 11 — Scroll the scroll-target element into view"
+    },
+
+    {
+      "eventType": "SCROLL",
+      "timestamp": "2026-02-27T10:00:16.000Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": null,
+      "inputData": null,
+      "coordinates": { "x": 0.0, "y": 1200.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 12 — Scroll to coordinates (page bottom)"
+    },
+
+    {
+      "eventType": "CLICK",
+      "timestamp": "2026-02-27T10:00:17.500Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "button",
+        "id": "alert-btn",
+        "name": null,
+        "className": "btn btn-danger",
+        "css": "#alert-btn",
+        "xpath": "//*[@id='alert-btn']",
+        "text": "Trigger alert()",
+        "value": null,
+        "type": "button",
+        "attributes": { "type": "button" }
+      },
+      "inputData": null,
+      "coordinates": { "x": 200.0, "y": 700.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 13 — Click to trigger a native alert dialog"
+    },
+
+    {
+      "eventType": "ALERT",
+      "timestamp": "2026-02-27T10:00:18.800Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": null,
+      "inputData": { "alertAction": "ACCEPT", "alertText": null },
+      "coordinates": null,
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 14 — Accept the alert dialog"
+    },
+
+    {
+      "eventType": "DOUBLE_CLICK",
+      "timestamp": "2026-02-27T10:00:20.300Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "div",
+        "id": "double-click-target",
+        "name": null,
+        "className": "context-target",
+        "css": "#double-click-target",
+        "xpath": "//*[@id='double-click-target']",
+        "text": "Double-click me or right-click me",
+        "value": null,
+        "type": null,
+        "attributes": {}
+      },
+      "inputData": null,
+      "coordinates": { "x": 300.0, "y": 750.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 15 — Double-click the double-click target"
+    },
+
+    {
+      "eventType": "CONTEXT_MENU",
+      "timestamp": "2026-02-27T10:00:21.800Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "div",
+        "id": "double-click-target",
+        "name": null,
+        "className": "context-target",
+        "css": "#double-click-target",
+        "xpath": "//*[@id='double-click-target']",
+        "text": "Double-click me or right-click me",
+        "value": null,
+        "type": null,
+        "attributes": {}
+      },
+      "inputData": null,
+      "coordinates": { "x": 300.0, "y": 750.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 16 — Right-click (context menu) the same target"
+    },
+
+    {
+      "eventType": "FRAME_SWITCH",
+      "timestamp": "2026-02-27T10:00:23.000Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "iframe",
+        "id": "inner-frame",
+        "name": "inner-frame",
+        "className": null,
+        "css": "#inner-frame",
+        "xpath": "//*[@id='inner-frame']",
+        "text": null,
+        "value": null,
+        "type": null,
+        "attributes": { "name": "inner-frame" }
+      },
+      "inputData": null,
+      "coordinates": null,
+      "frameChain": ["inner-frame"],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 17 — Switch into the iframe"
+    },
+
+    {
+      "eventType": "CLICK",
+      "timestamp": "2026-02-27T10:00:24.500Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "button",
+        "id": "iframe-btn",
+        "name": null,
+        "className": null,
+        "css": "#iframe-btn",
+        "xpath": "//*[@id='iframe-btn']",
+        "text": "Click inside iframe",
+        "value": null,
+        "type": "button",
+        "attributes": {}
+      },
+      "inputData": null,
+      "coordinates": { "x": 310.0, "y": 100.0 },
+      "frameChain": ["inner-frame"],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 18 — Click button inside the iframe"
+    },
+
+    {
+      "eventType": "CLICK",
+      "timestamp": "2026-02-27T10:00:25.800Z",
+      "url": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
+      "pageTitle": "AutoQA Test Page",
+      "element": {
+        "tagName": "button",
+        "id": "new-window-btn",
+        "name": null,
+        "className": "btn btn-primary",
+        "css": "#new-window-btn",
+        "xpath": "//*[@id='new-window-btn']",
+        "text": "Open new window",
+        "value": null,
+        "type": "button",
+        "attributes": { "type": "button" }
+      },
+      "inputData": null,
+      "coordinates": { "x": 200.0, "y": 620.0 },
+      "frameChain": [],
+      "windowHandle": "handle-main-0001",
+      "comment": "Step 19 — Click to open a new browser window"
+    },
+
+    {
+      "eventType": "WINDOW_SWITCH",
+      "timestamp": "2026-02-27T10:00:27.300Z",
+      "url": "about:blank",
+      "pageTitle": "AutoQA New Window",
+      "element": null,
+      "inputData": null,
+      "coordinates": null,
+      "frameChain": [],
+      "windowHandle": null,
+      "comment": "Step 20 — Switch to the newly opened window (newest handle)"
+    }
+
+  ]
+}
