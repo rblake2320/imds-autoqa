@@ -65,4 +65,10 @@
     </packages>
   </test>
 
+  <test name="Network Tests">
+    <packages>
+      <package name="autoqa.network"/>
+    </packages>
+  </test>
+
 </suite>

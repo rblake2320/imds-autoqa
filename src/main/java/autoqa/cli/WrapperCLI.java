@@ -3,6 +3,8 @@ package autoqa.cli;
 import autoqa.ai.AIConfig;
 import autoqa.ai.LocatorHealer;
 import autoqa.ai.TestGenerator;
+import autoqa.keyword.KeywordAction;
+import autoqa.keyword.KeywordEngine;
 import autoqa.model.ElementInfo;
 import autoqa.model.ElementLocator;
 import autoqa.model.ObjectRepository;
@@ -61,6 +63,7 @@ import java.util.concurrent.Callable;
                 WrapperCLI.HealCommand.class,
                 WrapperCLI.ReportCommand.class,
                 WrapperCLI.OrCommand.class,
+                WrapperCLI.KeywordCommand.class,
                 WrapperCLI.VersionCommand.class
         }
 )
@@ -650,6 +653,94 @@ public class WrapperCLI implements Callable<Integer> {
         return ObjectRepository.load(path);
     }
 
+    // ── Keyword-Driven Testing ────────────────────────────────────────────────
+
+    /**
+     * Runs a keyword-driven test file against the browser.
+     *
+     * <p>The keyword test file is a JSON array of steps, each with:
+     * <pre>
+     *   [{"keyword": "navigate", "target": "https://example.com"},
+     *    {"keyword": "click",    "target": "#login-btn"},
+     *    {"keyword": "verifyText","target": "#msg", "params": {"expected": "Welcome"}}]
+     * </pre>
+     *
+     * <p>Usage:
+     * <pre>
+     *   autoqa keyword run my-test.json
+     *   autoqa keyword run my-test.json --browser chrome --or-file objects.json
+     * </pre>
+     */
+    @Command(
+            name        = "keyword",
+            description = "Keyword-driven testing commands",
+            mixinStandardHelpOptions = true,
+            subcommands = { WrapperCLI.KeywordRunCommand.class }
+    )
+    static class KeywordCommand implements Callable<Integer> {
+        @Override
+        public Integer call() {
+            CommandLine.usage(this, System.out);
+            return 0;
+        }
+    }
+
+    @Command(
+            name        = "run",
+            description = "Run a keyword-driven test JSON file",
+            mixinStandardHelpOptions = true
+    )
+    static class KeywordRunCommand implements Callable<Integer> {
+
+        private static final Logger log = LoggerFactory.getLogger(KeywordRunCommand.class);
+
+        @Parameters(index = "0", description = "Path to keyword test JSON file")
+        Path testFile;
+
+        @Option(
+                names       = {"-b", "--browser"},
+                description = "Browser to use: edge, chrome, firefox (default: edge)",
+                defaultValue = "edge"
+        )
+        String browser;
+
+        @Option(
+                names       = {"--or-file"},
+                description = "Path to object-repository.json (optional)"
+        )
+        Path orFile;
+
+        @Override
+        public Integer call() throws Exception {
+            if (!Files.exists(testFile)) {
+                System.err.println("Keyword test file not found: " + testFile.toAbsolutePath());
+                return 1;
+            }
+
+            System.out.println("Loading keyword test: " + testFile.toAbsolutePath());
+
+            WebDriver driver = new PlayCommand().createDriver(browser);
+
+            ObjectRepository or = null;
+            if (orFile != null && Files.exists(orFile)) {
+                or = ObjectRepository.load(orFile);
+                System.out.printf("  OR loaded : %d objects%n", or.size());
+            }
+
+            KeywordEngine engine = or != null ? new KeywordEngine(driver, or) : new KeywordEngine(driver);
+            KeywordEngine.RunResult result = engine.run(testFile);
+
+            System.out.printf("%nKeyword test complete — %d/%d steps passed.%n",
+                    result.getStepsCompleted(), result.getTotalSteps());
+
+            if (!result.isSuccess()) {
+                System.err.printf("FAILED: %s%n", result.getFailureReason());
+                return 2;
+            }
+            return 0;
+        }
+    }
+
     // ── Version ───────────────────────────────────────────────────────────────
 
     /**
@@ -666,6 +757,8 @@ public class WrapperCLI implements Callable<Integer> {
         public Integer call() {
             System.out.println("IMDS AutoQA 1.0.0-SNAPSHOT");
             System.out.println("Selenium WebDriver 4.19.1 | TestNG 7.10.1 | Allure 2.27.0");
+            System.out.println("Modules: recorder, player, ai, vision, data, api, keyword, desktop,");
+            System.out.println("         accessibility, network, reporting, cli, gui");
             return 0;
         }
     }
