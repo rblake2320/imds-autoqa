@@ -133,14 +133,14 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>${testng.version}</version>
-      <scope>test</scope>
+      <!-- compile scope so AllureListener/ReportOrchestrator in main sources can implement TestNG interfaces -->
     </dependency>
     <!-- Allure TestNG integration -->
     <dependency>
       <groupId>io.qameta.allure</groupId>
       <artifactId>allure-testng</artifactId>
       <version>${allure.version}</version>
-      <scope>test</scope>
+      <!-- compile scope: AllureListener extends Allure TestNG support -->
     </dependency>
     <!-- Allure available in main scope for listener + orchestrator -->
     <dependency>
