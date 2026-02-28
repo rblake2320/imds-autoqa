@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="IMDS AutoQA Integration Suite" verbose="1" parallel="none">
+
+  <listeners>
+    <listener class-name="autoqa.reporting.AllureListener"/>
+  </listeners>
+
+  <test name="Integration Tests">
+    <packages>
+      <package name="autoqa.integration"/>
+    </packages>
+  </test>
+
+</suite>

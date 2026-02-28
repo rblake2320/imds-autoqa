@@ -288,4 +288,46 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PROFILES                                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <profiles>
+    <!--
+      Integration profile — runs the E2E smoke tests against a real browser.
+      Activate with:  mvn test -Pintegration
+      Requires Microsoft Edge to be installed on the machine.
+    -->
+    <profile>
+      <id>integration</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.2.5</version>
+            <configuration>
+              <suiteXmlFiles>
+                <suiteXmlFile>integration.xml</suiteXmlFile>
+              </suiteXmlFiles>
+              <argLine>
+                -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.22/aspectjweaver-1.9.22.jar"
+              </argLine>
+              <systemPropertyVariables>
+                <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+              </systemPropertyVariables>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.9.22</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
