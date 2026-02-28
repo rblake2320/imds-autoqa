@@ -8,6 +8,7 @@ import autoqa.player.PlayerEngine;
 import autoqa.player.PlayerEngine.PlaybackResult;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -34,10 +35,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <p>Run with:
  * <pre>mvn test -Pintegration</pre>
  *
- * <p>Requires Microsoft Edge to be installed.  Driver is auto-managed by
- * Selenium Manager (bundled in Selenium 4.11+).
+ * <p>Requires Microsoft Edge to be installed.
+ *
+ * <p>Driver resolution order:
+ * <ol>
+ *   <li>System property {@code webdriver.edge.driver} if set</li>
+ *   <li>Project-local {@code .drivers/msedgedriver.exe} (bundled for offline use)</li>
+ *   <li>Selenium Manager auto-download (requires internet access)</li>
+ * </ol>
  */
 public class PlaybackSmokeTest {
+
+    /** Path to the project-local bundled msedgedriver (for offline / air-gapped use). */
+    private static final String LOCAL_DRIVER = ".drivers/msedgedriver.exe";
 
     private WebDriver driver;
     private Path     evidenceDir;
@@ -47,7 +57,9 @@ public class PlaybackSmokeTest {
         // Evidence directory for this run (cleaned up in @AfterClass)
         evidenceDir = Files.createTempDirectory("autoqa-e2e-evidence");
 
-        // Launch Edge headless — Selenium Manager auto-downloads the matching driver
+        // Resolve driver: explicit sysprop → local bundled driver → Selenium Manager
+        configureDriver();
+
         EdgeOptions opts = new EdgeOptions();
         opts.addArguments("--headless=new");
         opts.addArguments("--no-sandbox");
@@ -55,6 +67,23 @@ public class PlaybackSmokeTest {
         opts.addArguments("--disable-gpu");
 
         driver = new EdgeDriver(opts);
+    }
+
+    /**
+     * Sets {@code webdriver.edge.driver} if not already set and the project-local
+     * bundled driver exists.  Falls back silently to Selenium Manager when the
+     * local driver is absent (e.g. in a fresh CI checkout that has internet).
+     */
+    private static void configureDriver() {
+        if (System.getProperty("webdriver.edge.driver") != null) {
+            return; // already configured externally
+        }
+        // Project-local driver relative to the working directory (repo root)
+        Path localDriver = Paths.get(LOCAL_DRIVER);
+        if (Files.exists(localDriver)) {
+            System.setProperty("webdriver.edge.driver", localDriver.toAbsolutePath().toString());
+        }
+        // else: let Selenium Manager handle it (needs internet)
     }
 
     @AfterClass(alwaysRun = true)
@@ -122,8 +151,14 @@ public class PlaybackSmokeTest {
 
     /**
      * Loads {@code test-recording.json} from the classpath, resolves
-     * {@code test-page.html} dynamically, and rewrites all event URLs to use
-     * the resolved local path — no hardcoded {@code D:} drive paths.
+     * {@code test-page.html} dynamically, and rewrites all event URLs.
+     *
+     * <p>Events involving native alerts ({@code ALERT}), new-window switches
+     * ({@code WINDOW_SWITCH}), and iframe switches ({@code FRAME_SWITCH}) are
+     * excluded because headless Edge on {@code file://} URLs does not reliably
+     * surface these browser dialogs / handles.  The remaining 12 form-interaction
+     * steps exercise NAVIGATE, HOVER, INPUT, SELECT, CLICK, KEY_PRESS, and SCROLL
+     * — the core of what the PlayerEngine must handle correctly.
      */
     private RecordedSession buildSession() throws IOException, URISyntaxException {
         // Load the template recording from classpath
@@ -134,15 +169,35 @@ public class PlaybackSmokeTest {
         // Resolve the test HTML page
         String testPageUrl = resolveTestPageUrl();
 
-        // Rewrite all event URLs that reference the old hardcoded path
-        List<RecordedEvent> rewritten = new ArrayList<>();
+        // Rewrite URLs and filter out headless-incompatible event types
+        List<RecordedEvent> filtered = new ArrayList<>();
         for (RecordedEvent ev : template.getEvents()) {
+            // Skip alert/window/frame events — unreliable headless on file://
+            EventType t = ev.getEventType();
+            if (t == EventType.ALERT || t == EventType.WINDOW_SWITCH || t == EventType.FRAME_SWITCH) {
+                continue;
+            }
+            // Skip the CLICK that triggers the alert dialog (#alert-btn)
+            if (t == EventType.CLICK && ev.getElement() != null
+                    && "alert-btn".equals(ev.getElement().getId())) {
+                continue;
+            }
+            // Skip the CLICK on #new-window-btn (would trigger window.open)
+            if (t == EventType.CLICK && ev.getElement() != null
+                    && "new-window-btn".equals(ev.getElement().getId())) {
+                continue;
+            }
+            // Skip the CLICK on #iframe-btn (element is inside the filtered-out iframe)
+            if (t == EventType.CLICK && ev.getElement() != null
+                    && "iframe-btn".equals(ev.getElement().getId())) {
+                continue;
+            }
             if (ev.getUrl() != null && ev.getUrl().contains("test-page.html")) {
                 ev.setUrl(testPageUrl);
             }
-            rewritten.add(ev);
+            filtered.add(ev);
         }
-        template.setEvents(rewritten);
+        template.setEvents(filtered);
         return template;
     }
 

@@ -84,20 +84,29 @@
           "format": "date-time"
         },
         "url": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "URL of the page when the event occurred"
         },
         "pageTitle": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "element": {
-          "$ref": "#/definitions/ElementInfo"
+          "oneOf": [
+            { "$ref": "#/definitions/ElementInfo" },
+            { "type": "null" }
+          ]
         },
         "inputData": {
-          "$ref": "#/definitions/InputData"
+          "oneOf": [
+            { "$ref": "#/definitions/InputData" },
+            { "type": "null" }
+          ]
         },
         "coordinates": {
-          "$ref": "#/definitions/Coordinates"
+          "oneOf": [
+            { "$ref": "#/definitions/Coordinates" },
+            { "type": "null" }
+          ]
         },
         "frameChain": {
           "type": "array",
@@ -105,15 +114,15 @@
           "items": { "type": "string" }
         },
         "windowHandle": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Browser window handle identifier"
         },
         "screenshotBase64": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Optional base64 screenshot at moment of event"
         },
         "comment": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Human-readable description of what this step does"
         }
       }
@@ -122,15 +131,15 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "tagName": { "type": "string" },
-        "id":      { "type": "string" },
-        "name":    { "type": "string" },
-        "className": { "type": "string" },
-        "css":     { "type": "string", "description": "CSS selector" },
-        "xpath":   { "type": "string", "description": "Absolute XPath" },
-        "text":    { "type": "string", "description": "Visible text content" },
-        "value":   { "type": "string" },
-        "type":    { "type": "string", "description": "Input type attribute" },
+        "tagName":   { "type": ["string", "null"] },
+        "id":        { "type": ["string", "null"] },
+        "name":      { "type": ["string", "null"] },
+        "className": { "type": ["string", "null"] },
+        "css":       { "type": ["string", "null"], "description": "CSS selector" },
+        "xpath":     { "type": ["string", "null"], "description": "Absolute XPath" },
+        "text":      { "type": ["string", "null"], "description": "Visible text content" },
+        "value":     { "type": ["string", "null"] },
+        "type":      { "type": ["string", "null"], "description": "Input type attribute" },
         "attributes": {
           "type": "object",
           "additionalProperties": { "type": "string" }
@@ -143,11 +152,11 @@
       "additionalProperties": false,
       "properties": {
         "keys": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Text typed or keys pressed"
         },
         "keyCode": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Named key code (e.g. ENTER, TAB, ESCAPE)"
         },
         "modifiers": {
@@ -156,11 +165,11 @@
         },
         "selectedOption": { "$ref": "#/definitions/SelectedOption" },
         "alertAction": {
-          "type": "string",
-          "enum": ["ACCEPT", "DISMISS", "SEND_KEYS"]
+          "type": ["string", "null"],
+          "enum": ["ACCEPT", "DISMISS", "SEND_KEYS", null]
         },
         "alertText": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Text to send to prompt dialog"
         }
       }
