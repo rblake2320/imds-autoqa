@@ -67,6 +67,11 @@ public class WrapperCLI implements Callable<Integer> {
     // ── Entry-point ─────────────────────────────────────────────────────────
 
     public static void main(String[] args) {
+        if (args.length == 0) {
+            // No arguments → open the desktop GUI (double-click or autoqa.bat)
+            autoqa.gui.WrapperGUI.launch();
+            return;
+        }
         int exit = new CommandLine(new WrapperCLI()).execute(args);
         System.exit(exit);
     }
