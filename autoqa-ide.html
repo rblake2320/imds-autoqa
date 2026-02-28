@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IMDS AutoQA — IDE</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:       #1e1e2e;
+    --surface:  #252535;
+    --surface2: #2d2d42;
+    --border:   #3a3a52;
+    --accent:   #7c6af7;
+    --accent2:  #5dade2;
+    --green:    #2ecc71;
+    --red:      #e74c3c;
+    --yellow:   #f39c12;
+    --text:     #cdd6f4;
+    --text2:    #9399b2;
+    --toolbar:  #181824;
+  }
+  body { font-family: 'Segoe UI', sans-serif; font-size: 13px; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── Title bar ── */
+  #titlebar {
+    background: var(--toolbar); height: 36px; display: flex; align-items: center;
+    border-bottom: 1px solid var(--border); flex-shrink: 0; user-select: none;
+  }
+  #titlebar .logo { padding: 0 14px; font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: .5px; display: flex; align-items: center; gap: 7px; }
+  #titlebar .logo span { color: var(--text); }
+  #menubar { display: flex; gap: 2px; margin-left: 4px; position: relative; }
+  #menubar button { background: none; border: none; color: var(--text2); padding: 6px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; position: relative; }
+  #menubar button:hover { background: var(--surface2); color: var(--text); }
+  #menubar button.menu-open { background: var(--surface2); color: var(--text); }
+  #titlebar .winbtns { margin-left: auto; display: flex; }
+  #titlebar .winbtns span { width: 46px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text2); cursor: pointer; font-size: 12px; }
+  #titlebar .winbtns span:hover { background: var(--surface2); }
+  #titlebar .winbtns span:last-child:hover { background: var(--red); color: #fff; }
+
+  /* ── Dropdown menus ── */
+  .dropdown-menu {
+    display: none; position: fixed; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; min-width: 180px; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    padding: 4px 0;
+  }
+  .dropdown-menu.open { display: block; }
+  .dropdown-item {
+    padding: 7px 16px; cursor: pointer; color: var(--text); font-size: 12px;
+    display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  }
+  .dropdown-item:hover { background: var(--accent); color: #fff; }
+  .dropdown-sep { height: 1px; background: var(--border); margin: 4px 0; }
+
+  /* ── Toolbar ── */
+  #toolbar {
+    background: var(--surface); height: 44px; display: flex; align-items: center;
+    gap: 4px; padding: 0 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .tb-sep { width: 1px; height: 26px; background: var(--border); margin: 0 6px; }
+  .tb-btn {
+    display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: none;
+    border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all .15s; color: #fff;
+  }
+  .tb-btn.record  { background: var(--red); }
+  .tb-btn.play    { background: var(--green); }
+  .tb-btn.stop    { background: #555; color: #aaa; }
+  .tb-btn.gen     { background: var(--accent); }
+  .tb-btn.heal    { background: var(--yellow); color: #111; }
+  .tb-btn.report  { background: var(--accent2); }
+  .tb-btn.spy     { background: #9b59b6; }
+  .tb-btn:hover   { filter: brightness(1.15); transform: translateY(-1px); }
+  .tb-btn.stop:hover { background: #666; color: #ccc; }
+  .tb-status { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 12px; }
+  .tb-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ── Main layout ── */
+  #main { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── Solution Explorer ── */
+  #explorer {
+    width: 220px; background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; flex-shrink: 0;
+  }
+  #explorer .panel-title {
+    padding: 8px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .8px; color: var(--text2); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #explorer .panel-title span { color: var(--accent); cursor: pointer; font-size: 15px; }
+  .tree { padding: 8px 0; overflow-y: auto; flex: 1; }
+  .tree-group { margin-bottom: 4px; }
+  .tree-group-hdr {
+    display: flex; align-items: center; gap: 6px; padding: 5px 12px;
+    cursor: pointer; color: var(--text2); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .6px;
+  }
+  .tree-group-hdr:hover { color: var(--text); }
+  .tree-group-hdr .icon { font-size: 10px; transition: transform .2s; }
+  .tree-group-hdr.open .icon { transform: rotate(90deg); }
+  .tree-item {
+    display: flex; align-items: center; gap: 7px; padding: 5px 12px 5px 26px;
+    cursor: pointer; border-radius: 4px; margin: 1px 6px;
+    transition: background .1s; color: var(--text);
+  }
+  .tree-item:hover  { background: var(--surface2); }
+  .tree-item.active { background: var(--accent); color: #fff; }
+  .tree-item .ico   { font-size: 14px; }
+  .tree-item .badge {
+    margin-left: auto; background: var(--surface2); color: var(--text2);
+    font-size: 10px; padding: 1px 5px; border-radius: 10px;
+  }
+  .tree-item.active .badge { background: rgba(255,255,255,.2); color: #fff; }
+
+  /* ── Center panel ── */
+  #center { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  #doc-tabs {
+    display: flex; background: var(--toolbar); border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .doc-tab {
+    padding: 8px 16px; cursor: pointer; border-right: 1px solid var(--border);
+    color: var(--text2); font-size: 12px; white-space: nowrap;
+    border-bottom: 2px solid transparent; transition: all .15s;
+  }
+  .doc-tab:hover  { color: var(--text); background: var(--surface2); }
+  .doc-tab.active { color: var(--text); border-bottom-color: var(--accent); background: var(--surface); }
+  #doc-body { flex: 1; overflow: hidden; position: relative; }
+  .doc-panel { position: absolute; inset: 0; display: none; overflow: auto; }
+  .doc-panel.active { display: block; }
+
+  /* ── Canvas ── */
+  #canvas-panel { background: var(--bg); display: flex; align-items: flex-start; justify-content: center; padding: 30px 20px; }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .flow-node {
+    position: relative; min-width: 200px; padding: 10px 20px; border-radius: 8px;
+    border: 2px solid var(--border); background: var(--surface); text-align: center;
+    cursor: pointer; transition: all .2s; font-size: 13px;
+  }
+  .flow-node:hover { border-color: var(--accent); box-shadow: 0 0 12px rgba(124,106,247,.3); }
+  .flow-node.active { border-color: var(--accent); background: rgba(124,106,247,.15); box-shadow: 0 0 16px rgba(124,106,247,.4); }
+  .flow-node.pass   { border-color: var(--green); }
+  .flow-node.fail   { border-color: var(--red); }
+  .flow-node.oval   { border-radius: 40px; background: var(--surface2); font-weight: 700; }
+  .flow-node .step-icon { position: absolute; left: -30px; top: 50%; transform: translateY(-50%); font-size: 16px; }
+  .flow-node .step-num  { position: absolute; right: -28px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text2); }
+  .flow-arrow { color: var(--text2); font-size: 20px; line-height: 1; padding: 2px 0; }
+  .flow-badge { position: absolute; right: -52px; top: 50%; transform: translateY(-50%); font-size: 10px; padding: 2px 6px; border-radius: 10px; white-space: nowrap; }
+  .flow-badge.pass { background: rgba(46,204,113,.2); color: var(--green); border: 1px solid var(--green); }
+  .flow-badge.fail { background: rgba(231,76,60,.2);  color: var(--red);   border: 1px solid var(--red);   }
+
+  /* ── Script panel ── */
+  #script-panel { background: #1a1a2e; padding: 0; font-family: 'Consolas', monospace; }
+  .code-header { background: var(--surface); padding: 8px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .code-header select { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+  .code-body { padding: 20px; overflow: auto; height: calc(100% - 41px); }
+  .code-body pre { font-size: 13px; line-height: 1.7; color: #abb2bf; }
+  .kw-keyword  { color: #c678dd; } .kw-string { color: #98c379; }
+  .kw-comment  { color: #5c6370; font-style: italic; } .kw-type { color: #e5c07b; }
+  .kw-num      { color: #d19a66; } .kw-ann { color: #61afef; }
+  .kw-method   { color: #61afef; } .kw-var { color: #e06c75; }
+
+  /* ── Keyword panel ── */
+  #keyword-panel { padding: 20px; }
+  .kw-table { width: 100%; border-collapse: collapse; }
+  .kw-table th { background: var(--surface2); padding: 8px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text2); border-bottom: 2px solid var(--border); }
+  .kw-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .kw-table tr:hover td { background: var(--surface2); }
+  .kw-chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .kw-chip.navigate  { background: rgba(93,173,226,.2); color: var(--accent2); border: 1px solid var(--accent2); }
+  .kw-chip.click     { background: rgba(46,204,113,.2); color: var(--green); border: 1px solid var(--green); }
+  .kw-chip.enter     { background: rgba(124,106,247,.2); color: var(--accent); border: 1px solid var(--accent); }
+  .kw-chip.assert    { background: rgba(243,156,18,.2); color: var(--yellow); border: 1px solid var(--yellow); }
+  .kw-chip.wait      { background: rgba(155,89,182,.2); color: #9b59b6; border: 1px solid #9b59b6; }
+  .kw-chip.spy       { background: rgba(231,76,60,.2); color: var(--red); border: 1px solid var(--red); }
+  .step-result { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; }
+  .step-result.pass { color: var(--green); } .step-result.fail { color: var(--red); }
+
+  /* ── Right Properties ── */
+  #props {
+    width: 220px; background: var(--surface); border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; flex-shrink: 0;
+  }
+  #props .panel-title { padding: 8px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text2); border-bottom: 1px solid var(--border); }
+  .prop-table { width: 100%; border-collapse: collapse; }
+  .prop-table tr:hover td { background: var(--surface2); }
+  .prop-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: top; }
+  .prop-table td:first-child { color: var(--text2); font-weight: 600; width: 45%; }
+  .prop-table td:last-child  { color: var(--text); word-break: break-all; }
+  .prop-section { padding: 8px 10px 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--accent); border-bottom: 1px solid var(--border); }
+  .prop-badge { display: inline-block; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+  .prop-badge.pass { background: rgba(46,204,113,.2); color: var(--green); }
+  .prop-badge.fail { background: rgba(231,76,60,.2); color: var(--red); }
+
+  /* ── Bottom pane ── */
+  #bottom {
+    height: 200px; border-top: 1px solid var(--border); display: flex;
+    flex-direction: column; flex-shrink: 0; background: var(--surface);
+  }
+  #bottom-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--toolbar); }
+  .bottom-tab {
+    padding: 7px 14px; cursor: pointer; color: var(--text2); font-size: 12px;
+    border-right: 1px solid var(--border); border-bottom: 2px solid transparent;
+    transition: all .15s; display: flex; align-items: center; gap: 5px;
+  }
+  .bottom-tab:hover  { color: var(--text); }
+  .bottom-tab.active { color: var(--text); border-bottom-color: var(--accent); background: var(--surface); }
+  .bottom-tab .cnt   { background: var(--accent); color: #fff; font-size: 10px; padding: 0 5px; border-radius: 9px; min-width: 16px; text-align: center; }
+  .bottom-tab .cnt.red { background: var(--red); }
+  #bottom-body { flex: 1; overflow-y: auto; padding: 8px 14px; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.7; }
+  .log-line { display: flex; gap: 10px; padding: 1px 0; }
+  .log-line:hover { background: var(--surface2); }
+  .log-ts   { color: var(--text2); flex-shrink: 0; }
+  .log-pass { color: var(--green); } .log-fail { color: var(--red); }
+  .log-info { color: var(--accent2); } .log-spy  { color: #9b59b6; }
+  .log-warn { color: var(--yellow); } .log-net  { color: #1abc9c; }
+
+  /* ── Spy panel ── */
+  .spy-entry { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+  .spy-entry:hover { background: var(--surface2); }
+  .spy-seq  { color: var(--text2); flex-shrink: 0; width: 36px; text-align: right; }
+  .spy-type { flex-shrink: 0; width: 90px; font-weight: 700; }
+  .spy-type.net-req  { color: var(--accent2); } .spy-type.net-resp { color: var(--green); }
+  .spy-type.storage  { color: var(--yellow); }  .spy-type.console  { color: var(--red); }
+  .spy-type.dom      { color: #9b59b6; }
+  .spy-src  { color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .spy-data { color: var(--text2); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .spy-status { flex-shrink: 0; }
+  .spy-status.ok  { color: var(--green); } .spy-status.err { color: var(--red); }
+
+  /* ── Network panel ── */
+  .net-entry { display: flex; gap: 8px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 11px; }
+  .net-entry:hover { background: var(--surface2); }
+  .net-method { flex-shrink: 0; width: 42px; font-weight: 700; color: var(--accent2); }
+  .net-status { flex-shrink: 0; width: 36px; text-align: center; font-weight: 700; }
+  .net-status.ok  { color: var(--green); } .net-status.err { color: var(--red); }
+  .net-url    { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+  .net-time   { flex-shrink: 0; color: var(--text2); width: 50px; text-align: right; }
+  .net-bar    { flex-shrink: 0; width: 80px; background: var(--border); border-radius: 2px; height: 8px; align-self: center; overflow: hidden; }
+  .net-bar-inner { height: 100%; background: var(--accent2); border-radius: 2px; }
+
+  /* ── Resize handle ── */
+  #resize-handle { height: 4px; background: var(--border); cursor: ns-resize; flex-shrink: 0; }
+  #resize-handle:hover { background: var(--accent); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ══ TITLE BAR ══ -->
+<div id="titlebar">
+  <div class="logo">⬡ <span>IMDS</span> AutoQA</div>
+  <div id="menubar">
+    <button onclick="toggleMenu('menu-file', this)">File</button>
+    <button onclick="toggleMenu('menu-edit', this)">Edit</button>
+    <button onclick="toggleMenu('menu-record', this)">Record</button>
+    <button onclick="toggleMenu('menu-run', this)">Run</button>
+    <button onclick="toggleMenu('menu-design', this)">Design</button>
+    <button onclick="toggleMenu('menu-tools', this)">Tools</button>
+    <button onclick="toggleMenu('menu-report', this)">Report</button>
+    <button onclick="toggleMenu('menu-help', this)">Help</button>
+  </div>
+  <div class="winbtns">
+    <span>─</span><span>□</span><span>✕</span>
+  </div>
+</div>
+
+<!-- ══ DROPDOWN MENUS ══ -->
+<div id="menu-file" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('New recording — enter a name and URL then click Record')">📄 New Recording</div>
+  <div class="dropdown-item" onclick="closeMenus(); loadRecordings()">📂 Open Recording</div>
+  <div class="dropdown-sep"></div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Use File > Export from Allure to save reports')">💾 Save</div>
+  <div class="dropdown-sep"></div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Close this window to exit')">🚪 Exit</div>
+</div>
+
+<div id="menu-edit" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Undo — not yet implemented')">↩ Undo</div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Redo — not yet implemented')">↪ Redo</div>
+  <div class="dropdown-sep"></div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Find — use browser Ctrl+F')">🔍 Find</div>
+</div>
+
+<div id="menu-record" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); startRecord()">⏺ Start Recording</div>
+  <div class="dropdown-item" onclick="closeMenus(); stopAll()">⏹ Stop Recording</div>
+  <div class="dropdown-sep"></div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Recording settings — configure via autoqa.properties')">⚙ Settings</div>
+</div>
+
+<div id="menu-run" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); runPlay()">▶ Play Recording</div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Run Suite — use: bash run_mvn.sh test')">▶▶ Run Suite</div>
+  <div class="dropdown-item" onclick="closeMenus(); runPlay()">▶ Run Selected</div>
+</div>
+
+<div id="menu-design" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); switchDocTab('canvas', document.querySelectorAll(\'.doc-tab\')[0])">🗺 Canvas View</div>
+  <div class="dropdown-item" onclick="closeMenus(); switchDocTab('keyword', document.querySelectorAll(\'.doc-tab\')[2])">🔑 Keyword Steps</div>
+  <div class="dropdown-item" onclick="closeMenus(); switchDocTab('data', document.querySelectorAll(\'.doc-tab\')[3])">📊 Data Table</div>
+</div>
+
+<div id="menu-tools" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); showGen()">⚡ Generate Test</div>
+  <div class="dropdown-item" onclick="closeMenus(); showHeal()">🔧 Heal Locators</div>
+  <div class="dropdown-sep"></div>
+  <div class="dropdown-item" onclick="closeMenus(); switchBottomTab('spy')">👁 View Spy</div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Settings — edit autoqa.properties in project root')">⚙ Settings</div>
+</div>
+
+<div id="menu-report" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); showReport()">📊 View Allure Report</div>
+  <div class="dropdown-item" onclick="closeMenus(); window.open('http://localhost:8765/api/log','_blank')">📋 View Last Run Log</div>
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('Export — run: allure generate reports/allure-results --clean')">📤 Export</div>
+</div>
+
+<div id="menu-help" class="dropdown-menu">
+  <div class="dropdown-item" onclick="closeMenus(); appendLog('IMDS AutoQA v1.0 — Selenium + CDP + AI-powered test generation')">ℹ About</div>
+  <div class="dropdown-item" onclick="closeMenus(); window.open('https://github.com/rblake2320/imds-autoqa','_blank')">📖 Documentation</div>
+</div>
+
+<!-- ══ TOOLBAR ══ -->
+<div id="toolbar">
+  <button class="tb-btn record" onclick="startRecord()">⏺ Record</button>
+  <button class="tb-btn play"   onclick="runPlay()">▶ Play</button>
+  <button class="tb-btn stop"   id="stopBtn" onclick="stopAll()">⏹ Stop</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn gen"    onclick="showGen()">⚡ Generate</button>
+  <button class="tb-btn heal"   onclick="showHeal()">🔧 Heal</button>
+  <button class="tb-btn spy"    onclick="switchBottomTab('spy')">👁 Spy</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn report" onclick="showReport()">📊 Report</button>
+  <div class="tb-status">
+    <div class="dot" id="statusDot"></div>
+    <span id="statusText">Connecting…</span>
+    <span style="margin-left:12px; color: var(--text2)">|</span>
+    <span style="margin-left:12px;">Edge 131 · CDP connected</span>
+    <span style="margin-left:12px; color: var(--green);">✓ Ollama qwen2.5-coder:32b</span>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+  <!-- Solution Explorer -->
+  <div id="explorer">
+    <div class="panel-title">Solution Explorer <span title="Refresh" onclick="loadRecordings()">↻</span></div>
+    <div class="tree">
+      <div class="tree-group">
+        <div class="tree-group-hdr open" onclick="toggleGroup(this)">
+          <span class="icon">▶</span> 📁 Recordings
+        </div>
+        <div class="tree-children" id="recordings-tree">
+          <div class="tree-item active" onclick="selectNode(this,'rec001')">
+            <span class="ico">🎬</span> login-checkout.json <span class="badge">24</span>
+          </div>
+          <div class="tree-item" onclick="selectNode(this,'rec002')">
+            <span class="ico">🎬</span> user-registration.json <span class="badge">18</span>
+          </div>
+          <div class="tree-item" onclick="selectNode(this,'rec003')">
+            <span class="ico">🎬</span> search-filter.json <span class="badge">31</span>
+          </div>
+        </div>
+      </div>
+      <div class="tree-group">
+        <div class="tree-group-hdr open" onclick="toggleGroup(this)">
+          <span class="icon">▶</span> 🧪 Generated Tests
+        </div>
+        <div class="tree-children">
+          <div class="tree-item" onclick="selectNode(this,'test001')">
+            <span class="ico">☕</span> LoginCheckoutTest.java
+          </div>
+          <div class="tree-item" onclick="selectNode(this,'test002')">
+            <span class="ico">☕</span> UserRegistrationTest.java
+          </div>
+        </div>
+      </div>
+      <div class="tree-group">
+        <div class="tree-group-hdr open" onclick="toggleGroup(this)">
+          <span class="icon">▶</span> 📋 Keyword Tests
+        </div>
+        <div class="tree-children">
+          <div class="tree-item" onclick="selectNode(this,'kw001')">
+            <span class="ico">🔑</span> login.yaml
+          </div>
+          <div class="tree-item" onclick="selectNode(this,'kw002')">
+            <span class="ico">🔑</span> checkout.yaml
+          </div>
+        </div>
+      </div>
+      <div class="tree-group">
+        <div class="tree-group-hdr" onclick="toggleGroup(this)">
+          <span class="icon">▶</span> 📚 Function Library
+        </div>
+        <div class="tree-children" style="display:none">
+          <div class="tree-item"><span class="ico">📄</span> common-actions.yaml</div>
+          <div class="tree-item"><span class="ico">📄</span> data-helpers.yaml</div>
+        </div>
+      </div>
+      <div class="tree-group">
+        <div class="tree-group-hdr" onclick="toggleGroup(this)">
+          <span class="icon">▶</span> ♻️ Recovery Scenarios
+        </div>
+        <div class="tree-children" style="display:none">
+          <div class="tree-item"><span class="ico">🛡</span> popup-handler</div>
+          <div class="tree-item"><span class="ico">🛡</span> alert-dismiss</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center -->
+  <div id="center">
+    <div id="doc-tabs">
+      <div class="doc-tab active" onclick="switchDocTab('canvas',this)">🗺 Canvas</div>
+      <div class="doc-tab" onclick="switchDocTab('script',this)">💻 Script</div>
+      <div class="doc-tab" onclick="switchDocTab('keyword',this)">🔑 Keyword Steps</div>
+      <div class="doc-tab" onclick="switchDocTab('data',this)">📊 Data Table</div>
+    </div>
+    <div id="doc-body">
+
+      <!-- CANVAS -->
+      <div id="canvas-panel" class="doc-panel active">
+        <div class="flow" id="flowChart">
+          <div class="flow-node oval">▶ Start</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,0)" style="position:relative">
+            <span class="step-icon">🌐</span>
+            Navigate to Login Page
+            <span class="flow-badge pass">245ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,1)" style="position:relative">
+            <span class="step-icon">⌨</span>
+            Enter Username
+            <span class="flow-badge pass">89ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,2)" style="position:relative">
+            <span class="step-icon">⌨</span>
+            Enter Password
+            <span class="flow-badge pass">76ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node active" onclick="selectStep(this,3)" style="position:relative">
+            <span class="step-icon">🖱</span>
+            Click Login Button
+            <span class="flow-badge pass">134ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,4)" style="position:relative">
+            <span class="step-icon">✅</span>
+            Assert Dashboard Loaded
+            <span class="flow-badge pass">312ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,5)" style="position:relative">
+            <span class="step-icon">🛒</span>
+            Add Item to Cart
+            <span class="flow-badge pass">198ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,6)" style="position:relative">
+            <span class="step-icon">💳</span>
+            Proceed to Checkout
+            <span class="flow-badge pass">441ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node pass" onclick="selectStep(this,7)" style="position:relative">
+            <span class="step-icon">👁</span>
+            Spy: Assert API Called
+            <span class="flow-badge pass">0ms</span>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node oval">⏹ End</div>
+        </div>
+      </div>
+
+      <!-- SCRIPT -->
+      <div id="script-panel" class="doc-panel">
+        <div class="code-header">
+          <span style="color:var(--text2);font-size:12px;">File:</span>
+          <select>
+            <option>LoginCheckoutTest.java</option>
+            <option>UserRegistrationTest.java</option>
+          </select>
+          <span style="margin-left:auto;color:var(--green);font-size:11px;">✓ Compiles</span>
+        </div>
+        <div class="code-body">
+<pre><span class="kw-ann">@Test</span>
+<span class="kw-keyword">public void</span> <span class="kw-method">loginAndCheckout</span>() {
+    <span class="kw-comment">// Attach ApplicationSpy — captures everything the app does</span>
+    ApplicationSpy spy <span class="kw-keyword">=</span> ApplicationSpy.<span class="kw-method">attach</span>(driver).<span class="kw-method">start</span>();
+    NetworkMonitor  net <span class="kw-keyword">=</span> NetworkMonitor.<span class="kw-method">attach</span>(driver).<span class="kw-method">start</span>();
+
+    <span class="kw-comment">// Step 1 — Navigate</span>
+    driver.<span class="kw-method">get</span>(<span class="kw-string">"https://shop.example.com/login"</span>);
+    SmartWait.<span class="kw-method">forAngular</span>(driver);
+
+    <span class="kw-comment">// Step 2-3 — Enter credentials</span>
+    player.<span class="kw-method">type</span>(<span class="kw-string">"id=username"</span>, <span class="kw-string">"testuser@example.com"</span>);
+    player.<span class="kw-method">type</span>(<span class="kw-string">"id=password"</span>, <span class="kw-string">"[REDACTED]"</span>);
+
+    <span class="kw-comment">// Step 4 — Click login</span>
+    player.<span class="kw-method">click</span>(<span class="kw-string">"id=loginBtn"</span>);
+    SmartWait.<span class="kw-method">forNetworkIdle</span>(driver, <span class="kw-num">500</span>);
+
+    <span class="kw-comment">// Step 5 — Assert dashboard</span>
+    assertThat(driver.<span class="kw-method">findElement</span>(By.<span class="kw-method">cssSelector</span>(<span class="kw-string">".dashboard"</span>)))
+        .<span class="kw-method">isDisplayed</span>();
+
+    <span class="kw-comment">// Step 6-7 — Checkout</span>
+    player.<span class="kw-method">click</span>(<span class="kw-string">"css=.add-to-cart"</span>);
+    player.<span class="kw-method">click</span>(<span class="kw-string">"id=checkoutBtn"</span>);
+
+    <span class="kw-comment">// Step 8 — Spy assertions (the real power)</span>
+    spy.<span class="kw-method">assertApiCalled</span>(<span class="kw-string">"/api/checkout"</span>, <span class="kw-string">"POST"</span>)
+       .<span class="kw-method">assertApiResponseContains</span>(<span class="kw-string">"/api/checkout"</span>, <span class="kw-string">"orderId"</span>)
+       .<span class="kw-method">assertNoServerErrors</span>()
+       .<span class="kw-method">assertStorageSet</span>(<span class="kw-string">"cartToken"</span>)
+       .<span class="kw-method">assertNoConsoleErrors</span>();
+
+    net.<span class="kw-method">assertNoServerErrors</span>()
+       .<span class="kw-method">assertResponseBelow</span>(<span class="kw-string">"api/checkout"</span>, <span class="kw-num">500</span>);
+
+    spy.<span class="kw-method">stop</span>();
+    net.<span class="kw-method">stop</span>();
+}</pre>
+        </div>
+      </div>
+
+      <!-- KEYWORD STEPS -->
+      <div id="keyword-panel" class="doc-panel">
+        <table class="kw-table">
+          <thead><tr><th>#</th><th>Keyword</th><th>Target</th><th>Value</th><th>Wait</th><th>Result</th></tr></thead>
+          <tbody id="kwBody">
+            <tr><td>1</td><td><span class="kw-chip navigate">navigateTo</span></td><td>—</td><td>https://shop.example.com/login</td><td>SmartWait·Angular</td><td><span class="step-result pass">✅ 245ms</span></td></tr>
+            <tr><td>2</td><td><span class="kw-chip enter">enterText</span></td><td>id=username</td><td>testuser@example.com</td><td>visible</td><td><span class="step-result pass">✅ 89ms</span></td></tr>
+            <tr><td>3</td><td><span class="kw-chip enter">enterText</span></td><td>id=password</td><td>[REDACTED]</td><td>enabled</td><td><span class="step-result pass">✅ 76ms</span></td></tr>
+            <tr><td>4</td><td><span class="kw-chip click">clickElement</span></td><td>id=loginBtn</td><td>—</td><td>NetworkIdle·500ms</td><td><span class="step-result pass">✅ 134ms</span></td></tr>
+            <tr><td>5</td><td><span class="kw-chip assert">assertVisible</span></td><td>css=.dashboard</td><td>—</td><td>5s timeout</td><td><span class="step-result pass">✅ 312ms</span></td></tr>
+            <tr><td>6</td><td><span class="kw-chip click">clickElement</span></td><td>css=.add-to-cart</td><td>—</td><td>clickable</td><td><span class="step-result pass">✅ 198ms</span></td></tr>
+            <tr><td>7</td><td><span class="kw-chip click">clickElement</span></td><td>id=checkoutBtn</td><td>—</td><td>NetworkIdle·500ms</td><td><span class="step-result pass">✅ 441ms</span></td></tr>
+            <tr><td>8</td><td><span class="kw-chip spy">spyAssertApi</span></td><td>/api/checkout</td><td>POST · orderId</td><td>—</td><td><span class="step-result pass">✅ 0ms</span></td></tr>
+            <tr><td>9</td><td><span class="kw-chip spy">assertNoServerErrors</span></td><td>—</td><td>—</td><td>—</td><td><span class="step-result pass">✅ 0ms</span></td></tr>
+            <tr><td>10</td><td><span class="kw-chip assert">assertStorage</span></td><td>cartToken</td><td>—</td><td>—</td><td><span class="step-result pass">✅ 0ms</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DATA TABLE -->
+      <div id="data-panel" class="doc-panel" style="padding:16px">
+        <div style="margin-bottom:10px;display:flex;gap:8px;align-items:center">
+          <span style="color:var(--text2);font-size:12px;">Data Source:</span>
+          <select style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:12px">
+            <option>login-checkout.csv</option><option>Global Data</option>
+          </select>
+          <button style="background:var(--accent);border:none;color:#fff;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px">+ Row</button>
+        </div>
+        <table class="kw-table" style="width:100%">
+          <thead><tr><th>Run</th><th>username</th><th>password</th><th>expected_item</th><th>expected_total</th><th>env</th></tr></thead>
+          <tbody>
+            <tr><td>✅</td><td>user1@example.com</td><td>••••••••</td><td>Widget Pro</td><td>$49.99</td><td>staging</td></tr>
+            <tr><td>✅</td><td>user2@example.com</td><td>••••••••</td><td>Widget Lite</td><td>$19.99</td><td>staging</td></tr>
+            <tr><td>⬜</td><td>admin@example.com</td><td>••••••••</td><td>Widget Enterprise</td><td>$199.99</td><td>prod</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- doc-body -->
+
+    <!-- Resize handle -->
+    <div id="resize-handle"></div>
+
+    <!-- ══ BOTTOM PANE ══ -->
+    <div id="bottom">
+      <div id="bottom-tabs">
+        <div class="bottom-tab active" onclick="switchBottomTab('output',this)">📋 Output <span class="cnt">8</span></div>
+        <div class="bottom-tab" onclick="switchBottomTab('spy',this)">👁 Spy Timeline <span class="cnt">12</span></div>
+        <div class="bottom-tab" onclick="switchBottomTab('network',this)">🌐 Network <span class="cnt">7</span></div>
+        <div class="bottom-tab" onclick="switchBottomTab('console',this)">🖥 Console <span class="cnt red">1</span></div>
+        <div class="bottom-tab" onclick="switchBottomTab('errors',this)">❌ Errors <span class="cnt" style="background:var(--green)">0</span></div>
+      </div>
+      <div id="bottom-body">
+
+        <!-- OUTPUT -->
+        <div id="output-pane" class="bottom-pane">
+          <div class="log-line"><span class="log-ts">00:48:01.120</span><span class="log-info">[INFO]  PlayerEngine: starting session — login-checkout.json (24 steps)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.244</span><span class="log-info">[INFO]  ApplicationSpy: started (poll=250ms, maxBody=4096chars)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.365</span><span class="log-info">[INFO]  NetworkMonitor: CDP Network.enable — capturing all traffic</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.610</span><span class="log-pass">[PASS]  Step 1: Navigate → https://shop.example.com/login (245ms)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.699</span><span class="log-pass">[PASS]  Step 2: enterText id=username → testuser@example.com (89ms)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.775</span><span class="log-pass">[PASS]  Step 3: enterText id=password → [REDACTED] (76ms)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.909</span><span class="log-pass">[PASS]  Step 4: click id=loginBtn (134ms) — NetworkIdle confirmed</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.221</span><span class="log-pass">[PASS]  Step 5: assertVisible css=.dashboard (312ms)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.419</span><span class="log-pass">[PASS]  Step 6: click css=.add-to-cart (198ms)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.860</span><span class="log-pass">[PASS]  Step 7: click id=checkoutBtn (441ms)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.860</span><span class="log-spy" >[SPY]   ✓ POST /api/checkout called — response contains "orderId"</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.861</span><span class="log-spy" >[SPY]   ✓ Storage key "cartToken" set</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.862</span><span class="log-spy" >[SPY]   ✓ No server errors (0 × 5xx)</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.863</span><span class="log-pass">[DONE]  All 8 steps passed — 1.74s total</span></div>
+        </div>
+
+        <!-- SPY TIMELINE -->
+        <div id="spy-pane" class="bottom-pane" style="display:none">
+          <div style="display:flex;gap:20px;font-size:11px;color:var(--text2);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)">
+            <span>[SEQ]</span><span style="width:90px">[TYPE]</span><span style="flex:1">[SOURCE]</span><span style="width:200px">[DATA]</span><span>[STATUS]</span>
+          </div>
+          <div class="spy-entry"><span class="spy-seq">0001</span><span class="spy-type net-req">REQ</span><span class="spy-src">POST https://shop.example.com/api/auth/login</span><span class="spy-data">{"user":"testuser@..."}</span><span class="spy-status">→</span></div>
+          <div class="spy-entry"><span class="spy-seq">0002</span><span class="spy-type net-resp">RESP</span><span class="spy-src">POST https://shop.example.com/api/auth/login</span><span class="spy-data">{"token":"eyJhb..."}</span><span class="spy-status ok">200</span></div>
+          <div class="spy-entry"><span class="spy-seq">0003</span><span class="spy-type storage">STORE</span><span class="spy-src">SET authToken = eyJhbGci... (local)</span><span class="spy-data">eyJhbGciOiJIUzI1Ni...</span><span class="spy-status ok">✓</span></div>
+          <div class="spy-entry"><span class="spy-seq">0004</span><span class="spy-type dom">DOM</span><span class="spy-src">div.dashboard added</span><span class="spy-data">added</span><span class="spy-status ok">✓</span></div>
+          <div class="spy-entry"><span class="spy-seq">0005</span><span class="spy-type net-req">REQ</span><span class="spy-src">GET https://shop.example.com/api/products/catalog</span><span class="spy-data">—</span><span class="spy-status">→</span></div>
+          <div class="spy-entry"><span class="spy-seq">0006</span><span class="spy-type net-resp">RESP</span><span class="spy-src">GET https://shop.example.com/api/products/catalog</span><span class="spy-data">[{"id":1,"name":"Widget Pro"...</span><span class="spy-status ok">200</span></div>
+          <div class="spy-entry"><span class="spy-seq">0007</span><span class="spy-type storage">STORE</span><span class="spy-src">SET cartToken = ct_9f3k2m (local)</span><span class="spy-data">ct_9f3k2m</span><span class="spy-status ok">✓</span></div>
+          <div class="spy-entry"><span class="spy-seq">0008</span><span class="spy-type net-req">REQ</span><span class="spy-src">POST https://shop.example.com/api/checkout</span><span class="spy-data">{"items":[{"id":1,"qty":1}]}</span><span class="spy-status">→</span></div>
+          <div class="spy-entry"><span class="spy-seq">0009</span><span class="spy-type net-resp">RESP</span><span class="spy-src">POST https://shop.example.com/api/checkout</span><span class="spy-data">{"orderId":"ORD-7821","total":49.99}</span><span class="spy-status ok">200</span></div>
+          <div class="spy-entry"><span class="spy-seq">0010</span><span class="spy-type dom">DOM</span><span class="spy-src">div.order-confirmation#ORD-7821 added</span><span class="spy-data">added</span><span class="spy-status ok">✓</span></div>
+          <div class="spy-entry"><span class="spy-seq">0011</span><span class="spy-type net-req">REQ</span><span class="spy-src">POST https://shop.example.com/api/analytics/event</span><span class="spy-data">{"event":"purchase_complete"}</span><span class="spy-status">→</span></div>
+          <div class="spy-entry"><span class="spy-seq">0012</span><span class="spy-type net-resp">RESP</span><span class="spy-src">POST https://shop.example.com/api/analytics/event</span><span class="spy-data">{"ok":true}</span><span class="spy-status ok">200</span></div>
+        </div>
+
+        <!-- NETWORK -->
+        <div id="network-pane" class="bottom-pane" style="display:none">
+          <div style="display:flex;gap:8px;font-size:11px;color:var(--text2);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)">
+            <span style="width:42px">METHOD</span><span style="width:36px">STATUS</span><span style="flex:1">URL</span><span style="width:50px;text-align:right">TIME</span><span style="width:80px;margin-left:8px">BAR</span>
+          </div>
+          <div class="net-entry"><span class="net-method">POST</span><span class="net-status ok">200</span><span class="net-url">https://shop.example.com/api/auth/login</span><span class="net-time">134ms</span><div class="net-bar"><div class="net-bar-inner" style="width:27%"></div></div></div>
+          <div class="net-entry"><span class="net-method">GET</span><span class="net-status ok">200</span><span class="net-url">https://shop.example.com/api/user/profile</span><span class="net-time">89ms</span><div class="net-bar"><div class="net-bar-inner" style="width:18%"></div></div></div>
+          <div class="net-entry"><span class="net-method">GET</span><span class="net-status ok">200</span><span class="net-url">https://shop.example.com/api/products/catalog</span><span class="net-time">245ms</span><div class="net-bar"><div class="net-bar-inner" style="width:49%"></div></div></div>
+          <div class="net-entry"><span class="net-method">GET</span><span class="net-status ok">304</span><span class="net-url">https://cdn.example.com/static/app.bundle.js</span><span class="net-time">12ms</span><div class="net-bar"><div class="net-bar-inner" style="width:2%"></div></div></div>
+          <div class="net-entry"><span class="net-method">POST</span><span class="net-status ok">200</span><span class="net-url">https://shop.example.com/api/cart/add</span><span class="net-time">176ms</span><div class="net-bar"><div class="net-bar-inner" style="width:35%"></div></div></div>
+          <div class="net-entry"><span class="net-method">POST</span><span class="net-status ok">200</span><span class="net-url">https://shop.example.com/api/checkout</span><span class="net-time">441ms</span><div class="net-bar"><div class="net-bar-inner" style="width:88%"></div></div></div>
+          <div class="net-entry"><span class="net-method">POST</span><span class="net-status ok">200</span><span class="net-url">https://shop.example.com/api/analytics/event</span><span class="net-time">67ms</span><div class="net-bar"><div class="net-bar-inner" style="width:13%"></div></div></div>
+        </div>
+
+        <!-- CONSOLE -->
+        <div id="console-pane" class="bottom-pane" style="display:none">
+          <div class="log-line"><span class="log-ts">00:48:01.611</span><span class="log-info">[log]   App initialized — version 2.4.1</span></div>
+          <div class="log-line"><span class="log-ts">00:48:01.900</span><span class="log-info">[log]   Auth token received — expiry 3600s</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.222</span><span class="log-info">[log]   Dashboard render complete — 14 components</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.350</span><span class="log-warn">[warn]  Deprecated API usage: window.webkitStorageInfo</span></div>
+          <div class="log-line"><span class="log-ts">00:48:02.861</span><span class="log-info">[log]   Order confirmed — ORD-7821 — $49.99</span></div>
+        </div>
+
+        <!-- ERRORS -->
+        <div id="errors-pane" class="bottom-pane" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--green);font-size:14px;gap:8px">
+            ✅ No errors detected in this run
+          </div>
+        </div>
+
+      </div><!-- bottom-body -->
+    </div><!-- bottom -->
+  </div><!-- center -->
+
+  <!-- ══ PROPERTIES ══ -->
+  <div id="props">
+    <div class="panel-title">Properties</div>
+    <div style="overflow-y:auto;flex:1" id="propContent">
+      <div class="prop-section">Step</div>
+      <table class="prop-table">
+        <tr><td>Action</td><td>Click</td></tr>
+        <tr><td>Target</td><td>id=loginBtn</td></tr>
+        <tr><td>Result</td><td><span class="prop-badge pass">PASS</span></td></tr>
+        <tr><td>Duration</td><td>134ms</td></tr>
+        <tr><td>Screenshot</td><td>step-04.png</td></tr>
+      </table>
+      <div class="prop-section">Locators</div>
+      <table class="prop-table">
+        <tr><td>id</td><td style="color:var(--green)">✓ loginBtn</td></tr>
+        <tr><td>name</td><td style="color:var(--text2)">login</td></tr>
+        <tr><td>css</td><td style="color:var(--text2)">button.btn-primary</td></tr>
+        <tr><td>xpath</td><td style="color:var(--text2)">//button[@id='loginBtn']</td></tr>
+        <tr><td>healed</td><td style="color:var(--text2)">—</td></tr>
+      </table>
+      <div class="prop-section">Wait Strategy</div>
+      <table class="prop-table">
+        <tr><td>Type</td><td>Clickable</td></tr>
+        <tr><td>Timeout</td><td>10 000ms</td></tr>
+        <tr><td>After</td><td>NetworkIdle</td></tr>
+      </table>
+      <div class="prop-section">Spy Captures</div>
+      <table class="prop-table">
+        <tr><td>POST /login</td><td style="color:var(--green)">200 ✓</td></tr>
+        <tr><td>authToken SET</td><td style="color:var(--green)">local ✓</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div><!-- main -->
+
+<script>
+// ══════════════════════════════════════════════
+//  REAL API WIRING — IMDS AutoQA IDE
+// ══════════════════════════════════════════════
+
+const BASE_URL = 'http://localhost:8765';
+
+// ── apiFetch: wraps fetch with JSON + error handling ──
+async function apiFetch(path, options = {}) {
+  try {
+    const r = await fetch(BASE_URL + path, {
+      headers: {'Content-Type': 'application/json'},
+      ...options
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  } catch (e) {
+    appendLog(`API Error: ${e.message}`);
+    return null;
+  }
+}
+
+// ── appendLog: writes a plain-text line to the Output pane ──
+function appendLog(msg) {
+  const ts = new Date().toTimeString().slice(0, 8);
+  const pane = document.getElementById('output-pane');
+  if (pane) {
+    const div = document.createElement('div');
+    div.className = 'log-line';
+    div.innerHTML = `<span class="log-ts">${ts}</span><span class="log-info">${escapeHtml(msg)}</span>`;
+    pane.appendChild(div);
+    div.scrollIntoView({behavior: 'smooth'});
+  }
+  // Also switch to output tab so user sees it
+  switchBottomTab('output');
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── State ──
+let selectedRecording = null;   // path of the selected recording
+let logPollingTimer   = null;   // setInterval handle for log streaming
+let lastLogCount      = 0;      // used to append only new lines
+let prevApiState      = 'idle'; // for detecting state transitions
+
+// ── setStatus: update toolbar status dot + text ──
+function setStatus(state) {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  if (!dot || !txt) return;
+  if (state === 'recording') {
+    dot.style.background = 'var(--red)';
+    txt.textContent = 'RECORDING — interact with browser';
+  } else if (state === 'playing') {
+    dot.style.background = 'var(--yellow)';
+    txt.textContent = 'Playing recording…';
+  } else if (state === 'generating') {
+    dot.style.background = 'var(--accent)';
+    txt.textContent = 'Generating test…';
+  } else if (state === 'healing') {
+    dot.style.background = 'var(--yellow)';
+    txt.textContent = 'Healing locators…';
+  } else {
+    dot.style.background = 'var(--green)';
+    txt.textContent = 'Ready — server connected';
+  }
+}
+
+// ── startLogPolling: poll GET /api/log every 2s, append new lines ──
+function startLogPolling() {
+  stopLogPolling(); // clear any existing timer
+  lastLogCount = 0;
+  logPollingTimer = setInterval(async () => {
+    const lines = await apiFetch('/api/log');
+    if (!Array.isArray(lines)) return;
+    const newLines = lines.slice(lastLogCount);
+    lastLogCount = lines.length;
+    newLines.forEach(line => appendLog(line));
+  }, 2000);
+}
+
+function stopLogPolling() {
+  if (logPollingTimer) {
+    clearInterval(logPollingTimer);
+    logPollingTimer = null;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  RECORDING
+// ══════════════════════════════════════════════
+
+async function startRecord() {
+  const url  = prompt('Target URL to record:', 'https://');
+  if (!url) return;
+  const name = prompt('Recording name (no spaces, no extension):', 'my-recording');
+  if (!name) return;
+
+  appendLog(`[RECORD] Starting recording "${name}" on ${url}…`);
+  setStatus('recording');
+
+  const result = await apiFetch('/api/record/start', {
+    method: 'POST',
+    body: JSON.stringify({url, name})
+  });
+
+  if (result) {
+    appendLog(`[RECORD] CDP + OSHook active — recording started`);
+    const btn = document.querySelector('.tb-btn.record');
+    if (btn) { btn.style.background = '#c0392b'; btn.innerHTML = '⏺ Recording…'; }
+    startLogPolling();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  STOP ALL
+// ══════════════════════════════════════════════
+
+async function stopAll() {
+  appendLog('[STOP] Sending stop signal…');
+  stopLogPolling();
+
+  await apiFetch('/api/stop', {method: 'POST'});
+  await apiFetch('/api/record/stop', {method: 'POST'});
+
+  setStatus('idle');
+  const btn = document.querySelector('.tb-btn.record');
+  if (btn) { btn.style.background = 'var(--red)'; btn.innerHTML = '⏺ Record'; }
+  appendLog('[STOP] All operations halted');
+  loadRecordings();
+}
+
+// ══════════════════════════════════════════════
+//  PLAY
+// ══════════════════════════════════════════════
+
+async function runPlay() {
+  let recPath = selectedRecording;
+  if (!recPath) {
+    recPath = prompt('Recording path (e.g. recordings/my-recording.json):');
+    if (!recPath) return;
+  }
+
+  appendLog(`[PLAY] Starting playback — ${recPath}`);
+  setStatus('playing');
+
+  const result = await apiFetch('/api/play', {
+    method: 'POST',
+    body: JSON.stringify({recording: recPath})
+  });
+
+  if (result) {
+    appendLog('[PLAY] Playback started — streaming logs…');
+    startLogPolling();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  GENERATE TEST
+// ══════════════════════════════════════════════
+
+async function showGen() {
+  let recPath = selectedRecording;
+  if (!recPath) {
+    recPath = prompt('Recording path to generate test from:');
+    if (!recPath) return;
+  }
+
+  appendLog(`[GEN] Sending to qwen2.5-coder:32b — generating test from ${recPath}…`);
+  setStatus('generating');
+
+  const result = await apiFetch('/api/generate', {
+    method: 'POST',
+    body: JSON.stringify({recording: recPath})
+  });
+
+  if (result) {
+    appendLog('[GEN] Generation started — streaming logs…');
+    startLogPolling();
+    // Switch to Script tab so generated code is visible
+    switchDocTab('script', document.querySelectorAll('.doc-tab')[1]);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  HEAL LOCATORS
+// ══════════════════════════════════════════════
+
+async function showHeal() {
+  let recPath = selectedRecording;
+  if (!recPath) {
+    recPath = prompt('Recording path to heal:');
+    if (!recPath) return;
+  }
+
+  appendLog(`[HEAL] Analyzing locators in ${recPath}…`);
+  setStatus('healing');
+
+  const result = await apiFetch('/api/heal', {
+    method: 'POST',
+    body: JSON.stringify({recording: recPath})
+  });
+
+  if (result) {
+    appendLog('[HEAL] Healing started — streaming logs…');
+    startLogPolling();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  REPORT
+// ══════════════════════════════════════════════
+
+function showReport() {
+  appendLog('[REPORT] Opening Allure report — run: allure serve reports/allure-results');
+  // Try to open the report endpoint; fall back to instruction message
+  const reportUrl = BASE_URL + '/api/report';
+  const w = window.open(reportUrl, '_blank');
+  if (!w) {
+    appendLog('[REPORT] Popup blocked — navigate manually to: ' + reportUrl);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  LOAD RECORDINGS into Solution Explorer
+// ══════════════════════════════════════════════
+
+async function loadRecordings() {
+  const recordings = await apiFetch('/api/recordings');
+  if (!Array.isArray(recordings)) return;
+
+  const container = document.getElementById('recordings-tree');
+  if (!container) return;
+
+  // Clear existing items
+  container.innerHTML = '';
+
+  if (recordings.length === 0) {
+    container.innerHTML = '<div class="tree-item" style="color:var(--text2);font-style:italic"><span class="ico">📭</span> No recordings yet</div>';
+    return;
+  }
+
+  recordings.forEach((rec, idx) => {
+    const item = document.createElement('div');
+    item.className = 'tree-item' + (idx === 0 ? ' active' : '');
+    item.innerHTML = `<span class="ico">🎬</span> ${escapeHtml(rec.name)} <span class="badge">${rec.size || '?'}</span>`;
+    item.onclick = function() { selectRecordingNode(this, rec.path, rec.name); };
+    container.appendChild(item);
+
+    // Auto-select the first one
+    if (idx === 0) {
+      selectedRecording = rec.path;
+    }
+  });
+
+  appendLog(`[EXPLORER] Loaded ${recordings.length} recording(s) from server`);
+}
+
+function selectRecordingNode(el, path, name) {
+  document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  selectedRecording = path;
+  appendLog(`[EXPLORER] Selected: ${name} (${path})`);
+}
+
+// ══════════════════════════════════════════════
+//  STATUS POLLING — every 3s
+// ══════════════════════════════════════════════
+
+async function pollStatus() {
+  const status = await apiFetch('/api/status');
+  if (!status) return;
+
+  const state = status.state || 'idle';
+  setStatus(state);
+
+  // If we transitioned from active → idle, stop log polling & refresh list
+  if (prevApiState !== 'idle' && state === 'idle') {
+    stopLogPolling();
+    appendLog('[STATUS] Operation completed — state: idle');
+    loadRecordings();
+  }
+  prevApiState = state;
+}
+
+// ══════════════════════════════════════════════
+//  MENU BAR DROPDOWNS
+// ══════════════════════════════════════════════
+
+function toggleMenu(menuId, btn) {
+  const menu = document.getElementById(menuId);
+  const isOpen = menu.classList.contains('open');
+
+  // Close all menus first
+  closeMenus();
+
+  if (!isOpen) {
+    // Position the menu below the button
+    const rect = btn.getBoundingClientRect();
+    menu.style.left = rect.left + 'px';
+    menu.style.top  = (rect.bottom + 2) + 'px';
+    menu.classList.add('open');
+    btn.classList.add('menu-open');
+  }
+}
+
+function closeMenus() {
+  document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('#menubar button').forEach(b => b.classList.remove('menu-open'));
+}
+
+// Close menus when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#menubar') && !e.target.closest('.dropdown-menu')) {
+    closeMenus();
+  }
+});
+
+// ══════════════════════════════════════════════
+//  EXISTING UI FUNCTIONS (preserved)
+// ══════════════════════════════════════════════
+
+const stepData = [
+  {action:'Navigate',target:'https://shop.example.com/login',result:'PASS',dur:'245ms',wait:'SmartWait·Angular',ss:'step-01.png',locId:'—',locName:'—',locCss:'—',locXpath:'—'},
+  {action:'EnterText',target:'id=username',result:'PASS',dur:'89ms',wait:'Visible',ss:'step-02.png',locId:'username',locName:'username',locCss:'input#username',locXpath:'//input[@id="username"]'},
+  {action:'EnterText',target:'id=password',result:'PASS',dur:'76ms',wait:'Enabled',ss:'step-03.png',locId:'password',locName:'password',locCss:'input#password',locXpath:'//input[@id="password"]'},
+  {action:'Click',target:'id=loginBtn',result:'PASS',dur:'134ms',wait:'NetworkIdle·500ms',ss:'step-04.png',locId:'loginBtn',locName:'login',locCss:'button.btn-primary',locXpath:'//button[@id="loginBtn"]'},
+  {action:'AssertVisible',target:'css=.dashboard',result:'PASS',dur:'312ms',wait:'5s timeout',ss:'step-05.png',locId:'—',locName:'—',locCss:'.dashboard',locXpath:'//div[@class="dashboard"]'},
+  {action:'Click',target:'css=.add-to-cart',result:'PASS',dur:'198ms',wait:'Clickable',ss:'step-06.png',locId:'—',locName:'—',locCss:'.add-to-cart',locXpath:'//button[@class="add-to-cart"]'},
+  {action:'Click',target:'id=checkoutBtn',result:'PASS',dur:'441ms',wait:'NetworkIdle·500ms',ss:'step-07.png',locId:'checkoutBtn',locName:'checkout',locCss:'button#checkoutBtn',locXpath:'//button[@id="checkoutBtn"]'},
+  {action:'SpyAssertApi',target:'/api/checkout POST',result:'PASS',dur:'0ms',wait:'—',ss:'—',locId:'—',locName:'—',locCss:'—',locXpath:'—'},
+];
+
+function selectStep(el, idx) {
+  document.querySelectorAll('.flow-node:not(.oval)').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  const d = stepData[idx];
+  if (!d) return;
+  document.getElementById('propContent').innerHTML = `
+    <div class="prop-section">Step ${idx+1}</div>
+    <table class="prop-table">
+      <tr><td>Action</td><td>${d.action}</td></tr>
+      <tr><td>Target</td><td>${d.target}</td></tr>
+      <tr><td>Result</td><td><span class="prop-badge pass">${d.result}</span></td></tr>
+      <tr><td>Duration</td><td>${d.dur}</td></tr>
+      <tr><td>Screenshot</td><td>${d.ss}</td></tr>
+    </table>
+    <div class="prop-section">Locators</div>
+    <table class="prop-table">
+      <tr><td>id</td><td style="color:${d.locId!=='—'?'var(--green)':'var(--text2)'}">✓ ${d.locId}</td></tr>
+      <tr><td>name</td><td style="color:var(--text2)">${d.locName}</td></tr>
+      <tr><td>css</td><td style="color:var(--text2)">${d.locCss}</td></tr>
+      <tr><td>xpath</td><td style="color:var(--text2);font-size:10px">${d.locXpath}</td></tr>
+    </table>
+    <div class="prop-section">Wait Strategy</div>
+    <table class="prop-table">
+      <tr><td>Type</td><td>${d.wait}</td></tr>
+      <tr><td>Timeout</td><td>10 000ms</td></tr>
+    </table>`;
+}
+
+function switchDocTab(name, el) {
+  document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.doc-panel').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const panel = document.getElementById(name+'-panel') || document.getElementById(name+'Panel');
+  if (panel) panel.classList.add('active');
+}
+
+function switchBottomTab(name, el) {
+  document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.bottom-pane').forEach(p => p.style.display='none');
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.bottom-tab').forEach(t => { if(t.textContent.toLowerCase().includes(name)) t.classList.add('active'); });
+  const pane = document.getElementById(name+'-pane');
+  if (pane) pane.style.display='block';
+}
+
+function toggleGroup(el) {
+  el.classList.toggle('open');
+  const children = el.nextElementSibling;
+  if (children) children.style.display = children.style.display === 'none' ? '' : 'none';
+}
+
+function selectNode(el, id) {
+  document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Legacy addLog — kept for backward compatibility (wraps appendLog)
+function addLog(type, msg) {
+  const pane = document.getElementById('output-pane');
+  const now = new Date();
+  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(now.getMilliseconds()).padStart(3,'0')}`;
+  const div = document.createElement('div');
+  div.className = 'log-line';
+  div.innerHTML = `<span class="log-ts">${ts}</span><span class="log-${type}">${msg}</span>`;
+  pane.appendChild(div);
+  div.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════
+//  INIT — runs on page load
+// ══════════════════════════════════════════════
+
+window.addEventListener('DOMContentLoaded', function() {
+  // Attempt connection and load recordings
+  apiFetch('/api/status').then(status => {
+    if (status) {
+      setStatus(status.state || 'idle');
+      appendLog('[INIT] Connected to IMDS AutoQA server at ' + BASE_URL);
+      loadRecordings();
+    } else {
+      setStatus('idle');
+      const dot = document.getElementById('statusDot');
+      const txt = document.getElementById('statusText');
+      if (dot) dot.style.background = 'var(--yellow)';
+      if (txt) txt.textContent = 'Server offline — start: bash run_mvn.sh exec:java';
+    }
+  });
+
+  // Start status polling every 3 seconds
+  setInterval(pollStatus, 3000);
+});
+</script>
+</body>
+</html>

@@ -13,6 +13,7 @@ import autoqa.model.RecordingIO;
 import autoqa.model.TestObject;
 import autoqa.player.PlayerEngine;
 import autoqa.recorder.RecorderCLI;
+import autoqa.server.APIServer;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -64,7 +65,8 @@ import java.util.concurrent.Callable;
                 WrapperCLI.ReportCommand.class,
                 WrapperCLI.OrCommand.class,
                 WrapperCLI.KeywordCommand.class,
-                WrapperCLI.VersionCommand.class
+                WrapperCLI.VersionCommand.class,
+                WrapperCLI.ServerCommand.class
         }
 )
 public class WrapperCLI implements Callable<Integer> {
@@ -759,6 +761,32 @@ public class WrapperCLI implements Callable<Integer> {
             System.out.println("Selenium WebDriver 4.19.1 | TestNG 7.10.1 | Allure 2.27.0");
             System.out.println("Modules: recorder, player, ai, vision, data, api, keyword, desktop,");
             System.out.println("         accessibility, network, reporting, cli, gui");
+            return 0;
+        }
+    }
+
+    // ── HTTP API Server ───────────────────────────────────────────────────────
+
+    /**
+     * Starts the embedded HTTP API server so the HTML IDE can control AutoQA
+     * over a local REST interface at http://localhost:{port}.
+     */
+    @Command(name = "server", description = "Start the HTTP API server on port 8765")
+    static class ServerCommand implements Callable<Integer> {
+
+        @Option(names = {"--port"}, defaultValue = "8765", description = "Port to listen on")
+        int port;
+
+        @Override
+        public Integer call() {
+            System.out.println("Starting IMDS AutoQA API Server on port " + port + "...");
+            APIServer server = new APIServer(port);
+            server.start();
+            System.out.println("Server running at http://localhost:" + port);
+            System.out.println("Press Ctrl+C to stop.");
+            // Keep running until interrupted
+            Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
+            try { Thread.currentThread().join(); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
             return 0;
         }
     }
