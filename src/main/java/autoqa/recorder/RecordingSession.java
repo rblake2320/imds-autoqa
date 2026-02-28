@@ -172,6 +172,11 @@ public class RecordingSession {
         // Read Edge version from the browser
         captureBrowserVersion();
 
+        // Inject a NAVIGATE event for the page that is open right now.
+        // This ensures playback always has a starting URL even when the user
+        // began recording on a page that was already loaded (the common case).
+        injectInitialNavigate();
+
         // Start OS-level input capture
         inputCapture.start(this::onOsEvent);
 
@@ -292,6 +297,36 @@ public class RecordingSession {
     }
 
     // ── Private helpers ───────────────────────────────────────────────────
+
+    /**
+     * Reads the current page URL and injects a {@code NAVIGATE} event as the
+     * very first event in the session.  This guarantees that playback always
+     * has a known starting point, even when the user begins recording on a
+     * page that was already loaded before the session started.
+     *
+     * <p>Non-fatal: if the URL cannot be read the recording starts without a
+     * synthetic navigate step (the player's auto-navigate fallback covers this).
+     */
+    private void injectInitialNavigate() {
+        try {
+            String href  = evaluateStringExpression(JS_HREF);
+            String title = evaluateStringExpression(JS_TITLE);
+            if (href == null || href.isBlank() || href.equalsIgnoreCase("about:blank")) {
+                return; // nothing useful to navigate to
+            }
+
+            RecordedEvent nav = new RecordedEvent();
+            nav.setTimestamp(Instant.now());
+            nav.setEventType(autoqa.model.RecordedEvent.EventType.NAVIGATE);
+            nav.setUrl(href);
+            nav.setPageTitle(title);
+            nav.setComment("Auto-injected by recorder at session start");
+            data.addEvent(nav);
+            log.info("Injected initial NAVIGATE event: {}", href);
+        } catch (Exception e) {
+            log.debug("Could not inject initial NAVIGATE event: {}", e.getMessage());
+        }
+    }
 
     /**
      * Handles CDP events pushed by the browser. Currently listens for

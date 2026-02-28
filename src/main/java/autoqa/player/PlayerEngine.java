@@ -193,13 +193,34 @@ public class PlayerEngine {
     }
 
     private void handleClick(RecordedEvent event) {
-        ElementInfo ei = requireElement(event, EventType.CLICK);
-        // Resolve the locator first, then wait-for-clickable which returns a fresh
-        // element reference — avoids the stale-element race of findElement→wait→click.
-        By by = toBy(resolver.resolve(ei));
-        WebElement el = wait.waitForClickable(by);
-        log.debug("Clicking element: {}", ei);
-        el.click();
+        if (event.hasElement()) {
+            ElementInfo ei = event.getElement();
+            try {
+                // Primary: DOM locator (reliable, cross-browser)
+                By by = toBy(resolver.resolve(ei));
+                WebElement el = wait.waitForClickable(by);
+                log.debug("Clicking element: {}", ei);
+                el.click();
+                return;
+            } catch (AutoQAException | org.openqa.selenium.NoSuchElementException locEx) {
+                log.warn("DOM locator failed for CLICK — attempting coordinate fallback: {}",
+                        locEx.getMessage());
+            }
+        }
+
+        // Fallback: coordinate-based click (analog mode, like UFT low-level recording)
+        // Uses elementFromPoint so the real element receives the click event.
+        if (event.getCoordinates() != null) {
+            double x = event.getCoordinates().getX();
+            double y = event.getCoordinates().getY();
+            log.info("Coordinate fallback: clicking at ({}, {})", x, y);
+            ((JavascriptExecutor) driver).executeScript(
+                    "var el = document.elementFromPoint(arguments[0], arguments[1]);" +
+                    "if (el) el.click(); else window.dispatchEvent(new MouseEvent('click'," +
+                    "{clientX: arguments[0], clientY: arguments[1], bubbles: true}));", x, y);
+        } else {
+            throw new AutoQAException("CLICK event has no element and no coordinates — cannot click");
+        }
     }
 
     private void handleDoubleClick(RecordedEvent event) {

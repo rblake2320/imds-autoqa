@@ -9,8 +9,12 @@ import autoqa.model.RecordingIO;
 import autoqa.player.PlayerEngine;
 import autoqa.recorder.RecorderCLI;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -100,6 +104,13 @@ public class WrapperCLI implements Callable<Integer> {
         )
         String evidenceDir;
 
+        @Option(
+                names       = {"-b", "--browser"},
+                description = "Browser to use: edge, chrome, firefox (default: edge)",
+                defaultValue = "edge"
+        )
+        String browser;
+
         @Override
         public Integer call() throws Exception {
             if (!Files.exists(recordingFile)) {
@@ -113,9 +124,9 @@ public class WrapperCLI implements Callable<Integer> {
             System.out.printf("  Events    : %d%n", session.getEventCount());
             System.out.printf("  Evidence  : %s%n", Path.of(evidenceDir).toAbsolutePath());
 
-            System.out.println("Starting Edge WebDriver...");
-            EdgeOptions opts = new EdgeOptions();
-            WebDriver driver = new EdgeDriver(opts);
+            System.out.printf("Starting %s WebDriver (Selenium Manager auto-downloads driver)...%n",
+                    browser.toLowerCase());
+            WebDriver driver = createDriver(browser);
             PlayerEngine engine = new PlayerEngine(driver);
             PlayerEngine.PlaybackResult result = engine.play(session);
 
@@ -128,6 +139,30 @@ public class WrapperCLI implements Callable<Integer> {
                 return 2;
             }
             return 0;
+        }
+
+        /**
+         * Creates a WebDriver for the requested browser.
+         * Selenium Manager (built into Selenium 4.11+) automatically downloads
+         * the matching browser driver — no manual chromedriver/geckodriver needed.
+         */
+        private WebDriver createDriver(String browser) {
+            return switch (browser.toLowerCase().trim()) {
+                case "chrome" -> {
+                    ChromeOptions opts = new ChromeOptions();
+                    opts.addArguments("--start-maximized");
+                    yield new ChromeDriver(opts);
+                }
+                case "firefox" -> {
+                    FirefoxOptions opts = new FirefoxOptions();
+                    yield new FirefoxDriver(opts);
+                }
+                default -> {
+                    EdgeOptions opts = new EdgeOptions();
+                    opts.addArguments("--start-maximized");
+                    yield new EdgeDriver(opts);
+                }
+            };
         }
     }
 

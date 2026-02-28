@@ -35,6 +35,7 @@ public class WrapperGUI extends JFrame {
     private final JLabel     recordingFileLabel;
 
     private final JTextField urlFilterField;
+    private final JComboBox<String> browserCombo;
 
     private final JButton btnStartRecord;
     private final JButton btnStopRecord;
@@ -87,6 +88,7 @@ public class WrapperGUI extends JFrame {
 
         // ── Build sidebar and status bar ─────────────────────────────────────
         urlFilterField     = new JTextField();
+        browserCombo       = new JComboBox<>(new String[]{"Edge", "Chrome", "Firefox"});
 
         btnStartRecord     = makeButton("▶  Start Recording",  new Color(0, 130, 0));
         btnStopRecord      = makeButton("■  Stop Recording",   new Color(190, 0, 0));
@@ -199,7 +201,22 @@ public class WrapperGUI extends JFrame {
         p.add(recordingFileLabel);
 
         p.add(btnBrowse);
+        p.add(vGap(4));
+
+        // Browser selector
+        JLabel browserLabel = new JLabel("Browser");
+        browserLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+        browserLabel.setForeground(new Color(110, 110, 120));
+        browserLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        browserLabel.setBorder(new EmptyBorder(2, 2, 1, 0));
+        p.add(browserLabel);
+
+        browserCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        browserCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        browserCombo.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        p.add(browserCombo);
         p.add(vGap(5));
+
         p.add(btnPlay);
         p.add(vGap(14));
 
@@ -314,10 +331,13 @@ public class WrapperGUI extends JFrame {
 
     private void playRecording() {
         if (selectedRecording == null) { browseRecording(); return; }
+        String browser = ((String) browserCombo.getSelectedItem()).toLowerCase();
         log("");
-        log("▶  Playing: " + selectedRecording.getFileName());
+        log("▶  Playing in " + browser + ": " + selectedRecording.getFileName());
         setStatus("●  Playing…", new Color(0, 100, 190));
-        runCliAsync(false, "play", selectedRecording.toAbsolutePath().toString());
+        runCliAsync(false, "play",
+                "--browser", browser,
+                selectedRecording.toAbsolutePath().toString());
     }
 
     private void generateTest() {
