@@ -2,8 +2,10 @@ package autoqa.gui;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
@@ -19,12 +21,19 @@ import java.util.concurrent.Executors;
  * Swing desktop GUI for IMDS AutoQA.
  *
  * <p>Launched with {@code javaw -jar autoqa.jar} (no console window) via
- * {@code autoqa.bat}.  Each toolbar action spawns the CLI as a sub-process so
+ * {@code autoqa.bat}. Each toolbar action spawns the CLI as a sub-process so
  * native hooks (JNativeHook) and {@code System.exit()} calls are fully isolated
  * from the GUI JVM.
  *
  * <p>The GUI is also reachable by running {@code java -jar autoqa.jar} with no
  * arguments — {@link autoqa.cli.WrapperCLI#main} delegates here in that case.
+ *
+ * <p>Features:
+ * <ul>
+ *   <li>System Tray: minimize-to-tray on close, popup menu, double-click to restore.</li>
+ *   <li>JTree Recording Browser: left panel lists all .json recordings, auto-refreshes.</li>
+ *   <li>Keyboard Shortcuts: Ctrl+R/P/G/S/H, F5, Escape. Menu bar: File/Actions/View.</li>
+ * </ul>
  */
 public class WrapperGUI extends JFrame {
 
@@ -46,10 +55,22 @@ public class WrapperGUI extends JFrame {
     private final JButton btnHeal;
     private final JButton btnReport;
 
+    // ── Recording browser ─────────────────────────────────────────────────────
+
+    private DefaultTreeModel       treeModel;
+    private DefaultMutableTreeNode treeRoot;
+    private JTree                  recordingTree;
+    private Timer                  treeRefreshTimer;
+
+    // ── System tray ───────────────────────────────────────────────────────────
+
+    private TrayIcon trayIcon;
+    private boolean  traySupported;
+
     // ── State ─────────────────────────────────────────────────────────────────
 
     private Path    selectedRecording;
-    private Process activeProcess;   // currently running sub-process
+    private Process activeProcess;
 
     private final ExecutorService executor = Executors.newCachedThreadPool(r -> {
         Thread t = new Thread(r, "autoqa-worker");
@@ -60,13 +81,14 @@ public class WrapperGUI extends JFrame {
     private static final DateTimeFormatter TIME_FMT =
             DateTimeFormatter.ofPattern("HH:mm:ss");
 
+    private static final Path RECORDINGS_DIR = Path.of("recordings");
+
     // ── Construction ──────────────────────────────────────────────────────────
 
     public WrapperGUI() {
         super("IMDS AutoQA");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(960, 640);
-        setMinimumSize(new Dimension(780, 500));
+        setSize(1100, 680);
+        setMinimumSize(new Dimension(860, 520));
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -110,20 +132,369 @@ public class WrapperGUI extends JFrame {
 
         wireListeners();
 
-        JSplitPane split = new JSplitPane(
+        // ── Layout: recording browser | sidebar | log ─────────────────────────
+        JPanel rightContent = new JPanel(new BorderLayout());
+        JSplitPane sideLogSplit = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, buildSidebar(), logScroll);
-        split.setDividerLocation(220);
-        split.setDividerSize(5);
-        split.setBorder(null);
+        sideLogSplit.setDividerLocation(220);
+        sideLogSplit.setDividerSize(5);
+        sideLogSplit.setBorder(null);
+        rightContent.add(sideLogSplit, BorderLayout.CENTER);
+
+        JSplitPane mainSplit = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT, buildRecordingBrowser(), rightContent);
+        mainSplit.setDividerLocation(220);
+        mainSplit.setDividerSize(5);
+        mainSplit.setBorder(null);
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(buildHeader(),    BorderLayout.NORTH);
-        getContentPane().add(split,            BorderLayout.CENTER);
+        getContentPane().add(mainSplit,        BorderLayout.CENTER);
         getContentPane().add(buildStatusBar(), BorderLayout.SOUTH);
+
+        setJMenuBar(buildMenuBar());
+
+        // ── System tray setup ─────────────────────────────────────────────────
+        initSystemTray();
+
+        // ── Default close behaviour (minimize-to-tray if supported) ──────────
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                handleWindowClose();
+            }
+        });
+
+        // ── Keyboard shortcuts ────────────────────────────────────────────────
+        registerKeyboardShortcuts();
+
+        // ── Start recording-tree auto-refresh ─────────────────────────────────
+        treeRefreshTimer = new Timer(30_000, e -> refreshRecordingTree());
+        treeRefreshTimer.setRepeats(true);
+        treeRefreshTimer.start();
 
         setLocationRelativeTo(null);
         log("IMDS AutoQA ready.");
         log("Select a recording file, then use the buttons on the left.");
+    }
+
+    // ── System Tray ───────────────────────────────────────────────────────────
+
+    private void initSystemTray() {
+        traySupported = SystemTray.isSupported();
+        if (!traySupported) return;
+
+        Image icon = loadTrayIcon();
+
+        PopupMenu popup = new PopupMenu();
+
+        MenuItem miOpen = new MenuItem("Open AutoQA");
+        miOpen.addActionListener(e -> showWindow());
+
+        MenuItem miServer = new MenuItem("Start Server");
+        miServer.addActionListener(e -> {
+            showWindow();
+            runCliAsync(false, "server");
+        });
+
+        MenuItem miBrowserIde = new MenuItem("Open Browser IDE");
+        miBrowserIde.addActionListener(e -> openBrowserIde());
+
+        MenuItem miQuit = new MenuItem("Quit");
+        miQuit.addActionListener(e -> System.exit(0));
+
+        popup.add(miOpen);
+        popup.addSeparator();
+        popup.add(miServer);
+        popup.add(miBrowserIde);
+        popup.addSeparator();
+        popup.add(miQuit);
+
+        trayIcon = new TrayIcon(icon, "IMDS AutoQA", popup);
+        trayIcon.setImageAutoSize(true);
+        trayIcon.addActionListener(e -> showWindow()); // double-click
+
+        try {
+            SystemTray.getSystemTray().add(trayIcon);
+        } catch (AWTException ex) {
+            traySupported = false;
+        }
+    }
+
+    /** Loads tray icon from resources, or synthesises a 16x16 navy+triangle image. */
+    private Image loadTrayIcon() {
+        try {
+            var stream = getClass().getResourceAsStream("/autoqa-icon.png");
+            if (stream != null) {
+                return javax.imageio.ImageIO.read(stream);
+            }
+        } catch (Exception ignored) {}
+        // Fallback: dark navy square with white right-pointing triangle
+        BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(new Color(0, 78, 152));
+        g.fillRect(0, 0, 16, 16);
+        g.setColor(Color.WHITE);
+        int[] xs = {4, 4, 12};
+        int[] ys = {3, 13, 8};
+        g.fillPolygon(xs, ys, 3);
+        g.dispose();
+        return img;
+    }
+
+    private void handleWindowClose() {
+        if (traySupported) {
+            setVisible(false);
+        } else {
+            int choice = JOptionPane.showConfirmDialog(
+                    this, "Quit IMDS AutoQA?", "Quit", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) System.exit(0);
+        }
+    }
+
+    private void showWindow() {
+        SwingUtilities.invokeLater(() -> {
+            setVisible(true);
+            setState(Frame.NORMAL);
+            toFront();
+            requestFocus();
+        });
+    }
+
+    private void minimizeToTrayOrIconify() {
+        if (traySupported) {
+            setVisible(false);
+        } else {
+            setState(Frame.ICONIFIED);
+        }
+    }
+
+    // ── Menu bar ──────────────────────────────────────────────────────────────
+
+    private JMenuBar buildMenuBar() {
+        JMenuBar bar = new JMenuBar();
+
+        // File menu
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        JMenuItem miQuit = new JMenuItem("Quit");
+        miQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
+        miQuit.addActionListener(e -> System.exit(0));
+        fileMenu.add(miQuit);
+
+        // Actions menu
+        JMenu actionsMenu = new JMenu("Actions");
+        actionsMenu.setMnemonic(KeyEvent.VK_A);
+
+        JMenuItem miRecord = new JMenuItem("Record");
+        miRecord.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+        miRecord.addActionListener(e -> startRecording());
+
+        JMenuItem miPlay = new JMenuItem("Play");
+        miPlay.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+        miPlay.addActionListener(e -> playRecording());
+
+        JMenuItem miStop = new JMenuItem("Stop");
+        miStop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+        miStop.addActionListener(e -> stopRecording());
+
+        JMenuItem miGenerate = new JMenuItem("Generate Test");
+        miGenerate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK));
+        miGenerate.addActionListener(e -> generateTest());
+
+        JMenuItem miHeal = new JMenuItem("Heal Locators");
+        miHeal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
+        miHeal.addActionListener(e -> healLocators());
+
+        actionsMenu.add(miRecord);
+        actionsMenu.add(miPlay);
+        actionsMenu.add(miStop);
+        actionsMenu.addSeparator();
+        actionsMenu.add(miGenerate);
+        actionsMenu.add(miHeal);
+
+        // View menu
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_V);
+
+        JMenuItem miRefreshTree = new JMenuItem("Refresh Recordings");
+        miRefreshTree.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+        miRefreshTree.addActionListener(e -> refreshRecordingTree());
+
+        JMenuItem miBrowserIde = new JMenuItem("Open Browser IDE");
+        miBrowserIde.addActionListener(e -> openBrowserIde());
+
+        viewMenu.add(miRefreshTree);
+        viewMenu.add(miBrowserIde);
+
+        bar.add(fileMenu);
+        bar.add(actionsMenu);
+        bar.add(viewMenu);
+        return bar;
+    }
+
+    // ── Keyboard shortcuts ────────────────────────────────────────────────────
+
+    private void registerKeyboardShortcuts() {
+        InputMap  im = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getRootPane().getActionMap();
+
+        bindKey(im, am, "shortcutRecord",
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK),
+                e -> startRecording());
+        bindKey(im, am, "shortcutPlay",
+                KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK),
+                e -> playRecording());
+        bindKey(im, am, "shortcutGenerate",
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK),
+                e -> generateTest());
+        bindKey(im, am, "shortcutStop",
+                KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK),
+                e -> stopRecording());
+        bindKey(im, am, "shortcutHeal",
+                KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK),
+                e -> healLocators());
+        bindKey(im, am, "shortcutRefresh",
+                KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0),
+                e -> refreshRecordingTree());
+        bindKey(im, am, "shortcutEscape",
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                e -> minimizeToTrayOrIconify());
+    }
+
+    /** Helper to bind a single KeyStroke to a lambda action. */
+    private void bindKey(InputMap im, ActionMap am, String name,
+                         KeyStroke ks, java.util.function.Consumer<ActionEvent> handler) {
+        im.put(ks, name);
+        am.put(name, new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { handler.accept(e); }
+        });
+    }
+
+    // ── Recording browser (left panel) ────────────────────────────────────────
+
+    private JPanel buildRecordingBrowser() {
+        treeRoot  = new DefaultMutableTreeNode("Recordings");
+        treeModel = new DefaultTreeModel(treeRoot);
+        recordingTree = new JTree(treeModel);
+        recordingTree.setRootVisible(true);
+        recordingTree.setShowsRootHandles(true);
+        recordingTree.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        recordingTree.getSelectionModel().setSelectionMode(
+                TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        // Double-click selects the recording
+        recordingTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) selectFromTree();
+            }
+        });
+
+        // Populate on startup
+        refreshRecordingTree();
+
+        // Toolbar above tree
+        JButton btnRefresh = new JButton("\u27F3");
+        btnRefresh.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        btnRefresh.setFocusPainted(false);
+        btnRefresh.setToolTipText("Refresh recordings (F5)");
+        btnRefresh.addActionListener(e -> refreshRecordingTree());
+
+        JPanel toolbar = new JPanel(new BorderLayout());
+        JLabel lbl = new JLabel("Recordings");
+        lbl.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
+        lbl.setForeground(new Color(80, 80, 90));
+        toolbar.add(lbl,        BorderLayout.WEST);
+        toolbar.add(btnRefresh, BorderLayout.EAST);
+        toolbar.setBackground(new Color(235, 235, 240));
+        toolbar.setBorder(new CompoundBorder(
+                new MatteBorder(0, 0, 1, 0, new Color(200, 200, 205)),
+                new EmptyBorder(4, 6, 4, 6)));
+
+        JScrollPane treeScroll = new JScrollPane(recordingTree);
+        treeScroll.setBorder(BorderFactory.createEmptyBorder());
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(new Color(245, 245, 248));
+        panel.add(toolbar,    BorderLayout.NORTH);
+        panel.add(treeScroll, BorderLayout.CENTER);
+        panel.setPreferredSize(new Dimension(220, 0));
+        return panel;
+    }
+
+    /** Re-scans the recordings directory and rebuilds the tree model. */
+    private void refreshRecordingTree() {
+        treeRoot.removeAllChildren();
+
+        if (!Files.isDirectory(RECORDINGS_DIR)) {
+            treeRoot.add(new DefaultMutableTreeNode("No recordings yet"));
+            treeModel.reload();
+            expandAll();
+            return;
+        }
+
+        try (var stream = Files.list(RECORDINGS_DIR)) {
+            long count = stream
+                    .filter(p -> p.toString().endsWith(".json"))
+                    .sorted()
+                    .peek(p -> treeRoot.add(
+                            new DefaultMutableTreeNode(p.getFileName().toString())))
+                    .count();
+
+            if (count == 0) {
+                treeRoot.add(new DefaultMutableTreeNode("No recordings yet"));
+            }
+        } catch (IOException ex) {
+            treeRoot.add(new DefaultMutableTreeNode("Error reading directory"));
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            treeModel.reload();
+            expandAll();
+        });
+    }
+
+    /** Expands all nodes in the tree. */
+    private void expandAll() {
+        for (int i = 0; i < recordingTree.getRowCount(); i++) {
+            recordingTree.expandRow(i);
+        }
+    }
+
+    /** Selects the recording corresponding to the currently highlighted tree node. */
+    private void selectFromTree() {
+        TreePath path = recordingTree.getSelectionPath();
+        if (path == null) return;
+
+        DefaultMutableTreeNode node =
+                (DefaultMutableTreeNode) path.getLastPathComponent();
+        String nodeName = node.getUserObject().toString();
+
+        // Guard against placeholder and root nodes
+        if (nodeName.startsWith("No recordings") || nodeName.startsWith("Error")
+                || nodeName.equals("Recordings")) {
+            return;
+        }
+
+        Path recording = RECORDINGS_DIR.resolve(nodeName);
+        if (!Files.exists(recording)) {
+            log("Recording not found: " + recording);
+            return;
+        }
+
+        selectedRecording = recording;
+        String display = nodeName.length() > 26
+                ? "…" + nodeName.substring(nodeName.length() - 23) : nodeName;
+        recordingFileLabel.setText(display);
+        recordingFileLabel.setForeground(new Color(0, 110, 0));
+        btnPlay.setEnabled(true);
+        btnGenerate.setEnabled(true);
+        btnHeal.setEnabled(true);
+        log("📁  Selected: " + selectedRecording.toAbsolutePath());
     }
 
     // ── Header ────────────────────────────────────────────────────────────────
@@ -169,7 +540,6 @@ public class WrapperGUI extends JFrame {
         p.add(sectionLabel("RECORDING"));
         p.add(vGap(4));
 
-        // URL focus filter
         JLabel urlLabel = new JLabel("Focus URL (optional)");
         urlLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         urlLabel.setForeground(new Color(110, 110, 120));
@@ -203,7 +573,6 @@ public class WrapperGUI extends JFrame {
         p.add(btnBrowse);
         p.add(vGap(4));
 
-        // Browser selector
         JLabel browserLabel = new JLabel("Browser");
         browserLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         browserLabel.setForeground(new Color(110, 110, 120));
@@ -237,7 +606,6 @@ public class WrapperGUI extends JFrame {
 
         p.add(Box.createVerticalGlue());
 
-        // Edge launch hint at bottom
         JLabel hint = new JLabel(
                 "<html><font color='#888888' size='2'>Tip: launch Edge with<br>" +
                 "--remote-debugging-port=9222<br>before recording.</font></html>");
@@ -303,11 +671,13 @@ public class WrapperGUI extends JFrame {
         btnStopRecord.setEnabled(false);
         log("■  Recording stopped. Check recordings/ for your session file.");
         setStatus("●  Ready", new Color(0, 155, 0));
+        // Refresh tree so newly saved recording appears immediately
+        refreshRecordingTree();
     }
 
     private void browseRecording() {
-        Path startDir = Files.isDirectory(Path.of("recordings"))
-                ? Path.of("recordings").toAbsolutePath()
+        Path startDir = Files.isDirectory(RECORDINGS_DIR)
+                ? RECORDINGS_DIR.toAbsolutePath()
                 : Path.of(".").toAbsolutePath();
 
         JFileChooser fc = new JFileChooser(startDir.toFile());
@@ -318,7 +688,6 @@ public class WrapperGUI extends JFrame {
         if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             selectedRecording = fc.getSelectedFile().toPath();
             String name = selectedRecording.getFileName().toString();
-            // truncate long names for display
             recordingFileLabel.setText(
                     name.length() > 26 ? "…" + name.substring(name.length() - 23) : name);
             recordingFileLabel.setForeground(new Color(0, 110, 0));
@@ -368,6 +737,21 @@ public class WrapperGUI extends JFrame {
         log("📊  Launching Allure report viewer…");
         setStatus("●  Opening report…", Color.DARK_GRAY);
         runCliAsync(false, "report", "--serve");
+    }
+
+    /** Opens the autoqa-ide.html file in the system default browser. */
+    private void openBrowserIde() {
+        try {
+            Path ide = Path.of("autoqa-ide.html").toAbsolutePath();
+            if (!Files.exists(ide)) {
+                log("autoqa-ide.html not found: " + ide);
+                return;
+            }
+            Desktop.getDesktop().browse(ide.toUri());
+            log("🌐  Opened Browser IDE: " + ide);
+        } catch (Exception ex) {
+            log("ERROR opening browser IDE: " + ex.getMessage());
+        }
     }
 
     // ── Sub-process runner ────────────────────────────────────────────────────
@@ -450,13 +834,10 @@ public class WrapperGUI extends JFrame {
             }
         } catch (Exception ignored) {}
 
-        // Running from IDE / dev: scan project root and target/ for the shaded JAR
         try {
-            // Project-root portable JAR (produced by mvn package + copied by hand)
             Path rootJar = Path.of("autoqa.jar").toAbsolutePath();
             if (Files.exists(rootJar)) return rootJar.toString();
 
-            // target/ shaded JAR (either new name or legacy name)
             return Files.walk(Path.of("target").toAbsolutePath(), 1)
                     .filter(p -> {
                         String n = p.getFileName().toString();
@@ -533,7 +914,6 @@ public class WrapperGUI extends JFrame {
                 new LineBorder(new Color(205, 205, 210), 1, true),
                 new EmptyBorder(6, 12, 6, 12)));
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        // Hover highlight
         b.addMouseListener(new MouseAdapter() {
             @Override public void mouseEntered(MouseEvent e) {
                 if (b.isEnabled()) b.setBackground(new Color(240, 245, 255));
