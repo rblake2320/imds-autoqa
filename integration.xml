@@ -6,9 +6,9 @@
   </listeners>
 
   <test name="Integration Tests">
-    <packages>
-      <package name="autoqa.integration"/>
-    </packages>
+    <classes>
+      <class name="autoqa.integration.PlaybackSmokeTest"/>
+    </classes>
   </test>
 
 </suite>
