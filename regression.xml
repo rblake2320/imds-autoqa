@@ -47,4 +47,16 @@
     </packages>
   </test>
 
+  <test name="API Tests">
+    <packages>
+      <package name="autoqa.api"/>
+    </packages>
+  </test>
+
+  <test name="Keyword Tests">
+    <packages>
+      <package name="autoqa.keyword"/>
+    </packages>
+  </test>
+
 </suite>

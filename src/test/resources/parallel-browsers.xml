@@ -1,0 +1,50 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  Parallel cross-browser suite — equivalent to UFT One's parallel test execution.
+  Runs the same test class three times concurrently in Edge, Chrome, and Firefox.
+  Pass -Dbrowser=<browser> to select a single browser.
+
+  Usage:
+    autoqa run --suite src/test/resources/parallel-browsers.xml
+    or:
+    mvn test -Dsurefire.suiteXmlFiles=src/test/resources/parallel-browsers.xml
+-->
+<suite name="IMDS AutoQA Parallel Browser Suite"
+       verbose="1"
+       parallel="tests"
+       thread-count="3">
+
+  <listeners>
+    <listener class-name="autoqa.reporting.AllureListener"/>
+  </listeners>
+
+  <!-- Each <test> element runs in its own thread -->
+
+  <test name="Edge Tests">
+    <parameter name="browser" value="edge"/>
+    <packages>
+      <package name="autoqa.model"/>
+      <package name="autoqa.player"/>
+      <package name="autoqa.data"/>
+    </packages>
+  </test>
+
+  <test name="Chrome Tests">
+    <parameter name="browser" value="chrome"/>
+    <packages>
+      <package name="autoqa.model"/>
+      <package name="autoqa.player"/>
+      <package name="autoqa.data"/>
+    </packages>
+  </test>
+
+  <test name="Firefox Tests">
+    <parameter name="browser" value="firefox"/>
+    <packages>
+      <package name="autoqa.model"/>
+      <package name="autoqa.player"/>
+      <package name="autoqa.data"/>
+    </packages>
+  </test>
+
+</suite>
