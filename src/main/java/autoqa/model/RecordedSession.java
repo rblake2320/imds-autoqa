@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Top-level container for a complete recording session.
@@ -52,7 +52,7 @@ public class RecordedSession {
     private boolean encrypted = false;
 
     @JsonProperty("events")
-    private List<RecordedEvent> events = new ArrayList<>();
+    private List<RecordedEvent> events = new CopyOnWriteArrayList<>();
 
     public RecordedSession() {}
 
@@ -80,12 +80,14 @@ public class RecordedSession {
     public void setOsName(String os)                { this.osName = os; }
     public void setRecordedBy(String user)          { this.recordedBy = user; }
     public void setEncrypted(boolean encrypted)     { this.encrypted = encrypted; }
-    public void setEvents(List<RecordedEvent> evts) { this.events = evts; }
+    public void setEvents(List<RecordedEvent> evts) {
+        this.events = evts != null ? new CopyOnWriteArrayList<>(evts) : new CopyOnWriteArrayList<>();
+    }
 
     // ── Convenience ──────────────────────────────────────────────────────
 
     public void addEvent(RecordedEvent event) {
-        if (events == null) events = new ArrayList<>();
+        if (events == null) events = new CopyOnWriteArrayList<>();
         events.add(event);
     }
 

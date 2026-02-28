@@ -36,11 +36,6 @@ import java.util.Set;
  *
  * <p>On any unrecoverable exception the engine collects evidence via
  * {@link EvidenceCollector} and re-throws an {@link AutoQAException}.
- *
- * <p><strong>Stub note:</strong> {@link PopupSentinel} and
- * {@link EvidenceCollector} are declared as static inner stub classes here
- * so the engine compiles independently of Agent B's implementations. Once
- * Agent B delivers the real classes in this package the stubs can be removed.
  */
 public class PlayerEngine {
 
@@ -51,6 +46,14 @@ public class PlayerEngine {
     private final WaitStrategy wait;
     private final LocatorResolver resolver;
     private final FrameNavigator frameNav;
+    private final PopupSentinel sentinel;
+    private final EvidenceCollector evidenceCollector;
+    /**
+     * All window handles seen and intentionally switched to during this
+     * playback run. Used by {@link #handleWindowSwitch} to detect truly new
+     * windows without relying on undefined HashSet iteration order.
+     */
+    private final Set<String> allKnownHandles;
 
     // ── Constructor ───────────────────────────────────────────────────────
 
@@ -60,11 +63,14 @@ public class PlayerEngine {
      * @param driver a configured, ready-to-use WebDriver session
      */
     public PlayerEngine(WebDriver driver) {
-        this.driver    = driver;
-        this.config    = new PlayerConfig();
-        this.wait      = new WaitStrategy(driver, config.getExplicitWaitSec());
-        this.resolver  = new LocatorResolver(driver, wait, config.getLocatorFallbackAttempts());
-        this.frameNav  = new FrameNavigator(driver);
+        this.driver            = driver;
+        this.config            = new PlayerConfig();
+        this.wait              = new WaitStrategy(driver, config.getExplicitWaitSec());
+        this.resolver          = new LocatorResolver(driver, wait, config.getLocatorFallbackAttempts());
+        this.frameNav          = new FrameNavigator(driver);
+        this.sentinel          = new PopupSentinel(driver);
+        this.evidenceCollector = new EvidenceCollector(config.getEvidenceDir());
+        this.allKnownHandles   = new HashSet<>(driver.getWindowHandles());
     }
 
     // ── Playback ──────────────────────────────────────────────────────────
@@ -90,7 +96,7 @@ public class PlayerEngine {
             boolean enteredFrame = false;
             try {
                 // 1. Popup guard
-                PopupSentinel.check(driver);
+                sentinel.check();
 
                 // 2. Frame context
                 if (event.isInFrame()) {
@@ -118,21 +124,21 @@ public class PlayerEngine {
                 String reason = "Playback interrupted at step " + (i + 1);
                 log.error(reason, ie);
                 if (enteredFrame) frameNav.exitFrames();
-                EvidenceCollector.collect(driver, sessionId, i, event);
+                evidenceCollector.collect(driver, sessionId, i, event);
                 return new PlaybackResult(false, i, total, reason);
 
             } catch (AutoQAException aqe) {
                 String reason = "AutoQA failure at step " + (i + 1) + ": " + aqe.getMessage();
                 log.error(reason, aqe);
                 if (enteredFrame) frameNav.exitFrames();
-                EvidenceCollector.collect(driver, sessionId, i, event);
+                evidenceCollector.collect(driver, sessionId, i, event);
                 return new PlaybackResult(false, i, total, reason);
 
             } catch (Exception e) {
                 String reason = "Unexpected error at step " + (i + 1) + ": " + e.getMessage();
                 log.error(reason, e);
                 if (enteredFrame) frameNav.exitFrames();
-                EvidenceCollector.collect(driver, sessionId, i, event);
+                evidenceCollector.collect(driver, sessionId, i, event);
                 return new PlaybackResult(false, i, total, reason);
             }
         }
@@ -182,8 +188,10 @@ public class PlayerEngine {
 
     private void handleClick(RecordedEvent event) {
         ElementInfo ei = requireElement(event, EventType.CLICK);
-        WebElement el = resolver.findElement(ei);
-        wait.waitForClickable(toBy(resolver.resolve(ei)));
+        // Resolve the locator first, then wait-for-clickable which returns a fresh
+        // element reference — avoids the stale-element race of findElement→wait→click.
+        By by = toBy(resolver.resolve(ei));
+        WebElement el = wait.waitForClickable(by);
         log.debug("Clicking element: {}", ei);
         el.click();
     }
@@ -262,10 +270,20 @@ public class PlayerEngine {
     }
 
     private void handleScroll(RecordedEvent event) {
-        ElementInfo ei = requireElement(event, EventType.SCROLL);
-        WebElement el = resolver.findElement(ei);
-        log.debug("Scrolling element into view: {}", ei);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
+        if (event.hasElement()) {
+            // Element-targeted scroll: scroll the specific element into view.
+            ElementInfo ei = event.getElement();
+            WebElement el = resolver.findElement(ei);
+            log.debug("Scrolling element into view: {}", ei);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
+        } else {
+            // Coordinate-based scroll: scroll the viewport to (x, y) screen coordinates.
+            double x = event.getCoordinates() != null ? event.getCoordinates().getX() : 0.0;
+            double y = event.getCoordinates() != null ? event.getCoordinates().getY() : 0.0;
+            log.debug("Scrolling to coordinates: ({}, {})", x, y);
+            ((JavascriptExecutor) driver).executeScript(
+                    "window.scrollTo(arguments[0], arguments[1]);", x, y);
+        }
     }
 
     private void handleAlert(RecordedEvent event) {
@@ -295,16 +313,17 @@ public class PlayerEngine {
     private void handleWindowSwitch(RecordedEvent event) {
         String targetHandle = event.getWindowHandle();
         if (targetHandle == null || targetHandle.isBlank()) {
-            // Switch to newest window if no handle recorded
-            Set<String> handles = driver.getWindowHandles();
-            String newest = handles.stream()
-                    .reduce((first, second) -> second)
-                    .orElseThrow(() -> new AutoQAException("No window handles available to switch to"));
-            log.debug("Switching to newest window handle: {}", newest);
-            driver.switchTo().window(newest);
+            // Find the handle that is NOT in our tracked set. WaitStrategy polls
+            // until such a handle appears, then returns it — safe against undefined
+            // HashSet ordering and race conditions with the new window appearing.
+            String newHandle = wait.waitForNewWindow(allKnownHandles);
+            log.debug("Switching to new window handle: {}", newHandle);
+            driver.switchTo().window(newHandle);
+            allKnownHandles.add(newHandle);
         } else {
             log.debug("Switching to window handle: {}", targetHandle);
             driver.switchTo().window(targetHandle);
+            allKnownHandles.add(targetHandle);
         }
         wait.waitForPageLoad();
     }
@@ -392,29 +411,5 @@ public class PlayerEngine {
                     : String.format("PlaybackResult{FAILED at step %d/%d: %s}",
                                     stepsCompleted, totalSteps, failureReason);
         }
-    }
-
-    // ═════════════════════════════════════════════════════════════════════
-    // STUB INNER CLASSES — will be replaced by Agent B's implementations
-    // ═════════════════════════════════════════════════════════════════════
-
-    /**
-     * Stub for Agent B's PopupSentinel.
-     * Checks for unexpected popup windows/dialogs and dismisses them.
-     * Replace this stub with the real class once Agent B delivers it.
-     */
-    static class PopupSentinel {
-        /** No-op stub — real implementation provided by Agent B. */
-        static void check(WebDriver d) { /* stub */ }
-    }
-
-    /**
-     * Stub for Agent B's EvidenceCollector.
-     * Captures screenshot, page source, and console logs on failure.
-     * Replace this stub with the real class once Agent B delivers it.
-     */
-    static class EvidenceCollector {
-        /** No-op stub — real implementation provided by Agent B. */
-        static void collect(WebDriver d, String sessionId, int step, RecordedEvent event) { /* stub */ }
     }
 }

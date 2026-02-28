@@ -27,7 +27,7 @@ public class TestGenerator {
 
     /** Regex to extract Java code from triple-backtick fenced block. */
     private static final Pattern CODE_BLOCK = Pattern.compile(
-            "```(?:java)?\\s*\\n([\\s\\S]*?)\\n```", Pattern.CASE_INSENSITIVE);
+            "```(?:java)?\\s*\\n([\\s\\S]*?)\\n?```", Pattern.CASE_INSENSITIVE);
 
     private static final DateTimeFormatter CLASS_TIMESTAMP_FMT =
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");

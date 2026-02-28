@@ -6,6 +6,7 @@ import autoqa.player.AutoQAException;
 import autoqa.player.LocatorResolver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class HealingInterceptor {
     public WebElement findElement(ElementInfo element) {
         try {
             return resolver.findElement(element);
-        } catch (AutoQAException | NoSuchElementException originalEx) {
+        } catch (AutoQAException | NoSuchElementException | StaleElementReferenceException originalEx) {
             log.warn("LocatorResolver failed for element: {}. Attempting LLM healing...", element);
             return attemptHealing(element, originalEx);
         }

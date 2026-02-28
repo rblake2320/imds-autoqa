@@ -48,9 +48,11 @@ public class AllureListener implements ITestListener {
     static final String PROP_BROWSER_VERSION = "browser.version";
     static final String PROP_TEST_ENV        = "test.env";
 
-    // Evidence directory – must match PlayerConfig#getEvidenceDir() default
-    private static final String EVIDENCE_BASE_DIR =
-            System.getProperty("player.evidence.dir", "evidence");
+    // Evidence directory – must match PlayerConfig#getEvidenceDir() default.
+    // Resolved lazily so Surefire system-property injection happens before first use.
+    private static String getEvidenceBaseDir() {
+        return System.getProperty("player.evidence.dir", "evidence");
+    }
 
     // ── ITestListener callbacks ───────────────────────────────────────────
 
@@ -58,7 +60,6 @@ public class AllureListener implements ITestListener {
     public void onTestStart(ITestResult result) {
         String name = testName(result);
         log.info("AllureListener: test started — {}", name);
-        Allure.step("Test started: " + name);
         addBrowserLabels();
     }
 
@@ -189,7 +190,7 @@ public class AllureListener implements ITestListener {
         // Fallback: use test class + method name as session ID sub-directory
         String sanitised = (result.getTestClass().getName() + "_" + result.getName())
                 .replaceAll("[^a-zA-Z0-9_\\-]", "_");
-        Path candidate = Paths.get(EVIDENCE_BASE_DIR, sanitised, "0");
+        Path candidate = Paths.get(getEvidenceBaseDir(), sanitised, "0");
         log.debug("AllureListener: using fallback evidence path {}", candidate);
         return candidate;
     }

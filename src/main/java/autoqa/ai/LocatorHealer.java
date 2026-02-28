@@ -145,10 +145,11 @@ public class LocatorHealer {
         if (text != null && !text.isBlank()) {
             String tag = failedElement.getTagName() != null ? failedElement.getTagName() : "*";
             String textPrefix = text.substring(0, Math.min(TEXT_MATCH_MAX_CHARS, text.length()));
-            // Escape any single-quotes in the text to keep XPath valid
-            textPrefix = textPrefix.replace("'", "\\'");
+            // Build an XPath string literal that is safe for text containing single quotes.
+            // XPath 1.0 has no backslash escaping; use concat() when the text contains a quote.
+            String textLiteral = toXpathStringLiteral(textPrefix);
             String textXpath = "//" + tag
-                    + "[contains(normalize-space(text()),'" + textPrefix + "')]";
+                    + "[contains(normalize-space(text())," + textLiteral + ")]";
             log.debug("DOM comparison fallback generated XPath: {}", textXpath);
             return HealingResult.success(textXpath, ElementLocator.Strategy.XPATH);
         }
@@ -156,6 +157,37 @@ public class LocatorHealer {
     }
 
     // ── Internal helpers ──────────────────────────────────────────────────
+
+    /**
+     * Converts a plain Java string into an XPath 1.0 string literal.
+     *
+     * <ul>
+     *   <li>If the text contains no single quotes, wraps in single quotes: {@code 'hello'}</li>
+     *   <li>If the text contains no double quotes, wraps in double quotes: {@code "it's"}</li>
+     *   <li>Otherwise uses XPath {@code concat()} to handle both: {@code concat('it',"'",'s fine')}</li>
+     * </ul>
+     */
+    private static String toXpathStringLiteral(String text) {
+        if (!text.contains("'")) {
+            return "'" + text + "'";
+        }
+        if (!text.contains("\"")) {
+            return "\"" + text + "\"";
+        }
+        // Both quote types present — split on single quotes and concat them.
+        StringBuilder sb = new StringBuilder("concat(");
+        String[] parts = text.split("'", -1);
+        for (int i = 0; i < parts.length; i++) {
+            if (i > 0) {
+                sb.append(",\"'\",");
+            }
+            sb.append("'").append(parts[i]).append("'");
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
+
 
     /**
      * Heuristically determines whether the LLM response is XPath or CSS.

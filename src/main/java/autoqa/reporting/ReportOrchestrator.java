@@ -101,7 +101,9 @@ public class ReportOrchestrator implements ISuiteListener {
         ProcessBuilder pb = new ProcessBuilder(
                 "allure", "generate", ALLURE_RESULTS_DIR,
                 "-o", ALLURE_REPORT_DIR, "--clean");
-        pb.redirectErrorStream(true);
+        // inheritIO() pipes the child process stdout/stderr to the JVM's own streams,
+        // so waitFor() cannot deadlock on a full pipe buffer.
+        pb.inheritIO();
 
         Process process;
         try {
@@ -118,17 +120,14 @@ public class ReportOrchestrator implements ISuiteListener {
             if (exitCode == 0) {
                 log.info("ReportOrchestrator: Allure report generated at {}", ALLURE_REPORT_DIR);
             } else {
-                String output = new String(process.getInputStream().readAllBytes());
-                log.warn("ReportOrchestrator: 'allure generate' exited with code {}. Output: {}",
-                        exitCode, output);
+                log.warn("ReportOrchestrator: 'allure generate' exited with code {}. " +
+                        "See console output above for details.", exitCode);
                 log.info("ReportOrchestrator: Run 'allure serve {}' manually to view the report.",
                         ALLURE_RESULTS_DIR);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.warn("ReportOrchestrator: interrupted while waiting for 'allure generate'");
-        } catch (IOException e) {
-            log.warn("ReportOrchestrator: could not read 'allure generate' output: {}", e.getMessage());
         }
     }
 

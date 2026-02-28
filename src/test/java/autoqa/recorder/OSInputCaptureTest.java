@@ -159,14 +159,14 @@ public class OSInputCaptureTest {
     }
 
     @Test
-    public void nativeMouseClicked_middleButton_firesCONTEXT_MENU() {
+    public void nativeMouseClicked_middleButton_firesCLICK() {
         activateWithoutNativeHook();
         NativeMouseEvent e = makeMouse(10, 20, NativeMouseEvent.BUTTON2, 1);
         capture.nativeMouseClicked(e);
 
         assertThat(captured).hasSize(1);
         assertThat(captured.get(0).getEventType())
-                .isEqualTo(RecordedEvent.EventType.CONTEXT_MENU);
+                .isEqualTo(RecordedEvent.EventType.CLICK);
     }
 
     @Test
@@ -354,7 +354,6 @@ public class OSInputCaptureTest {
     private static NativeMouseEvent makeMouse(int x, int y, int button, int clickCount) {
         return new NativeMouseEvent(
                 NativeMouseEvent.NATIVE_MOUSE_CLICKED,
-                0L,      // when (timestamp mask)
                 0,       // modifiers
                 x, y,
                 clickCount,
@@ -369,9 +368,9 @@ public class OSInputCaptureTest {
     private static NativeKeyEvent makeKeyTyped(char keyChar) {
         return new NativeKeyEvent(
                 NativeKeyEvent.NATIVE_KEY_TYPED,
-                0L,
                 0,                          // modifiers
                 NativeKeyEvent.VC_UNDEFINED, // keyCode
+                NativeKeyEvent.VC_UNDEFINED, // rawCode
                 keyChar                     // keyChar
         );
     }
@@ -382,9 +381,9 @@ public class OSInputCaptureTest {
     private static NativeKeyEvent makeKeyPressed(int keyCode, char keyChar) {
         return new NativeKeyEvent(
                 NativeKeyEvent.NATIVE_KEY_PRESSED,
-                0L,
                 0,       // modifiers
                 keyCode,
+                keyCode, // rawCode
                 keyChar
         );
     }

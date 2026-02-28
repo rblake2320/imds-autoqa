@@ -62,12 +62,28 @@ public class NvidiaVisionClient implements VisionService {
         String apiKey = System.getenv(envKey);
         if (apiKey == null) apiKey = "MISSING_NVIDIA_API_KEY";
 
+        int timeoutSec;
+        try {
+            timeoutSec = Integer.parseInt(props.getProperty("vision.nim.timeout.sec", "30").trim());
+        } catch (NumberFormatException e) {
+            log.warn("Invalid vision.nim.timeout.sec — using default 30");
+            timeoutSec = 30;
+        }
+
+        double minConfidence;
+        try {
+            minConfidence = Double.parseDouble(props.getProperty("vision.min.confidence", "0.75").trim());
+        } catch (NumberFormatException e) {
+            log.warn("Invalid vision.min.confidence — using default 0.75");
+            minConfidence = 0.75;
+        }
+
         return new NvidiaVisionClient(
             props.getProperty("vision.nim.endpoint",
                 "https://ai.api.nvidia.com/v1/vlm/microsoft/phi-3-vision-128k-instruct"),
             apiKey,
-            Integer.parseInt(props.getProperty("vision.nim.timeout.sec", "30")),
-            Double.parseDouble(props.getProperty("vision.min.confidence", "0.75"))
+            timeoutSec,
+            minConfidence
         );
     }
 
@@ -134,7 +150,11 @@ public class NvidiaVisionClient implements VisionService {
             if (!response.isSuccessful()) {
                 throw new IOException("NIM API error: " + response.code() + " " + response.message());
             }
-            JsonNode respNode = MAPPER.readTree(response.body().string());
+            okhttp3.ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new IOException("NIM API returned null response body for " + endpoint);
+            }
+            JsonNode respNode = MAPPER.readTree(responseBody.string());
             return respNode.path("choices").path(0).path("message").path("content").asText();
         }
     }

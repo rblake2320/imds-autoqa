@@ -116,8 +116,11 @@ public class LLMClient {
                 return parseContent(responseBody);
 
             } catch (IOException e) {
-                if (e.getMessage() != null && e.getMessage().startsWith("LLM request failed with HTTP")) {
-                    throw e; // non-5xx errors are not retried
+                if (e.getMessage() != null && (
+                        e.getMessage().startsWith("LLM request failed with HTTP") ||
+                        e.getMessage().startsWith("LLM response missing") ||
+                        e.getMessage().startsWith("Failed to parse LLM response"))) {
+                    throw e; // non-retriable: HTTP errors, parse errors, malformed responses
                 }
                 log.warn("LLM request I/O error on attempt {}: {}", attempt + 1, e.getMessage());
                 lastException = e;
@@ -140,6 +143,7 @@ public class LLMClient {
         root.put("model", model);
         root.put("temperature", temperature);
         root.put("max_tokens", maxTokens);
+        root.put("stream", false);  // Ollama defaults to streaming — disable it explicitly
 
         ArrayNode msgs = root.putArray("messages");
         for (ChatMessage msg : messages) {

@@ -1,9 +1,7 @@
 {
   "schemaVersion": "1.0",
   "sessionId": "a3f7d291-0e4c-4b58-92d1-6fc8e14b3a07",
-  "startUrl": "file:///D:/imds-autoqa/src/test/resources/test-page.html",
-  "recordedAt": "2026-02-27T10:00:00.000Z",
-  "browser": "Chrome",
+  "startTimestamp": "2026-02-27T10:00:00Z",
   "events": [
 
     {

@@ -93,7 +93,11 @@ public class RecorderCLI implements Callable<Integer> {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     Path saved = session.stop();
-                    System.out.println("\nRecording saved: " + saved.toAbsolutePath());
+                    if (saved != null) {
+                        System.out.println("\nRecording saved: " + saved.toAbsolutePath());
+                    } else {
+                        System.out.println("\nRecording stopped (no events captured or already stopped).");
+                    }
                 } catch (Exception e) {
                     System.err.println("Error saving recording: " + e.getMessage());
                     log.error("Shutdown hook error", e);

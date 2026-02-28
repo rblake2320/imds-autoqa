@@ -116,8 +116,7 @@ public class OSInputCapture implements InputCaptureAdapter,
 
         if (e.getClickCount() == 2) {
             event.setEventType(RecordedEvent.EventType.DOUBLE_CLICK);
-        } else if (e.getButton() == NativeMouseEvent.BUTTON2
-                || e.getButton() == NativeMouseEvent.BUTTON3) {
+        } else if (e.getButton() == NativeMouseEvent.BUTTON3) {
             event.setEventType(RecordedEvent.EventType.CONTEXT_MENU);
         } else {
             event.setEventType(RecordedEvent.EventType.CLICK);
