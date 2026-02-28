@@ -71,4 +71,10 @@
     </packages>
   </test>
 
+  <test name="Spy Tests">
+    <packages>
+      <package name="autoqa.spy"/>
+    </packages>
+  </test>
+
 </suite>
