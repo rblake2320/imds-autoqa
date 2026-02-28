@@ -1,0 +1,1120 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< autoqa:imds-autoqa >-------------------------
+[INFO] Building IMDS AutoQA Wrapper 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ imds-autoqa ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ imds-autoqa ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 54 source files with javac [debug target 17] to target\classes
+[INFO] /D:/imds-autoqa/src/main/java/autoqa/recorder/DOMEnricher.java: Some input files use or override a deprecated API.
+[INFO] /D:/imds-autoqa/src/main/java/autoqa/recorder/DOMEnricher.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ imds-autoqa ---
+[INFO] Copying 2 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ imds-autoqa ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 21 source files with javac [debug target 17] to target\test-classes
+[INFO] /D:/imds-autoqa/src/test/java/autoqa/ai/LocatorHealerTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /D:/imds-autoqa/src/test/java/autoqa/ai/LocatorHealerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ imds-autoqa ---
+[INFO] Using auto detected provider org.apache.maven.surefire.testng.TestNGProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running TestSuite
+19:11:15,043 |-INFO in ch.qos.logback.classic.LoggerContext[default] - This is logback-classic version 1.5.3
+19:11:15,045 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - No custom configurators were discovered as a service.
+19:11:15,045 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - Trying to configure with ch.qos.logback.classic.joran.SerializedModelConfigurator
+19:11:15,048 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - Constructed configurator of type class ch.qos.logback.classic.joran.SerializedModelConfigurator
+19:11:15,050 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.scmo]
+19:11:15,050 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.scmo]
+19:11:15,055 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - ch.qos.logback.classic.joran.SerializedModelConfigurator.configure() call lasted 3 milliseconds. ExecutionStatus=INVOKE_NEXT_IF_ANY
+19:11:15,055 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - Trying to configure with ch.qos.logback.classic.util.DefaultJoranConfigurator
+19:11:15,056 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - Constructed configurator of type class ch.qos.logback.classic.util.DefaultJoranConfigurator
+19:11:15,056 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+19:11:15,059 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/D:/imds-autoqa/target/classes/logback.xml]
+19:11:15,254 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [CONSOLE]
+19:11:15,254 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+19:11:15,263 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+19:11:15,302 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [FILE]
+19:11:15,302 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+19:11:15,322 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1564892747 - setting totalSizeCap to 500 MB
+19:11:15,328 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1564892747 - Will use gz compression
+19:11:15,330 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1564892747 - Will use the pattern logs/autoqa.%d{yyyy-MM-dd}.%i.log for the active file
+19:11:15,334 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@53e211ee - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/autoqa.%d{yyyy-MM-dd}.%i.log.gz'.
+19:11:15,334 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@53e211ee - Roll-over at midnight.
+19:11:15,334 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@53e211ee - Setting initial period to 2026-02-28T01:10:02.241Z
+19:11:15,334 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@53e211ee - SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead
+19:11:15,334 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@53e211ee - For more information see http://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
+19:11:15,339 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+19:11:15,341 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - Active log file name: logs/autoqa.log
+19:11:15,342 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - File property is set to [logs/autoqa.log]
+19:11:15,342 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [HEALING_FILE]
+19:11:15,342 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+19:11:15,343 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1101598632 - Will use gz compression
+19:11:15,343 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1101598632 - Will use the pattern logs/healing.%d{yyyy-MM-dd}.log for the active file
+19:11:15,343 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/healing.%d{yyyy-MM-dd}.log.gz'.
+19:11:15,343 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Roll-over at midnight.
+19:11:15,344 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Setting initial period to 2026-02-28T01:09:59.572Z
+19:11:15,344 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+19:11:15,344 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[HEALING_FILE] - Active log file name: logs/healing.log
+19:11:15,344 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[HEALING_FILE] - File property is set to [logs/healing.log]
+19:11:15,344 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [autoqa.ai] to DEBUG
+19:11:15,344 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [autoqa.player] to DEBUG
+19:11:15,344 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [autoqa.recorder] to DEBUG
+19:11:15,344 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [autoqa.ai.HealingInterceptor] to DEBUG
+19:11:15,346 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting additivity of logger [autoqa.ai.HealingInterceptor] to false
+19:11:15,346 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [HEALING_FILE] to Logger[autoqa.ai.HealingInterceptor]
+19:11:15,347 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [CONSOLE] to Logger[autoqa.ai.HealingInterceptor]
+19:11:15,347 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [org.openqa.selenium] to WARN
+19:11:15,347 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [io.netty] to WARN
+19:11:15,347 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.github.kwhat] to WARN
+19:11:15,347 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [okhttp3] to INFO
+19:11:15,347 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [org.testng] to INFO
+19:11:15,347 |-INFO in ch.qos.logback.classic.model.processor.RootLoggerModelHandler - Setting level of ROOT logger to INFO
+19:11:15,347 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [CONSOLE] to Logger[ROOT]
+19:11:15,347 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [FILE] to Logger[ROOT]
+19:11:15,347 |-INFO in ch.qos.logback.core.model.processor.DefaultProcessor@3d8bbcdc - End of configuration.
+19:11:15,347 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@52500920 - Registering current configuration as safe fallback point
+19:11:15,347 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6273c5a4 - ch.qos.logback.classic.util.DefaultJoranConfigurator.configure() call lasted 291 milliseconds. ExecutionStatus=DO_NOT_INVOKE_NEXT_IF_ANY
+
+19:11:17.121 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#allEventTypesDeserialized
+19:11:17.121 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#frameChain_survivesRoundTrip
+19:11:17.121 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#decryptFile_wrongExtension_throwsException
+19:11:17.326 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#decryptFile_wrongExtension_throwsException
+19:11:17.424 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#allEventTypesDeserialized
+19:11:17.442 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#frameChain_survivesRoundTrip
+19:11:17.504 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#isVersionSupported_returnsFalse_forOldVersion
+19:11:17.504 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#decrypt_tamperedCiphertext_throwsException
+19:11:17.504 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#boundingBox_coordinates_fieldValues
+19:11:17.506 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#isVersionSupported_returnsFalse_forOldVersion
+19:11:17.510 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#isVersionSupported_returnsTrue_forCurrentVersion
+19:11:17.511 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#isVersionSupported_returnsTrue_forCurrentVersion
+19:11:17.512 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#nullFields_notWrittenToJson
+19:11:17.517 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#boundingBox_coordinates_fieldValues
+19:11:17.518 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#elementInfo_hasAnyLocator_requiresAtLeastOneField
+19:11:17.518 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#elementInfo_hasAnyLocator_requiresAtLeastOneField
+19:11:17.518 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#decrypt_tamperedCiphertext_throwsException
+19:11:17.520 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#elementLocator_healedFlag_setForHealedStrategy
+19:11:17.520 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#decrypt_wrongKey_throwsException
+19:11:17.520 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#elementLocator_healedFlag_setForHealedStrategy
+19:11:17.521 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#hasElement_trueWhenElementPresent
+19:11:17.521 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#hasElement_trueWhenElementPresent
+19:11:17.521 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#decrypt_wrongKey_throwsException
+19:11:17.523 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#hasInputData_trueWhenPresent
+19:11:17.523 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encryptDecrypt_roundTrip
+19:11:17.523 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#hasInputData_trueWhenPresent
+19:11:17.524 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#inputData_factories_populateCorrectFields
+19:11:17.530 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#inputData_factories_populateCorrectFields
+19:11:17.531 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#isInFrame_falseWhenChainEmpty
+19:11:17.531 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#nullFields_notWrittenToJson
+19:11:17.531 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#isInFrame_falseWhenChainEmpty
+19:11:17.532 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#isInFrame_trueWhenChainNonEmpty
+19:11:17.532 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#isInFrame_trueWhenChainNonEmpty
+19:11:17.533 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#read_missingFile_throwsIOException
+19:11:17.534 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#read_missingFile_throwsIOException
+19:11:17.537 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#roundTrip_fullSession
+19:11:17.537 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#recordedSession_addEvent_incrementsCount
+19:11:17.540 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encryptDecrypt_roundTrip
+19:11:17.540 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#recordedSession_addEvent_incrementsCount
+19:11:17.544 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encryptFile_createsEncFile
+19:11:17.544 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordedEventTest#uiElement_isConfidentEnough_threshold
+19:11:17.544 [TestNG-test-Model Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordedEventTest#uiElement_isConfidentEnough_threshold
+19:11:17.546 [TestNG-test-Model Tests-2] INFO  autoqa.model.RecordingEncryption — Recording encrypted: recording-12602377218633066471.json -> recording-12602377218633066471.json.enc
+19:11:17.566 [TestNG-test-Model Tests-3] INFO  autoqa.model.RecordingIO — Wrote session 'a8de8e14-431c-4d03-acf7-cd10a7c91e51' (4 events) to C:\Users\techai\AppData\Local\Temp\autoqa-test-full-1280226004913444851.json
+19:11:17.574 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encryptFile_createsEncFile
+19:11:17.576 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encryptFile_decryptFile_roundTrip
+19:11:17.579 [TestNG-test-Model Tests-2] INFO  autoqa.model.RecordingEncryption — Recording encrypted: recording-2363038601654813784.json -> recording-2363038601654813784.json.enc
+19:11:17.583 [TestNG-test-Model Tests-2] INFO  autoqa.model.RecordingEncryption — Recording decrypted: recording-2363038601654813784.json.enc -> recording-2363038601654813784.json
+19:11:17.585 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encryptFile_decryptFile_roundTrip
+19:11:17.587 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encryptString_decryptString_roundTrip
+19:11:17.588 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encryptString_decryptString_roundTrip
+19:11:17.590 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encryptString_producesBase64Output
+19:11:17.590 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encryptString_producesBase64Output
+19:11:17.592 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encrypt_producesOutputLargerThanInput
+19:11:17.595 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encrypt_producesOutputLargerThanInput
+19:11:17.596 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#encrypt_twoCallsProduceDifferentCiphertext
+19:11:17.597 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#encrypt_twoCallsProduceDifferentCiphertext
+19:11:17.598 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#generateKey_returns256BitAesKey
+19:11:17.599 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#generateKey_returns256BitAesKey
+19:11:17.600 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#generateKey_twoCallsReturnDifferentKeys
+19:11:17.600 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#generateKey_twoCallsReturnDifferentKeys
+19:11:17.601 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#keyFromBytes_setsAlgorithmToAES
+19:11:17.601 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#keyFromBytes_setsAlgorithmToAES
+19:11:17.602 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingEncryptionTest#keyRoundTrip_fromBytesToBase64AndBack
+19:11:17.603 [TestNG-test-Model Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingEncryptionTest#keyRoundTrip_fromBytesToBase64AndBack
+19:11:17.724 [TestNG-test-Model Tests-3] WARN  c.n.schema.UnknownKeywordFactory — Unknown keyword version - you should define your own Meta Schema. If the keyword is irrelevant for validation, just use a NonValidationKeyword or if it should generate annotations AnnotationKeyword
+19:11:17.757 [TestNG-test-Model Tests-3] INFO  autoqa.model.RecordingIO — Loaded session 'a8de8e14-431c-4d03-acf7-cd10a7c91e51' with 4 events from C:\Users\techai\AppData\Local\Temp\autoqa-test-full-1280226004913444851.json
+19:11:17.758 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#roundTrip_fullSession
+19:11:17.760 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#roundTrip_minimalSession
+19:11:17.762 [TestNG-test-Model Tests-3] INFO  autoqa.model.RecordingIO — Wrote session '88aa4e13-1434-44f0-80bc-1856d30a2588' (0 events) to C:\Users\techai\AppData\Local\Temp\autoqa-test-13349367606389941071.json
+19:11:17.769 [TestNG-test-Model Tests-3] INFO  autoqa.model.RecordingIO — Loaded session '88aa4e13-1434-44f0-80bc-1856d30a2588' with 0 events from C:\Users\techai\AppData\Local\Temp\autoqa-test-13349367606389941071.json
+19:11:17.769 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#roundTrip_minimalSession
+19:11:17.771 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.model.RecordingIOTest#toJson_fromJson_roundTrip
+19:11:17.773 [TestNG-test-Model Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.model.RecordingIOTest#toJson_fromJson_roundTrip
+19:11:17.821 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testAllDefaults
+19:11:17.825 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testAllDefaults
+19:11:17.826 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testBlankIntegerFallsBackToDefault
+19:11:17.826 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testBlankIntegerFallsBackToDefault
+19:11:17.828 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testBooleanFlagsDisabled
+19:11:17.828 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testBooleanFlagsDisabled
+19:11:17.829 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testBooleanFlagsEnabled
+19:11:17.829 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testBooleanFlagsEnabled
+19:11:17.830 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testClasspathConfigLoads
+19:11:17.830 [TestNG-test-Player Tests-3] DEBUG autoqa.player.PlayerConfig — Loaded base config from config.properties
+19:11:17.833 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testClasspathConfigLoads
+19:11:17.834 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testEvidenceDirOverride
+19:11:17.834 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testEvidenceDirOverride
+19:11:17.835 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testIntegerOverrides
+19:11:17.835 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testIntegerOverrides
+19:11:17.836 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testInvalidIntegerFallsBackToDefault
+19:11:17.837 [TestNG-test-Player Tests-3] WARN  autoqa.player.PlayerConfig — Invalid integer for key 'player.explicit.wait.sec': 'not-a-number' — using default 15
+19:11:17.837 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testInvalidIntegerFallsBackToDefault
+19:11:17.838 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testInvalidLongFallsBackToDefault
+19:11:17.839 [TestNG-test-Player Tests-3] WARN  autoqa.player.PlayerConfig — Invalid long for key 'player.step.delay.ms': 'abc' — using default 300
+19:11:17.839 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testInvalidLongFallsBackToDefault
+19:11:17.839 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testNonBooleanStringForFlag
+19:11:17.839 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testNonBooleanStringForFlag
+19:11:17.840 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PlayerConfigTest#testStepDelayOverride
+19:11:17.841 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PlayerConfigTest#testStepDelayOverride
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+19:11:19.110 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testAllStrategiesFailThrowsException
+19:11:19.110 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testTimeoutSecondsAppearsInExceptionMessage
+19:11:19.232 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: bad-id
+19:11:19.233 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_continuesCollecting_whenPageSourceFails
+19:11:19.239 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [ID] not found: By.id: bad-id
+19:11:19.239 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: bad-name
+19:11:19.240 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [NAME] not found: By.name: bad-name
+19:11:19.241 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [CSS]: .bad-css
+19:11:19.241 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [CSS] not found: By.cssSelector: .bad-css
+19:11:19.241 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [XPATH]: //bad
+19:11:19.242 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [XPATH] not found: By.xpath: //bad
+19:11:19.242 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PopupSentinelTest#check_noWarning_afterExpectedCountUpdated
+19:11:19.243 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testAllStrategiesFailThrowsException
+19:11:19.247 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-14779027481525906396\session-fail-ps\0
+19:11:19.249 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testBlankIdSkippedFallsToName
+19:11:19.249 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: validName
+19:11:19.251 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14779027481525906396\session-fail-ps\0\screenshot.png
+19:11:19.251 [TestNG-test-Player Tests-1] WARN  autoqa.player.EvidenceCollector — EvidenceCollector: failed to capture page source: page source unavailable
+19:11:19.251 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 42s for element PRESENT: By.id: slow-elem
+19:11:19.252 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14779027481525906396\session-fail-ps\0\console.log
+19:11:19.253 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14779027481525906396\session-fail-ps\0\context.txt
+19:11:19.254 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_continuesCollecting_whenPageSourceFails
+19:11:19.261 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testTimeoutSecondsAppearsInExceptionMessage
+19:11:19.263 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_continuesCollecting_whenScreenshotFails
+19:11:19.265 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-14919968812727690630\session-fail-ss\0
+19:11:19.265 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForAlertPresentSuccess
+19:11:19.265 [TestNG-test-Player Tests-1] WARN  autoqa.player.EvidenceCollector — EvidenceCollector: failed to capture screenshot: screenshot driver error
+19:11:19.266 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14919968812727690630\session-fail-ss\0\page-source.html (20 chars)
+19:11:19.266 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for alert to be present
+19:11:19.266 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14919968812727690630\session-fail-ss\0\console.log
+19:11:19.267 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14919968812727690630\session-fail-ss\0\context.txt
+19:11:19.267 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_continuesCollecting_whenScreenshotFails
+19:11:19.268 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForAlertPresentSuccess
+19:11:19.269 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PopupSentinelTest#check_noWarning_afterExpectedCountUpdated
+19:11:19.269 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testBlankIdSkippedFallsToName
+19:11:19.272 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForAlertPresentTimeout
+19:11:19.274 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for alert to be present
+19:11:19.275 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForAlertPresentTimeout
+19:11:19.275 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PopupSentinelTest#check_returnsFalse_andDoesNotClose_whenDomModalVisible
+19:11:19.275 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_createsDistinctDirectoriesPerStep
+19:11:19.277 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\0
+19:11:19.277 [TestNG-test-Player Tests-4] WARN  autoqa.player.PopupSentinel — PopupSentinel: 1 visible DOM modal(s) detected matching 'By.cssSelector: [role='dialog']:not([aria-hidden='true'])'. If intentional, handle via an ALERT or CLICK event in the recording.
+19:11:19.278 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PopupSentinelTest#check_returnsFalse_andDoesNotClose_whenDomModalVisible
+19:11:19.278 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\0\screenshot.png
+19:11:19.278 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testCssFallbackWhenIdAndNameFail
+19:11:19.279 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\0\page-source.html (7 chars)
+19:11:19.279 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: x
+19:11:19.279 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForClickableSuccess
+19:11:19.279 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\0\console.log
+19:11:19.279 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [ID] not found: By.id: x
+19:11:19.280 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: x
+19:11:19.280 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\0\context.txt
+19:11:19.280 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [NAME] not found: By.name: x
+19:11:19.280 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [CSS]: #x
+19:11:19.280 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\1
+19:11:19.280 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for element CLICKABLE: By.name: submit
+19:11:19.281 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\1\screenshot.png
+19:11:19.281 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\1\page-source.html (7 chars)
+19:11:19.281 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PopupSentinelTest#check_returnsFalse_andDoesNotSwitch_whenExtraWindowDetected
+19:11:19.282 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\1\console.log
+19:11:19.282 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForClickableSuccess
+19:11:19.282 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\1\context.txt
+19:11:19.282 [TestNG-test-Player Tests-4] WARN  autoqa.player.PopupSentinel — PopupSentinel: 1 unexpected extra window(s) detected (expected 1, found 2). Use a WINDOW_SWITCH event to handle intentional new windows.
+19:11:19.283 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\7
+19:11:19.283 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testCssFallbackWhenIdAndNameFail
+19:11:19.283 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\7\screenshot.png
+19:11:19.283 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PopupSentinelTest#check_returnsFalse_andDoesNotSwitch_whenExtraWindowDetected
+19:11:19.284 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\7\page-source.html (7 chars)
+19:11:19.284 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\7\console.log
+19:11:19.285 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-471263407683459564\multi\7\context.txt
+19:11:19.285 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForClickableTimeout
+19:11:19.285 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_createsDistinctDirectoriesPerStep
+19:11:19.286 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testFindElementReturnsMockedElement
+19:11:19.286 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: my-id
+19:11:19.286 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Located element with ID: my-id
+19:11:19.286 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testFindElementReturnsMockedElement
+19:11:19.287 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PopupSentinelTest#check_returnsTrue_andDismissesAlert_whenAlertIsPresent
+19:11:19.287 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for element CLICKABLE: By.name: disabled-btn
+19:11:19.287 [TestNG-test-Player Tests-4] WARN  autoqa.player.PopupSentinel — PopupSentinel: unexpected native alert detected — dismissing. Text: 'Unexpected popup!'
+19:11:19.287 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForClickableTimeout
+19:11:19.288 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PopupSentinelTest#check_returnsTrue_andDismissesAlert_whenAlertIsPresent
+19:11:19.289 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testIdFoundFirst
+19:11:19.289 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: btn-submit
+19:11:19.290 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForNewWindowSuccess
+19:11:19.291 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testIdFoundFirst
+19:11:19.291 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PopupSentinelTest#check_returnsfalse_whenNoPopupPresent
+19:11:19.292 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for new window (known handles: 1)
+19:11:19.293 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PopupSentinelTest#check_returnsfalse_whenNoPopupPresent
+19:11:19.293 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_createsEvidenceDirectory
+19:11:19.294 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForNewWindowSuccess
+19:11:19.294 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testMaxAttemptsLimitsStrategiesTriedToOne
+19:11:19.295 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-14570119805678559725\session-abc\0
+19:11:19.296 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14570119805678559725\session-abc\0\screenshot.png
+19:11:19.296 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: a
+19:11:19.296 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [ID] not found: By.id: a
+19:11:19.297 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14570119805678559725\session-abc\0\page-source.html (17 chars)
+19:11:19.297 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14570119805678559725\session-abc\0\console.log
+19:11:19.297 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.PopupSentinelTest#check_stillDismisses_whenGetTextThrows
+19:11:19.298 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-14570119805678559725\session-abc\0\context.txt
+19:11:19.298 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testMaxAttemptsLimitsStrategiesTriedToOne
+19:11:19.298 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForNewWindowTimeout
+19:11:19.298 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_createsEvidenceDirectory
+19:11:19.298 [TestNG-test-Player Tests-4] WARN  autoqa.player.PopupSentinel — PopupSentinel: unexpected native alert detected — dismissing. Text: '(no text)'
+19:11:19.301 [TestNG-test-Player Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.PopupSentinelTest#check_stillDismisses_whenGetTextThrows
+19:11:19.302 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for new window (known handles: 1)
+19:11:19.303 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForNewWindowTimeout
+19:11:19.304 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testMaxAttemptsLimitsToTwo
+19:11:19.306 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: a
+19:11:19.306 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [ID] not found: By.id: a
+19:11:19.307 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: b
+19:11:19.307 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [NAME] not found: By.name: b
+19:11:19.308 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForPageLoadSuccess
+19:11:19.309 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_writesConsoleLog_emptyWhenNoEntries
+19:11:19.309 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testMaxAttemptsLimitsToTwo
+19:11:19.309 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for page load (document.readyState == complete)
+19:11:19.310 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-7515294233743536326\session-empty-log\0
+19:11:19.310 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForPageLoadSuccess
+19:11:19.311 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-7515294233743536326\session-empty-log\0\screenshot.png
+19:11:19.311 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-7515294233743536326\session-empty-log\0\page-source.html (7 chars)
+19:11:19.312 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-7515294233743536326\session-empty-log\0\console.log
+19:11:19.313 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-7515294233743536326\session-empty-log\0\context.txt
+19:11:19.313 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testNameFallbackWhenIdFails
+19:11:19.313 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: btn
+19:11:19.313 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_writesConsoleLog_emptyWhenNoEntries
+19:11:19.314 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForPageLoadTimeout
+19:11:19.314 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [ID] not found: By.id: btn
+19:11:19.314 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: submit-btn
+19:11:19.314 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testNameFallbackWhenIdFails
+19:11:19.316 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for page load (document.readyState == complete)
+19:11:19.317 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForPageLoadTimeout
+19:11:19.318 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testNameUsedWhenIdIsNull
+19:11:19.318 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: myField
+19:11:19.319 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testNameUsedWhenIdIsNull
+19:11:19.319 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForPresentSuccess
+19:11:19.319 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_writesConsoleLog_withEntries
+19:11:19.322 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for element PRESENT: By.id: some-id
+19:11:19.322 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForPresentSuccess
+19:11:19.323 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-16997586111314227157\session-log\3
+19:11:19.323 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16997586111314227157\session-log\3\screenshot.png
+19:11:19.323 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testNoUsableLocatorsThrowsException
+19:11:19.323 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16997586111314227157\session-log\3\page-source.html (7 chars)
+19:11:19.324 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 2 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16997586111314227157\session-log\3\console.log
+19:11:19.325 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testNoUsableLocatorsThrowsException
+19:11:19.326 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16997586111314227157\session-log\3\context.txt
+19:11:19.328 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_writesConsoleLog_withEntries
+19:11:19.329 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForPresentTimeout
+19:11:19.330 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.LocatorResolverTest#testXpathFallbackWhenAllOthersFail
+19:11:19.331 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [ID]: z
+19:11:19.331 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for element PRESENT: By.id: missing
+19:11:19.332 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [ID] not found: By.id: z
+19:11:19.333 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [NAME]: z
+19:11:19.333 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForPresentTimeout
+19:11:19.333 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [NAME] not found: By.name: z
+19:11:19.333 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [CSS]: .z
+19:11:19.333 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — [CSS] not found: By.cssSelector: .z
+19:11:19.334 [TestNG-test-Player Tests-2] DEBUG autoqa.player.LocatorResolver — Trying [XPATH]: //span[@class='z']
+19:11:19.335 [TestNG-test-Player Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.LocatorResolverTest#testXpathFallbackWhenAllOthersFail
+19:11:19.335 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_writesContextFile_withUrlAndEventType
+19:11:19.335 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForUrlContainsSuccess
+19:11:19.336 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-16925520861008693787\session-ctx\5
+19:11:19.336 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16925520861008693787\session-ctx\5\screenshot.png
+19:11:19.336 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for URL to contain: '/dashboard'
+19:11:19.337 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16925520861008693787\session-ctx\5\page-source.html (7 chars)
+19:11:19.337 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16925520861008693787\session-ctx\5\console.log
+19:11:19.338 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-16925520861008693787\session-ctx\5\context.txt
+19:11:19.338 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForUrlContainsSuccess
+19:11:19.341 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForUrlContainsTimeout
+19:11:19.343 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for URL to contain: '/admin'
+19:11:19.344 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForUrlContainsTimeout
+19:11:19.345 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_writesContextFile_withUrlAndEventType
+19:11:19.346 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForVisibleSuccess
+19:11:19.347 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 10s for element VISIBLE: By.cssSelector: .my-div
+19:11:19.349 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForVisibleSuccess
+19:11:19.350 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_writesPageSource
+19:11:19.351 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-17639959576878790067\session-src\1
+19:11:19.351 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-17639959576878790067\session-src\1\screenshot.png
+19:11:19.352 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.WaitStrategyTest#testWaitForVisibleTimeout
+19:11:19.352 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-17639959576878790067\session-src\1\page-source.html (75 chars)
+19:11:19.353 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-17639959576878790067\session-src\1\console.log
+19:11:19.353 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-17639959576878790067\session-src\1\context.txt
+19:11:19.354 [TestNG-test-Player Tests-3] DEBUG autoqa.player.WaitStrategy — Waiting up to 5s for element VISIBLE: By.cssSelector: .hidden
+19:11:19.355 [TestNG-test-Player Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.WaitStrategyTest#testWaitForVisibleTimeout
+19:11:19.361 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_writesPageSource
+19:11:19.366 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.player.EvidenceCollectorTest#collect_writesScreenshotPng
+19:11:19.367 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: writing artifacts to C:\Users\techai\AppData\Local\Temp\evidence-test-11869365191913018723\session-png\2
+19:11:19.368 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: screenshot saved to C:\Users\techai\AppData\Local\Temp\evidence-test-11869365191913018723\session-png\2\screenshot.png
+19:11:19.369 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: page source saved to C:\Users\techai\AppData\Local\Temp\evidence-test-11869365191913018723\session-png\2\page-source.html (7 chars)
+19:11:19.369 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: 0 console log line(s) saved to C:\Users\techai\AppData\Local\Temp\evidence-test-11869365191913018723\session-png\2\console.log
+19:11:19.369 [TestNG-test-Player Tests-1] INFO  autoqa.player.EvidenceCollector — EvidenceCollector: context saved to C:\Users\techai\AppData\Local\Temp\evidence-test-11869365191913018723\session-png\2\context.txt
+19:11:19.369 [TestNG-test-Player Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.player.EvidenceCollectorTest#collect_writesScreenshotPng
+19:11:19.382 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#alreadyRedacted_idempotent
+19:11:19.382 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testAllDefaults
+19:11:19.382 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#alreadyRedacted_idempotent
+19:11:19.382 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#callbackNull_doesNotThrow
+19:11:19.383 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#configuredSelector_isRedacted
+19:11:19.383 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.383 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#configuredSelector_isRedacted
+19:11:19.385 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#emailField_notRedacted
+19:11:19.385 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#emailField_notRedacted
+19:11:19.386 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#fieldIdContainsPass_isRedacted
+19:11:19.387 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.387 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#fieldIdContainsPass_isRedacted
+19:11:19.388 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#fieldIdContainsToken_isRedacted
+19:11:19.388 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.388 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#fieldIdContainsToken_isRedacted
+19:11:19.389 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#fieldNameContainsPin_isRedacted
+19:11:19.389 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.389 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#fieldNameContainsPin_isRedacted
+19:11:19.390 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#fieldNameContainsSecret_isRedacted
+19:11:19.390 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.390 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#fieldNameContainsSecret_isRedacted
+19:11:19.391 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#keyPressEvent_notRedacted
+19:11:19.391 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#keyPressEvent_notRedacted
+19:11:19.392 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testAllDefaults
+19:11:19.392 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#multipleSelectorsOneMatches_isRedacted
+19:11:19.392 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.392 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#multipleSelectorsOneMatches_isRedacted
+19:11:19.393 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testBlankIntegerFallsBackToDefault
+19:11:19.393 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#noElementInfo_sensitiveTypeStillRedacted
+19:11:19.393 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testBlankIntegerFallsBackToDefault
+19:11:19.393 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#noElementInfo_sensitiveTypeStillRedacted
+19:11:19.394 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#nonInputEvent_notRedacted
+19:11:19.394 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testCdpPortOverride
+19:11:19.394 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#nonInputEvent_notRedacted
+19:11:19.395 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testCdpPortOverride
+19:11:19.395 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#nonMatchingSelector_notRedacted
+19:11:19.396 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#nonMatchingSelector_notRedacted
+19:11:19.396 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testCdpWsTimeoutOverride
+19:11:19.396 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testCdpWsTimeoutOverride
+19:11:19.418 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#nullInputData_safeAndNotRedacted
+19:11:19.418 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#nullInputData_safeAndNotRedacted
+19:11:19.418 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testClasspathConfigLoadsWithoutError
+19:11:19.418 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#detectFrameChain_cdpThrows_returnsEmpty
+19:11:19.419 [TestNG-test-Recorder Tests-4] DEBUG autoqa.recorder.RecorderConfig — Loaded recorder base config from config.properties
+19:11:19.419 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testClasspathConfigLoadsWithoutError
+19:11:19.419 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#nullKeys_safeAndNotRedacted
+19:11:19.419 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#nullKeys_safeAndNotRedacted
+19:11:19.420 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testInvalidIntegerFallsBackToDefault
+19:11:19.420 [TestNG-test-Recorder Tests-4] WARN  autoqa.recorder.RecorderConfig — Invalid integer for key 'recorder.cdp.port': 'not-a-number' — using default 9222
+19:11:19.421 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testInvalidIntegerFallsBackToDefault
+19:11:19.421 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#ordinaryFieldName_notRedacted
+19:11:19.421 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#ordinaryFieldName_notRedacted
+19:11:19.421 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testOutputDirOverride
+19:11:19.421 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testOutputDirOverride
+19:11:19.422 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#passwordField_isRedacted
+19:11:19.422 [TestNG-test-Recorder Tests-2] DEBUG autoqa.recorder.FieldRedactor — Redacted sensitive input event
+19:11:19.422 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#passwordField_isRedacted
+19:11:19.422 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactSelectorsBlankString
+19:11:19.423 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactSelectorsBlankString
+19:11:19.423 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#passwordTypeWithNullElement_notRedacted
+19:11:19.423 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#passwordTypeWithNullElement_notRedacted
+19:11:19.424 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactSelectorsIsUnmodifiable
+19:11:19.424 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.FieldRedactorTest#textField_notRedacted
+19:11:19.424 [TestNG-test-Recorder Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.FieldRedactorTest#textField_notRedacted
+19:11:19.425 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactSelectorsIsUnmodifiable
+19:11:19.426 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactSelectorsOverride
+19:11:19.428 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactSelectorsOverride
+19:11:19.429 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactTypesDeduplicated
+19:11:19.429 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactTypesDeduplicated
+19:11:19.431 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactTypesEmptyString
+19:11:19.431 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactTypesEmptyString
+19:11:19.421 [TestNG-test-Recorder Tests-1] WARN  autoqa.recorder.DOMEnricher — DOMEnricher: frame detection failed at (10.0, 10.0): simulated connection drop
+java.io.IOException: simulated connection drop
+	at autoqa.recorder.CDPConnector.sendCommand(CDPConnector.java:133)
+	at autoqa.recorder.DOMEnricher.evaluateExpression(DOMEnricher.java:189)
+	at autoqa.recorder.DOMEnricher.detectFrameChain(DOMEnricher.java:160)
+	at autoqa.recorder.DOMEnricherTest.detectFrameChain_cdpThrows_returnsEmpty(DOMEnricherTest.java:303)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+19:11:19.431 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#detectFrameChain_cdpThrows_returnsEmpty
+19:11:19.431 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactTypesIsUnmodifiable
+19:11:19.433 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactTypesIsUnmodifiable
+19:11:19.433 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#detectFrameChain_emptyStringResult_returnsEmpty
+19:11:19.434 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testRedactTypesOverride
+19:11:19.434 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testRedactTypesOverride
+19:11:19.434 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#detectFrameChain_emptyStringResult_returnsEmpty
+19:11:19.435 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testSessionPrefixOverride
+19:11:19.435 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testSessionPrefixOverride
+19:11:19.436 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#detectFrameChain_insideIframe_returnsFrameId
+19:11:19.436 [TestNG-test-Recorder Tests-1] DEBUG autoqa.recorder.DOMEnricher — DOMEnricher: detected frame 'mainContent' at (200.0, 300.0)
+19:11:19.436 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testUrlWhitelistBlankIsEmpty
+19:11:19.436 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#detectFrameChain_insideIframe_returnsFrameId
+19:11:19.436 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testUrlWhitelistBlankIsEmpty
+19:11:19.438 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testUrlWhitelistDefaultEmpty
+19:11:19.438 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testUrlWhitelistDefaultEmpty
+19:11:19.438 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#detectFrameChain_topLevel_returnsEmpty
+19:11:19.439 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#detectFrameChain_topLevel_returnsEmpty
+19:11:19.439 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testUrlWhitelistOverride
+19:11:19.440 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testUrlWhitelistOverride
+19:11:19.441 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#enrich_cdpReturnsNullNode_returnsNull
+19:11:19.441 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.RecorderConfigTest#testUrlWhitelistTrimmed
+19:11:19.442 [TestNG-test-Recorder Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.RecorderConfigTest#testUrlWhitelistTrimmed
+19:11:19.442 [TestNG-test-Recorder Tests-1] DEBUG autoqa.recorder.DOMEnricher — DOMEnricher: no element found at (50.0, 75.0)
+19:11:19.442 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#enrich_cdpReturnsNullNode_returnsNull
+19:11:19.444 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#enrich_cdpThrows_returnsNull
+19:11:19.445 [TestNG-test-Recorder Tests-1] WARN  autoqa.recorder.DOMEnricher — DOMEnricher: failed to enrich element at (10.0, 10.0): simulated CDP connection error
+java.io.IOException: simulated CDP connection error
+	at autoqa.recorder.CDPConnector.sendCommand(CDPConnector.java:133)
+	at autoqa.recorder.DOMEnricher.evaluateExpression(DOMEnricher.java:189)
+	at autoqa.recorder.DOMEnricher.enrich(DOMEnricher.java:118)
+	at autoqa.recorder.DOMEnricherTest.enrich_cdpThrows_returnsNull(DOMEnricherTest.java:226)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+19:11:19.445 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#enrich_cdpThrows_returnsNull
+19:11:19.447 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#enrich_fractionalCoordinates_jsIsWellFormed
+19:11:19.449 [TestNG-test-Recorder Tests-1] DEBUG autoqa.recorder.DOMEnricher — DOMEnricher: CDP returned null value at (123.456, 789.012)
+19:11:19.452 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#enrich_fractionalCoordinates_jsIsWellFormed
+19:11:19.453 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#enrich_noId_cssStillPopulated
+19:11:19.455 [TestNG-test-Recorder Tests-1] DEBUG autoqa.recorder.DOMEnricher — DOMEnricher: enriched <button> id='null' at (40.0, 16.0)
+19:11:19.455 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#enrich_noId_cssStillPopulated
+19:11:19.456 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#enrich_nullResult_returnsNull
+19:11:19.476 [TestNG-test-Recorder Tests-1] DEBUG autoqa.recorder.DOMEnricher — DOMEnricher: CDP returned null value at (100.0, 200.0)
+19:11:19.477 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#enrich_nullResult_returnsNull
+19:11:19.479 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.DOMEnricherTest#enrich_validResult_parsesAllFields
+19:11:19.480 [TestNG-test-Recorder Tests-1] DEBUG autoqa.recorder.DOMEnricher — DOMEnricher: enriched <input> id='username' at (150.0, 218.0)
+19:11:19.488 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.488 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#callbackNull_doesNotThrow
+19:11:19.490 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#keyTyped_whenInactive_doesNotFire
+19:11:19.490 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#keyTyped_whenInactive_doesNotFire
+19:11:19.492 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#modifierKeyAlone_doesNotFireEvent
+19:11:19.492 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.492 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#modifierKeyAlone_doesNotFireEvent
+19:11:19.496 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#modifier_ctrlDown_attachedToNextKeyPress
+19:11:19.496 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.496 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#modifier_ctrlDown_attachedToNextKeyPress
+19:11:19.498 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#modifier_releasedBeforeNextKey_notAttached
+19:11:19.498 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.498 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#modifier_releasedBeforeNextKey_notAttached
+19:11:19.501 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#modifier_shiftCtrlDown_bothListed
+19:11:19.501 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.501 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#modifier_shiftCtrlDown_bothListed
+19:11:19.503 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#mouseClick_whenInactive_doesNotFire
+19:11:19.503 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#mouseClick_whenInactive_doesNotFire
+19:11:19.505 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeKeyPressed_enterKey_firesKEY_PRESS
+19:11:19.506 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.506 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeKeyPressed_enterKey_firesKEY_PRESS
+19:11:19.508 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeKeyPressed_f5Key_firesKEY_PRESS
+19:11:19.508 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.508 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeKeyPressed_f5Key_firesKEY_PRESS
+19:11:19.510 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeKeyPressed_tabKey_firesKEY_PRESS_withCodeTAB
+19:11:19.511 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.511 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeKeyPressed_tabKey_firesKEY_PRESS_withCodeTAB
+19:11:19.513 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeKeyTyped_charUndefined_doesNotFire
+19:11:19.513 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.513 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeKeyTyped_charUndefined_doesNotFire
+19:11:19.515 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeKeyTyped_firesINPUT_withCharacter
+19:11:19.515 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.515 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeKeyTyped_firesINPUT_withCharacter
+19:11:19.517 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_doubleLeft_firesDOUBLE_CLICK
+19:11:19.517 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.517 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_doubleLeft_firesDOUBLE_CLICK
+19:11:19.518 [TestNG-test-Recorder Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.DOMEnricherTest#enrich_validResult_parsesAllFields
+19:11:19.519 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_middleButton_firesCLICK
+19:11:19.520 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.520 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_middleButton_firesCLICK
+19:11:19.522 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_rightButton_firesCONTEXT_MENU
+19:11:19.522 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.522 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_rightButton_firesCONTEXT_MENU
+19:11:19.525 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_singleLeft_firesCLICK
+19:11:19.525 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.526 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_singleLeft_firesCLICK
+19:11:19.528 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_updatesLastPosition
+19:11:19.529 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.529 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeMouseClicked_updatesLastPosition
+19:11:19.531 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#nativeMouseMoved_updatesPositionWithoutEvent
+19:11:19.531 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.531 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#nativeMouseMoved_updatesPositionWithoutEvent
+19:11:19.533 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#start_registersHookAndSetsActiveTrue
+19:11:19.535 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.537 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#start_registersHookAndSetsActiveTrue
+19:11:19.539 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#start_throwsRuntimeException_onNativeHookException
+19:11:19.541 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#start_throwsRuntimeException_onNativeHookException
+19:11:19.543 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#stop_logsWarning_onUnregisterException
+19:11:19.545 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.545 [TestNG-test-Recorder Tests-3] WARN  autoqa.recorder.OSInputCapture — Error unregistering native hook: already unregistered
+19:11:19.545 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture stopped
+19:11:19.546 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#stop_logsWarning_onUnregisterException
+19:11:19.548 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.recorder.OSInputCaptureTest#stop_unregistersHookAndSetsActiveFalse
+19:11:19.549 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture started
+19:11:19.549 [TestNG-test-Recorder Tests-3] INFO  autoqa.recorder.OSInputCapture — OS input capture stopped
+19:11:19.552 [TestNG-test-Recorder Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.recorder.OSInputCaptureTest#stop_unregistersHookAndSetsActiveFalse
+19:11:19.561 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_allHealingFails_throwsAutoQAException
+19:11:19.561 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#domComparisonFallback_blankText_returnsFailure
+19:11:19.562 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#deriveClassName_blankSessionId_fallsBackToTimestamp
+19:11:19.563 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#deriveClassName_blankSessionId_fallsBackToTimestamp
+19:11:19.566 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#deriveClassName_nullSessionId_fallsBackToTimestamp
+19:11:19.567 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#deriveClassName_nullSessionId_fallsBackToTimestamp
+19:11:19.569 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#deriveClassName_sessionIdWithHyphensOnly_fallsBackOrEmpty
+19:11:19.569 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#deriveClassName_sessionIdWithHyphensOnly_fallsBackOrEmpty
+19:11:19.572 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#deriveClassName_shortSessionId_usesFullSanitisedId
+19:11:19.572 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#deriveClassName_shortSessionId_usesFullSanitisedId
+19:11:19.575 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#deriveClassName_usesFirst8CharsOfSanitisedId
+19:11:19.575 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#deriveClassName_usesFirst8CharsOfSanitisedId
+19:11:19.578 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#deriveClassName_validSessionId_sanitizesCorrectly
+19:11:19.578 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#deriveClassName_validSessionId_sanitizesCorrectly
+19:11:19.581 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#extractJavaCode_emptyFencedBlock_returnsEmptyString
+19:11:19.581 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#extractJavaCode_emptyFencedBlock_returnsEmptyString
+19:11:19.583 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#extractJavaCode_multilineClass_preservesInternalNewlines
+19:11:19.584 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#extractJavaCode_multilineClass_preservesInternalNewlines
+19:11:19.587 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#extractJavaCode_stripsLeadingAndTrailingWhitespace
+19:11:19.587 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#extractJavaCode_stripsLeadingAndTrailingWhitespace
+19:11:19.590 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#extractJavaCode_withFences_extractsInner
+19:11:19.590 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#extractJavaCode_withFences_extractsInner
+19:11:19.593 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#extractJavaCode_withUnlabelledFences_extractsInner
+19:11:19.593 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#extractJavaCode_withUnlabelledFences_extractsInner
+19:11:19.596 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#extractJavaCode_withoutFences_returnsFullResponse
+19:11:19.596 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#extractJavaCode_withoutFences_returnsFullResponse
+19:11:19.598 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_llmThrows_propagatesException
+19:11:19.694 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#domComparisonFallback_blankText_returnsFailure
+19:11:19.696 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.696 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#domComparisonFallback_longText_truncatesTo30Chars
+19:11:19.697 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_llmThrows_propagatesException
+19:11:19.697 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — DOM comparison fallback generated XPath: //a[contains(normalize-space(text()),'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')]
+19:11:19.697 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#domComparisonFallback_longText_truncatesTo30Chars
+19:11:19.698 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#domComparisonFallback_noText_returnsFailure
+19:11:19.698 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#domComparisonFallback_noText_returnsFailure
+19:11:19.714 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#domComparisonFallback_nullTagName_usesWildcard
+19:11:19.715 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_outputDirCreatedIfMissing
+19:11:19.715 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — DOM comparison fallback generated XPath: //*[contains(normalize-space(text()),'Click me')]
+19:11:19.715 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#domComparisonFallback_nullTagName_usesWildcard
+19:11:19.715 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.716 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#domComparisonFallback_withText_returnsXpath
+19:11:19.716 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — DOM comparison fallback generated XPath: //button[contains(normalize-space(text()),'Submit Form')]
+19:11:19.716 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#domComparisonFallback_withText_returnsXpath
+19:11:19.717 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.717 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — LLM healing failed (cannot heal), trying DOM comparison fallback
+19:11:19.717 [TestNG-test-AI Tests-1] ERROR autoqa.ai.HealingInterceptor — All healing strategies exhausted for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.717 [TestNG-test-AI Tests-4] INFO  autoqa.ai.TestGenerator — Generated test: C:\Users\techai\AppData\Local\Temp\autoqa-testgen-11561973909075705231\nested\output\AutoQATest_abc12345.java
+19:11:19.717 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_outputDirCreatedIfMissing
+19:11:19.717 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_blankResponse_returnsFailure
+19:11:19.717 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_allHealingFails_throwsAutoQAException
+19:11:19.718 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.718 [TestNG-test-AI Tests-3] INFO  autoqa.ai.LocatorHealer — Healer response: 
+19:11:19.718 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_blankResponse_returnsFailure
+19:11:19.718 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_healedLocatorNotFound_throwsAutoQAException
+19:11:19.719 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_cannotHealResponse_returnsFailure
+19:11:19.719 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.719 [TestNG-test-AI Tests-3] INFO  autoqa.ai.LocatorHealer — Healer response: CANNOT_HEAL
+19:11:19.719 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_cannotHealResponse_returnsFailure
+19:11:19.720 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.720 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING ATTEMPT | element=ElementInfo{tag='null', id='null', css='null'} | strategy=CSS | locator=#ghost | url=http://example.com
+19:11:19.721 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_groupedXpathResponse_returnsXpathStrategy
+19:11:19.721 [TestNG-test-AI Tests-1] ERROR autoqa.ai.HealingInterceptor — HEALING FAILED | element=ElementInfo{tag='null', id='null', css='null'} | healed locator did not find element: #ghost
+19:11:19.721 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_healedLocatorNotFound_throwsAutoQAException
+19:11:19.721 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.721 [TestNG-test-AI Tests-3] INFO  autoqa.ai.LocatorHealer — Healer response: (//input[@type='submit'])[1]
+19:11:19.721 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_groupedXpathResponse_returnsXpathStrategy
+19:11:19.722 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_healingAttemptedOnlyOnce
+19:11:19.722 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_outputFileIsInsideOutputDir
+19:11:19.722 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_llmException_returnsFailure
+19:11:19.722 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.722 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.723 [TestNG-test-AI Tests-3] WARN  autoqa.ai.LocatorHealer — LLM healing request failed: timeout
+19:11:19.723 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_llmException_returnsFailure
+19:11:19.723 [TestNG-test-AI Tests-4] INFO  autoqa.ai.TestGenerator — Generated test: C:\Users\techai\AppData\Local\Temp\autoqa-testgen-5414837739933306923\AutoQATest_abc12345.java
+19:11:19.723 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.723 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — LLM healing failed (nope), trying DOM comparison fallback
+19:11:19.723 [TestNG-test-AI Tests-1] ERROR autoqa.ai.HealingInterceptor — All healing strategies exhausted for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.724 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_healingAttemptedOnlyOnce
+19:11:19.724 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_longPageSource_isTruncatedBeforeSending
+19:11:19.724 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_outputFileIsInsideOutputDir
+19:11:19.724 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_llmFails_domFallbackSucceeds
+19:11:19.725 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.725 [TestNG-test-AI Tests-3] INFO  autoqa.ai.LocatorHealer — Healer response: #found
+19:11:19.725 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.725 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — LLM healing failed (LLM returned CANNOT_HEAL), trying DOM comparison fallback
+19:11:19.725 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING ATTEMPT | element=ElementInfo{tag='null', id='null', css='null'} | strategy=XPATH | locator=//button[contains(normalize-space(text()),'Submit')] | url=http://example.com
+19:11:19.726 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING SUCCESS | element=ElementInfo{tag='null', id='null', css='null'} | healed locator: //button[contains(normalize-space(text()),'Submit')]
+19:11:19.726 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_llmFails_domFallbackSucceeds
+19:11:19.726 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_longPageSource_isTruncatedBeforeSending
+19:11:19.727 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_noSuchElementException_healingSucceeds
+19:11:19.727 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_validCssResponse_returnsCssStrategy
+19:11:19.727 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='button', id='old-id', css='null'}
+19:11:19.727 [TestNG-test-AI Tests-3] INFO  autoqa.ai.LocatorHealer — Healer response: #submit-button
+19:11:19.727 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_validCssResponse_returnsCssStrategy
+19:11:19.728 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_promptContainsSessionId
+19:11:19.728 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#heal_xpathResponse_returnsXpathStrategy
+19:11:19.729 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.729 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING ATTEMPT | element=ElementInfo{tag='null', id='null', css='null'} | strategy=XPATH | locator=//button[@data-id='submit'] | url=http://example.com
+19:11:19.729 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING SUCCESS | element=ElementInfo{tag='null', id='null', css='null'} | healed locator: //button[@data-id='submit']
+19:11:19.729 [TestNG-test-AI Tests-3] DEBUG autoqa.ai.LocatorHealer — Sending healing prompt for element: ElementInfo{tag='null', id='null', css='null'}
+19:11:19.729 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_noSuchElementException_healingSucceeds
+19:11:19.729 [TestNG-test-AI Tests-3] INFO  autoqa.ai.LocatorHealer — Healer response: //button[@data-testid='submit']
+19:11:19.729 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#heal_xpathResponse_returnsXpathStrategy
+19:11:19.730 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_resolverFails_healingSucceeds
+19:11:19.730 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#healingResult_failed_fieldsAreCorrect
+19:11:19.730 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#healingResult_failed_fieldsAreCorrect
+19:11:19.731 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.731 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LocatorHealerTest#healingResult_success_fieldsAreCorrect
+19:11:19.731 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING ATTEMPT | element=ElementInfo{tag='null', id='null', css='null'} | strategy=CSS | locator=#new-btn | url=http://example.com
+19:11:19.731 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING SUCCESS | element=ElementInfo{tag='null', id='null', css='null'} | healed locator: #new-btn
+19:11:19.731 [TestNG-test-AI Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LocatorHealerTest#healingResult_success_fieldsAreCorrect
+19:11:19.731 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_resolverFails_healingSucceeds
+19:11:19.732 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_resolverFails_passesDomContextToHealer
+19:11:19.732 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.733 [TestNG-test-AI Tests-1] WARN  autoqa.ai.HealingInterceptor — LocatorResolver failed for element: ElementInfo{tag='null', id='null', css='null'}. Attempting LLM healing...
+19:11:19.733 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING ATTEMPT | element=ElementInfo{tag='null', id='null', css='null'} | strategy=CSS | locator=#el | url=http://test.example.com/page
+19:11:19.733 [TestNG-test-AI Tests-1] INFO  autoqa.ai.HealingInterceptor — HEALING SUCCESS | element=ElementInfo{tag='null', id='null', css='null'} | healed locator: #el
+19:11:19.733 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_resolverFails_passesDomContextToHealer
+19:11:19.733 [TestNG-test-AI Tests-4] INFO  autoqa.ai.TestGenerator — Generated test: C:\Users\techai\AppData\Local\Temp\autoqa-testgen-12161772977413826735\AutoQATest_abc12345.java
+19:11:19.733 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_promptContainsSessionId
+19:11:19.734 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.HealingInterceptorTest#findElement_success_noHealingNeeded
+19:11:19.735 [TestNG-test-AI Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.HealingInterceptorTest#findElement_success_noHealingNeeded
+19:11:19.737 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_promptContainsStepDetails
+19:11:19.737 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.738 [TestNG-test-AI Tests-4] INFO  autoqa.ai.TestGenerator — Generated test: C:\Users\techai\AppData\Local\Temp\autoqa-testgen-17752656501695763461\AutoQATest_abc12345.java
+19:11:19.738 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_promptContainsStepDetails
+19:11:19.741 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_systemPromptMentionsTestNG
+19:11:19.742 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.742 [TestNG-test-AI Tests-4] INFO  autoqa.ai.TestGenerator — Generated test: C:\Users\techai\AppData\Local\Temp\autoqa-testgen-10407213841295580192\AutoQATest_abc12345.java
+19:11:19.742 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_systemPromptMentionsTestNG
+19:11:19.746 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.TestGeneratorTest#generate_validSession_writesJavaFile
+19:11:19.746 [TestNG-test-AI Tests-4] DEBUG autoqa.ai.TestGenerator — Sending test generation prompt for session: abc12345-1234-1234-1234-123456789012 (2 events)
+19:11:19.747 [TestNG-test-AI Tests-4] INFO  autoqa.ai.TestGenerator — Generated test: C:\Users\techai\AppData\Local\Temp\autoqa-testgen-13721941497628826252\AutoQATest_abc12345.java
+19:11:19.748 [TestNG-test-AI Tests-4] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.TestGeneratorTest#generate_validSession_writesJavaFile
+19:11:21.118 [TestNG-test-AI Tests-2] INFO  org.eclipse.jetty.server.Server — jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.18+8
+19:11:21.196 [TestNG-test-AI Tests-2] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@4fdea09{/__admin,null,AVAILABLE}
+19:11:21.207 [TestNG-test-AI Tests-2] INFO  o.e.j.s.handler.ContextHandler.ROOT — RequestHandlerClass from context returned com.github.tomakehurst.wiremock.http.StubRequestHandler. Normalized mapped under returned 'null'
+19:11:21.208 [TestNG-test-AI Tests-2] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@77c0f943{/,null,AVAILABLE}
+19:11:21.245 [TestNG-test-AI Tests-2] INFO  o.e.jetty.server.AbstractConnector — Started NetworkTrafficServerConnector@10bf88d3{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:64483}
+19:11:21.249 [TestNG-test-AI Tests-2] INFO  org.eclipse.jetty.server.Server — Started Server@1fcc5ef8{STARTING}[11.0.20,sto=1000] @6776ms
+19:11:21.755 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#chatMessage_systemFactory_setsCorrectRole
+19:11:21.755 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#chatMessage_systemFactory_setsCorrectRole
+19:11:21.757 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#chatMessage_userFactory_setsCorrectRole
+19:11:21.757 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#chatMessage_userFactory_setsCorrectRole
+19:11:21.758 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_400error_throwsWithoutRetrying
+19:11:21.798 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=test
+19:11:22.262 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_400error_throwsWithoutRetrying
+19:11:22.264 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_500error_retriesAndThrows
+19:11:22.265 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=test
+19:11:22.271 [TestNG-test-AI Tests-2] WARN  autoqa.ai.LLMClient — LLM endpoint returned 500 on attempt 1: Internal Server Error
+19:11:22.275 [TestNG-test-AI Tests-2] WARN  autoqa.ai.LLMClient — Retrying LLM request (attempt 1/1) after 100ms delay
+19:11:22.392 [TestNG-test-AI Tests-2] WARN  autoqa.ai.LLMClient — LLM endpoint returned 500 on attempt 2: Internal Server Error
+19:11:22.392 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_500error_retriesAndThrows
+19:11:22.395 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_baseUrlWithTrailingSlash_stillWorksCorrectly
+19:11:22.395 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=hi
+19:11:22.409 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_baseUrlWithTrailingSlash_stillWorksCorrectly
+19:11:22.411 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_emptyChoicesArray_throwsIOException
+19:11:22.411 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=test
+19:11:22.414 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_emptyChoicesArray_throwsIOException
+19:11:22.415 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_malformedJson_throwsIOException
+19:11:22.416 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=test
+19:11:22.426 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_malformedJson_throwsIOException
+19:11:22.427 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_responseWithWhitespace_returnsTrimmedContent
+19:11:22.427 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=test
+19:11:22.429 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_responseWithWhitespace_returnsTrimmedContent
+19:11:22.430 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_successfulResponse_returnsContent
+19:11:22.430 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=test
+19:11:22.432 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_successfulResponse_returnsContent
+19:11:22.432 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.ai.LLMClientTest#complete_withSystemAndUserMessages_returnsContent
+19:11:22.433 [TestNG-test-AI Tests-2] DEBUG autoqa.ai.LLMClient — LLM request to http://localhost:64483/v1 | model=test-model | user_prompt_start=Find the submit button.
+19:11:22.434 [TestNG-test-AI Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.ai.LLMClientTest#complete_withSystemAndUserMessages_returnsContent
+19:11:22.441 [TestNG-test-AI Tests-2] INFO  org.eclipse.jetty.server.Server — Stopped Server@1fcc5ef8{STOPPING}[11.0.20,sto=1000]
+19:11:22.442 [TestNG-test-AI Tests-2] INFO  org.eclipse.jetty.server.Server — Shutdown Server@1fcc5ef8{STOPPING}[11.0.20,sto=1000]
+19:11:22.449 [TestNG-test-AI Tests-2] INFO  o.e.jetty.server.AbstractConnector — Stopped NetworkTrafficServerConnector@10bf88d3{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:0}
+19:11:22.452 [TestNG-test-AI Tests-2] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@77c0f943{/,null,STOPPED}
+19:11:22.452 [TestNG-test-AI Tests-2] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@4fdea09{/__admin,null,STOPPED}
+19:11:22.463 [TestNG-test-Vision Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.vision.StubVisionServiceTest#analyzeScreenshot_alwaysReturnsEmpty
+19:11:22.463 [TestNG-test-Vision Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.vision.StubVisionServiceTest#analyzeScreenshot_alwaysReturnsEmpty
+19:11:22.464 [TestNG-test-Vision Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.vision.StubVisionServiceTest#factory_withVisionDisabled_returnsStub
+19:11:22.465 [TestNG-test-Vision Tests-2] INFO  autoqa.vision.VisionServiceFactory — Vision disabled (vision.enabled=false) — using StubVisionService
+19:11:22.465 [TestNG-test-Vision Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.vision.StubVisionServiceTest#factory_withVisionDisabled_returnsStub
+19:11:22.465 [TestNG-test-Vision Tests-1] INFO  org.eclipse.jetty.server.Server — jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.18+8
+19:11:22.465 [TestNG-test-Vision Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.vision.StubVisionServiceTest#isPopupPresent_alwaysReturnsFalse
+19:11:22.466 [TestNG-test-Vision Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.vision.StubVisionServiceTest#isPopupPresent_alwaysReturnsFalse
+19:11:22.469 [TestNG-test-Vision Tests-1] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@4080f7a5{/__admin,null,AVAILABLE}
+19:11:22.469 [TestNG-test-Vision Tests-1] INFO  o.e.j.s.handler.ContextHandler.ROOT — RequestHandlerClass from context returned com.github.tomakehurst.wiremock.http.StubRequestHandler. Normalized mapped under returned 'null'
+19:11:22.469 [TestNG-test-Vision Tests-1] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@2a5cb30a{/,null,AVAILABLE}
+19:11:22.474 [TestNG-test-Vision Tests-1] INFO  o.e.jetty.server.AbstractConnector — Started NetworkTrafficServerConnector@44a4a13d{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:63324}
+19:11:22.474 [TestNG-test-Vision Tests-1] INFO  org.eclipse.jetty.server.Server — Started Server@5a87bb26{STARTING}[11.0.20,sto=1000] @8001ms
+19:11:22.474 [TestNG-test-Vision Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.vision.NvidiaVisionClientTest#analyzeScreenshot_nimError_returnsEmptyList
+19:11:22.494 [TestNG-test-Vision Tests-1] WARN  autoqa.vision.NvidiaVisionClient — Vision analysis failed: NIM API error: 500 Server Error — returning empty list
+19:11:22.494 [TestNG-test-Vision Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.vision.NvidiaVisionClientTest#analyzeScreenshot_nimError_returnsEmptyList
+19:11:22.496 [TestNG-test-Vision Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.vision.NvidiaVisionClientTest#analyzeScreenshot_parsesElements
+19:11:22.500 [TestNG-test-Vision Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.vision.NvidiaVisionClientTest#analyzeScreenshot_parsesElements
+19:11:22.500 [TestNG-test-Vision Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.vision.NvidiaVisionClientTest#isPopupPresent_yesResponse_returnsTrue
+19:11:22.502 [TestNG-test-Vision Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.vision.NvidiaVisionClientTest#isPopupPresent_yesResponse_returnsTrue
+19:11:22.504 [TestNG-test-Vision Tests-1] INFO  org.eclipse.jetty.server.Server — Stopped Server@5a87bb26{STOPPING}[11.0.20,sto=1000]
+19:11:22.504 [TestNG-test-Vision Tests-1] INFO  org.eclipse.jetty.server.Server — Shutdown Server@5a87bb26{STOPPING}[11.0.20,sto=1000]
+19:11:22.506 [TestNG-test-Vision Tests-1] INFO  o.e.jetty.server.AbstractConnector — Stopped NetworkTrafficServerConnector@44a4a13d{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:0}
+19:11:22.506 [TestNG-test-Vision Tests-1] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@2a5cb30a{/,null,STOPPED}
+19:11:22.507 [TestNG-test-Vision Tests-1] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@4080f7a5{/__admin,null,STOPPED}
+19:11:22.515 [TestNG-test-Reporting Tests-3] INFO  org.eclipse.jetty.server.Server — jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.18+8
+19:11:22.516 [TestNG-test-Reporting Tests-2] INFO  org.eclipse.jetty.server.Server — jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.18+8
+19:11:22.542 [TestNG-test-Reporting Tests-2] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@ca421a1{/__admin,null,AVAILABLE}
+19:11:22.542 [TestNG-test-Reporting Tests-3] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@6158ce59{/__admin,null,AVAILABLE}
+19:11:22.542 [TestNG-test-Reporting Tests-3] INFO  o.e.j.s.handler.ContextHandler.ROOT — RequestHandlerClass from context returned com.github.tomakehurst.wiremock.http.StubRequestHandler. Normalized mapped under returned 'null'
+19:11:22.542 [TestNG-test-Reporting Tests-2] INFO  o.e.j.s.handler.ContextHandler.ROOT — RequestHandlerClass from context returned com.github.tomakehurst.wiremock.http.StubRequestHandler. Normalized mapped under returned 'null'
+19:11:22.542 [TestNG-test-Reporting Tests-3] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@1bbc89c2{/,null,AVAILABLE}
+19:11:22.542 [TestNG-test-Reporting Tests-2] INFO  o.e.j.server.handler.ContextHandler — Started o.e.j.s.ServletContextHandler@3aa56e62{/,null,AVAILABLE}
+19:11:22.546 [TestNG-test-Reporting Tests-2] INFO  o.e.jetty.server.AbstractConnector — Started NetworkTrafficServerConnector@607808c{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:63330}
+19:11:22.546 [TestNG-test-Reporting Tests-2] INFO  org.eclipse.jetty.server.Server — Started Server@e39c5aa{STARTING}[11.0.20,sto=1000] @8074ms
+19:11:22.546 [TestNG-test-Reporting Tests-3] INFO  o.e.jetty.server.AbstractConnector — Started NetworkTrafficServerConnector@36e7966a{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:63329}
+19:11:22.546 [TestNG-test-Reporting Tests-3] INFO  org.eclipse.jetty.server.Server — Started Server@225a7aab{STARTING}[11.0.20,sto=1000] @8074ms
+19:11:22.547 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#createBug_networkError_returnsNull
+19:11:22.547 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_existingPage_putsWithNewVersion
+19:11:22.565 [TestNG-test-Reporting Tests-3] ERROR autoqa.reporting.JiraClient — Jira createBug I/O error for summary='Unreachable summary': Failed to connect to localhost/[0:0:0:0:0:0:0:1]:1
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:1
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297)
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207)
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226)
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106)
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74)
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255)
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201)
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154)
+	at autoqa.reporting.JiraClient.createBug(JiraClient.java:123)
+	at autoqa.reporting.JiraClientTest.createBug_networkError_returnsNull(JiraClientTest.java:132)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:1
+		... 36 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: getsockopt
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 35 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: getsockopt
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+	... 35 common frames omitted
+19:11:22.567 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#createBug_networkError_returnsNull
+19:11:22.592 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#createBug_notConfigured_returnsNull
+19:11:22.593 [TestNG-test-Reporting Tests-3] WARN  autoqa.reporting.JiraClient — JiraClient is not configured — skipping createBug for summary='Summary'
+19:11:22.593 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#createBug_notConfigured_returnsNull
+19:11:22.594 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#createBug_serverError_returnsNull
+19:11:22.601 [TestNG-test-Reporting Tests-3] ERROR autoqa.reporting.JiraClient — Jira createBug failed with HTTP 500: Internal Server Error
+19:11:22.601 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#createBug_serverError_returnsNull
+19:11:22.602 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#createBug_success_returnsIssueKey
+19:11:22.606 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.JiraClient — Jira bug created: PROJ-99 — 'Test failure in login flow'
+19:11:22.606 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#createBug_success_returnsIssueKey
+19:11:22.607 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#createBug_usesDefaultProjectKeyWhenNullProjectProvided
+19:11:22.607 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailedWithTimeout_nullThrowable_doesNotThrow
+19:11:22.608 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test timed out — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.609 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailedWithTimeout_nullThrowable_doesNotThrow
+19:11:22.609 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.JiraClient — Jira bug created: AUTOQA-7 — 'Summary'
+19:11:22.609 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#createBug_usesDefaultProjectKeyWhenNullProjectProvided
+19:11:22.611 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#isConfigured_allFields_returnsTrue
+19:11:22.611 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#isConfigured_allFields_returnsTrue
+19:11:22.612 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#isConfigured_blankApiToken_returnsFalse
+19:11:22.613 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#isConfigured_blankApiToken_returnsFalse
+19:11:22.614 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#isConfigured_blankUrl_returnsFalse
+19:11:22.614 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#isConfigured_blankUrl_returnsFalse
+19:11:22.615 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#isConfigured_blankUsername_returnsFalse
+19:11:22.615 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailedWithTimeout_withException_doesNotThrow
+19:11:22.616 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#isConfigured_blankUsername_returnsFalse
+19:11:22.616 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#updateTestExecution_networkError_noException
+19:11:22.616 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test timed out — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.617 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailedWithTimeout_withException_doesNotThrow
+19:11:22.618 [TestNG-test-Reporting Tests-3] ERROR autoqa.reporting.JiraClient — Jira updateTestExecution I/O error for issue=PROJ-3: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:1
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:1
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297)
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207)
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226)
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106)
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74)
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255)
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201)
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154)
+	at autoqa.reporting.JiraClient.updateTestExecution(JiraClient.java:175)
+	at autoqa.reporting.JiraClientTest.lambda$updateTestExecution_networkError_noException$2(JiraClientTest.java:193)
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:892)
+	at org.assertj.core.api.AssertionsForClassTypes.assertThatCode(AssertionsForClassTypes.java:863)
+	at org.assertj.core.api.Assertions.assertThatCode(Assertions.java:1286)
+	at autoqa.reporting.JiraClientTest.updateTestExecution_networkError_noException(JiraClientTest.java:193)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:1
+		... 41 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: getsockopt
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 40 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: getsockopt
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+	... 40 common frames omitted
+19:11:22.621 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#updateTestExecution_networkError_noException
+19:11:22.621 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailure_emptyEvidenceDir_doesNotThrow
+19:11:22.622 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#updateTestExecution_serverError_noException
+19:11:22.623 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test failed  — autoqa.reporting.DummyTest#dummyMethod : nothing here
+19:11:22.625 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailure_emptyEvidenceDir_doesNotThrow
+19:11:22.626 [TestNG-test-Reporting Tests-3] ERROR autoqa.reporting.JiraClient — Jira updateTestExecution failed with HTTP 500 for issue=PROJ-2: Server Error
+19:11:22.626 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.ConfluenceClient — Confluence page updated: id=55555 version=4 title='AutoQA Regression Report'
+19:11:22.626 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#updateTestExecution_serverError_noException
+19:11:22.627 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.JiraClientTest#updateTestExecution_success_noException
+19:11:22.629 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailure_nonExistentEvidenceDir_doesNotThrow
+19:11:22.630 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.JiraClient — Comment added to Jira issue PROJ-1
+19:11:22.630 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test failed  — autoqa.reporting.DummyTest#dummyMethod : boom
+19:11:22.630 [TestNG-test-Reporting Tests-3] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.JiraClientTest#updateTestExecution_success_noException
+19:11:22.631 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailure_nonExistentEvidenceDir_doesNotThrow
+19:11:22.631 [TestNG-test-Reporting Tests-3] INFO  org.eclipse.jetty.server.Server — Stopped Server@225a7aab{STOPPING}[11.0.20,sto=1000]
+19:11:22.631 [TestNG-test-Reporting Tests-3] INFO  org.eclipse.jetty.server.Server — Shutdown Server@225a7aab{STOPPING}[11.0.20,sto=1000]
+19:11:22.632 [TestNG-test-Reporting Tests-3] INFO  o.e.jetty.server.AbstractConnector — Stopped NetworkTrafficServerConnector@36e7966a{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:0}
+19:11:22.632 [TestNG-test-Reporting Tests-3] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@1bbc89c2{/,null,STOPPED}
+19:11:22.632 [TestNG-test-Reporting Tests-3] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@6158ce59{/__admin,null,STOPPED}
+19:11:22.634 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailure_nullThrowable_doesNotThrow
+19:11:22.634 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test failed  — autoqa.reporting.DummyTest#dummyMethod : (no exception)
+19:11:22.634 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailure_nullThrowable_doesNotThrow
+19:11:22.637 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailure_withEvidenceDir_attachesFilesWithoutError
+19:11:22.639 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test failed  — autoqa.reporting.DummyTest#dummyMethod : step 0 failed
+19:11:22.643 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_existingPage_putsWithNewVersion
+19:11:22.644 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_networkError_logsNoException
+19:11:22.646 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailure_withEvidenceDir_attachesFilesWithoutError
+19:11:22.645 [TestNG-test-Reporting Tests-2] ERROR autoqa.reporting.ConfluenceClient — ConfluenceClient createOrUpdatePage error for 'Unreachable Page': Failed to connect to localhost/[0:0:0:0:0:0:0:1]:1
+java.net.ConnectException: Failed to connect to localhost/[0:0:0:0:0:0:0:1]:1
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297)
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207)
+	at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226)
+	at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106)
+	at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74)
+	at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255)
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201)
+	at okhttp3.internal.connection.RealCall.execute(RealCall.kt:154)
+	at autoqa.reporting.ConfluenceClient.findPage(ConfluenceClient.java:166)
+	at autoqa.reporting.ConfluenceClient.createOrUpdatePage(ConfluenceClient.java:134)
+	at autoqa.reporting.ConfluenceClientTest.lambda$createOrUpdatePage_networkError_logsNoException$3(ConfluenceClientTest.java:185)
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:892)
+	at org.assertj.core.api.AssertionsForClassTypes.assertThatCode(AssertionsForClassTypes.java:863)
+	at org.assertj.core.api.Assertions.assertThatCode(Assertions.java:1286)
+	at autoqa.reporting.ConfluenceClientTest.createOrUpdatePage_networkError_logsNoException(ConfluenceClientTest.java:185)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+	Suppressed: java.net.ConnectException: Failed to connect to localhost/127.0.0.1:1
+		... 42 common frames omitted
+	Caused by: java.net.ConnectException: Connection refused: getsockopt
+		at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+		at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684)
+		at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+		at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+		at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+		at java.base/java.net.Socket.connect(Socket.java:633)
+		at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+		at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+		... 41 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: getsockopt
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:684)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+	... 41 common frames omitted
+19:11:22.648 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_networkError_logsNoException
+19:11:22.648 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_newPage_postsCorrectly
+19:11:22.651 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestFailure_withException_doesNotThrow
+19:11:22.651 [TestNG-test-Reporting Tests-1] WARN  autoqa.reporting.AllureListener — AllureListener: test failed  — autoqa.reporting.DummyTest#dummyMethod : element not found after 3 attempts
+19:11:22.652 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestFailure_withException_doesNotThrow
+19:11:22.654 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.ConfluenceClient — Confluence page created: id=12345 title='AutoQA Report'
+19:11:22.654 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_newPage_postsCorrectly
+19:11:22.654 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_notConfigured_doesNothing
+19:11:22.655 [TestNG-test-Reporting Tests-2] WARN  autoqa.reporting.ConfluenceClient — ConfluenceClient is not configured — skipping createOrUpdatePage for 'Some Page'
+19:11:22.655 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestSkipped_noCause_doesNotThrow
+19:11:22.656 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test skipped — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.657 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_notConfigured_doesNothing
+19:11:22.657 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestSkipped_noCause_doesNotThrow
+19:11:22.657 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_nullSpaceKey_usesDefault
+19:11:22.660 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestSkipped_withCause_doesNotThrow
+19:11:22.661 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test skipped — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.661 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestSkipped_withCause_doesNotThrow
+19:11:22.662 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.ConfluenceClient — Confluence page created: id=77777 title='Default Space Page'
+19:11:22.666 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestStart_withBrowserProperties_doesNotThrow
+19:11:22.667 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.667 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestStart_withBrowserProperties_doesNotThrow
+19:11:22.670 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_nullSpaceKey_usesDefault
+19:11:22.670 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestStart_withNoBrowserProperties_doesNotThrow
+19:11:22.671 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_serverError_logsNoException
+19:11:22.671 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.671 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestStart_withNoBrowserProperties_doesNotThrow
+19:11:22.673 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestSuccess_doesNotThrow
+19:11:22.673 [TestNG-test-Reporting Tests-2] ERROR autoqa.reporting.ConfluenceClient — Confluence findPage failed with HTTP 500 for title='Report With Server Error': Internal Server Error
+19:11:22.674 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.674 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestSuccess_doesNotThrow
+19:11:22.675 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.ConfluenceClient — Confluence page created: id=77777 title='Report With Server Error'
+19:11:22.675 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#createOrUpdatePage_serverError_logsNoException
+19:11:22.676 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#isConfigured_allFieldsSet_returnsTrue
+19:11:22.676 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#isConfigured_allFieldsSet_returnsTrue
+19:11:22.677 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.AllureListenerTest#onTestSuccess_withValidResult_completesNormally
+19:11:22.677 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#isConfigured_missingApiToken_returnsFalse
+19:11:22.677 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#isConfigured_missingApiToken_returnsFalse
+19:11:22.677 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.DummyTest#dummyMethod
+19:11:22.677 [TestNG-test-Reporting Tests-1] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.AllureListenerTest#onTestSuccess_withValidResult_completesNormally
+19:11:22.678 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test started — autoqa.reporting.ConfluenceClientTest#isConfigured_missingBaseUrl_returnsFalse
+19:11:22.678 [TestNG-test-Reporting Tests-2] INFO  autoqa.reporting.AllureListener — AllureListener: test passed  — autoqa.reporting.ConfluenceClientTest#isConfigured_missingBaseUrl_returnsFalse
+19:11:22.678 [TestNG-test-Reporting Tests-2] INFO  org.eclipse.jetty.server.Server — Stopped Server@e39c5aa{STOPPING}[11.0.20,sto=1000]
+19:11:22.679 [TestNG-test-Reporting Tests-2] INFO  org.eclipse.jetty.server.Server — Shutdown Server@e39c5aa{STOPPING}[11.0.20,sto=1000]
+19:11:22.679 [TestNG-test-Reporting Tests-2] INFO  o.e.jetty.server.AbstractConnector — Stopped NetworkTrafficServerConnector@607808c{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:0}
+19:11:22.679 [TestNG-test-Reporting Tests-2] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@3aa56e62{/,null,STOPPED}
+19:11:22.679 [TestNG-test-Reporting Tests-2] INFO  o.e.j.server.handler.ContextHandler — Stopped o.e.j.s.ServletContextHandler@ca421a1{/__admin,null,STOPPED}
+[INFO] Tests run: 245, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.985 s -- in TestSuite
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 245, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.291 s
+[INFO] Finished at: 2026-02-27T19:11:23-06:00
+[INFO] ------------------------------------------------------------------------

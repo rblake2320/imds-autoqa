@@ -19,7 +19,9 @@ public class RecordedEvent {
     public enum EventType {
         CLICK, DOUBLE_CLICK, CONTEXT_MENU, INPUT, KEY_PRESS,
         SELECT, SCROLL, NAVIGATE, ALERT, WINDOW_SWITCH,
-        FRAME_SWITCH, HOVER, DRAG_DROP, WAIT
+        FRAME_SWITCH, HOVER, DRAG_DROP, WAIT,
+        /** Verification checkpoint — UFT checkpoint equivalent. */
+        CHECKPOINT
     }
 
     @JsonProperty("eventType")
@@ -66,6 +68,21 @@ public class RecordedEvent {
     @JsonProperty("comment")
     private String comment;
 
+    /**
+     * Verification checkpoint data.  Present only when {@code eventType == CHECKPOINT}.
+     * Equivalent to UFT One's text/image/accessibility checkpoint.
+     */
+    @JsonProperty("checkpointData")
+    private CheckpointData checkpointData;
+
+    /**
+     * Logical name referencing a {@link ObjectRepository} entry.
+     * When set, the player resolves this name from the shared OR instead of
+     * using the inline {@code element} locators.
+     */
+    @JsonProperty("objectName")
+    private String objectName;
+
     public RecordedEvent() {}
 
     // ── Getters ──────────────────────────────────────────────────────────
@@ -80,7 +97,9 @@ public class RecordedEvent {
     public List<String> getFrameChain()       { return frameChain; }
     public String       getWindowHandle()     { return windowHandle; }
     public String       getScreenshotBase64() { return screenshotBase64; }
-    public String       getComment()          { return comment; }
+    public String          getComment()          { return comment; }
+    public CheckpointData  getCheckpointData()   { return checkpointData; }
+    public String          getObjectName()        { return objectName; }
 
     // ── Setters ──────────────────────────────────────────────────────────
 
@@ -93,12 +112,16 @@ public class RecordedEvent {
     public void setCoordinates(Coordinates coordinates)    { this.coordinates = coordinates; }
     public void setFrameChain(List<String> frameChain)     { this.frameChain = frameChain; }
     public void setWindowHandle(String windowHandle)       { this.windowHandle = windowHandle; }
-    public void setScreenshotBase64(String s)              { this.screenshotBase64 = s; }
-    public void setComment(String comment)                 { this.comment = comment; }
+    public void setScreenshotBase64(String s)                    { this.screenshotBase64 = s; }
+    public void setComment(String comment)                       { this.comment = comment; }
+    public void setCheckpointData(CheckpointData checkpointData) { this.checkpointData = checkpointData; }
+    public void setObjectName(String objectName)                 { this.objectName = objectName; }
 
     // ── Convenience ──────────────────────────────────────────────────────
 
-    @JsonIgnore public boolean hasElement()   { return element != null; }
+    @JsonIgnore public boolean hasElement()       { return element != null; }
+    @JsonIgnore public boolean hasObjectName()    { return objectName != null && !objectName.isBlank(); }
+    @JsonIgnore public boolean isCheckpoint()     { return eventType == EventType.CHECKPOINT; }
     @JsonIgnore public boolean hasInputData() { return inputData != null; }
     @JsonIgnore public boolean isInFrame()    { return frameChain != null && !frameChain.isEmpty(); }
 

@@ -4,8 +4,11 @@ import autoqa.ai.AIConfig;
 import autoqa.ai.LocatorHealer;
 import autoqa.ai.TestGenerator;
 import autoqa.model.ElementInfo;
+import autoqa.model.ElementLocator;
+import autoqa.model.ObjectRepository;
 import autoqa.model.RecordedSession;
 import autoqa.model.RecordingIO;
+import autoqa.model.TestObject;
 import autoqa.player.PlayerEngine;
 import autoqa.recorder.RecorderCLI;
 import org.openqa.selenium.WebDriver;
@@ -57,6 +60,7 @@ import java.util.concurrent.Callable;
                 WrapperCLI.RunCommand.class,
                 WrapperCLI.HealCommand.class,
                 WrapperCLI.ReportCommand.class,
+                WrapperCLI.OrCommand.class,
                 WrapperCLI.VersionCommand.class
         }
 )
@@ -111,6 +115,12 @@ public class WrapperCLI implements Callable<Integer> {
         )
         String browser;
 
+        @Option(
+                names       = {"--or-file"},
+                description = "Path to object-repository.json (optional — enables OR name resolution)"
+        )
+        Path orFile;
+
         @Override
         public Integer call() throws Exception {
             if (!Files.exists(recordingFile)) {
@@ -128,6 +138,18 @@ public class WrapperCLI implements Callable<Integer> {
                     browser.toLowerCase());
             WebDriver driver = createDriver(browser);
             PlayerEngine engine = new PlayerEngine(driver);
+
+            // Attach OR if supplied
+            if (orFile != null) {
+                if (!Files.exists(orFile)) {
+                    System.err.println("OR file not found: " + orFile.toAbsolutePath());
+                    return 1;
+                }
+                ObjectRepository or = ObjectRepository.load(orFile);
+                engine.setObjectRepository(or);
+                System.out.printf("  OR loaded : %d objects from %s%n", or.size(), orFile.getFileName());
+            }
+
             PlayerEngine.PlaybackResult result = engine.play(session);
 
             System.out.printf("%nPlayback complete — %d/%d steps succeeded.%n",
@@ -402,6 +424,233 @@ public class WrapperCLI implements Callable<Integer> {
             }
         }
     }
+
+    // ── Object Repository command group ──────────────────────────────────────
+
+    /**
+     * Object Repository management — the IMDS AutoQA equivalent of UFT One's
+     * shared (.tsr) OR operations: list, add, import, diff, merge.
+     *
+     * <p>Usage examples:
+     * <pre>
+     *   autoqa or list  my.json
+     *   autoqa or add   my.json --name loginButton --class button --id login-btn
+     *   autoqa or import recording.json my.json --name loginButton --class button
+     *   autoqa or diff  a.json b.json
+     *   autoqa or merge target.json source.json
+     * </pre>
+     */
+    @Command(
+            name        = "or",
+            description = "Manage the shared Object Repository",
+            mixinStandardHelpOptions = true,
+            subcommands = {
+                    WrapperCLI.OrListCommand.class,
+                    WrapperCLI.OrAddCommand.class,
+                    WrapperCLI.OrImportCommand.class,
+                    WrapperCLI.OrDiffCommand.class,
+                    WrapperCLI.OrMergeCommand.class
+            }
+    )
+    static class OrCommand implements Callable<Integer> {
+        @Override
+        public Integer call() {
+            CommandLine.usage(this, System.out);
+            return 0;
+        }
+    }
+
+    /** Lists all objects in an OR file. */
+    @Command(name = "list", description = "List all objects in an Object Repository",
+             mixinStandardHelpOptions = true)
+    static class OrListCommand implements Callable<Integer> {
+
+        @Parameters(index = "0", description = "Path to object-repository.json",
+                    defaultValue = ObjectRepository.DEFAULT_FILENAME)
+        Path orFile;
+
+        @Override
+        public Integer call() throws Exception {
+            ObjectRepository or = loadOr(orFile);
+            System.out.printf("Object Repository: %s (%d objects)%n%n",
+                    orFile.toAbsolutePath(), or.size());
+            for (TestObject obj : or.all()) {
+                System.out.printf("  %-30s  class=%-12s  locators=%d%n",
+                        obj.getName(), obj.getObjectClass(), obj.getLocators().size());
+                for (ElementLocator loc : obj.getLocators()) {
+                    System.out.printf("      %-6s  %s%n", loc.getStrategy(), loc.getValue());
+                }
+            }
+            return 0;
+        }
+    }
+
+    /** Adds or updates a named object in an OR file. */
+    @Command(name = "add", description = "Add or update a named object in an Object Repository",
+             mixinStandardHelpOptions = true)
+    static class OrAddCommand implements Callable<Integer> {
+
+        @Parameters(index = "0", description = "Path to object-repository.json",
+                    defaultValue = ObjectRepository.DEFAULT_FILENAME)
+        Path orFile;
+
+        @Option(names = {"--name"}, required = true,  description = "Logical object name")
+        String name;
+
+        @Option(names = {"--class"}, description = "Object class (button, input, link, …)")
+        String objectClass;
+
+        @Option(names = {"--id"},    description = "ID locator value")
+        String id;
+
+        @Option(names = {"--css"},   description = "CSS selector locator value")
+        String css;
+
+        @Option(names = {"--xpath"}, description = "XPath locator value")
+        String xpath;
+
+        @Option(names = {"--name-attr"}, description = "HTML name attribute locator value")
+        String nameAttr;
+
+        @Override
+        public Integer call() throws Exception {
+            ObjectRepository or = Files.exists(orFile) ? ObjectRepository.load(orFile) : ObjectRepository.empty();
+
+            TestObject obj = new TestObject(name, objectClass != null ? objectClass : "element");
+            if (id       != null) obj.addLocator(ElementLocator.Strategy.ID,    id);
+            if (nameAttr != null) obj.addLocator(ElementLocator.Strategy.NAME,  nameAttr);
+            if (css      != null) obj.addLocator(ElementLocator.Strategy.CSS,   css);
+            if (xpath    != null) obj.addLocator(ElementLocator.Strategy.XPATH, xpath);
+
+            boolean existed = or.contains(name);
+            or.add(obj);
+            or.save(orFile);
+
+            System.out.printf("%s '%s' in %s (%d locators)%n",
+                    existed ? "Updated" : "Added", name, orFile.getFileName(), obj.getLocators().size());
+            return 0;
+        }
+    }
+
+    /** Imports an element from a recording into an OR as a named object. */
+    @Command(name = "import",
+             description = "Import an element from a recording into the Object Repository",
+             mixinStandardHelpOptions = true)
+    static class OrImportCommand implements Callable<Integer> {
+
+        @Parameters(index = "0", description = "Path to recording JSON file")
+        Path recordingFile;
+
+        @Parameters(index = "1", description = "Path to object-repository.json",
+                    defaultValue = ObjectRepository.DEFAULT_FILENAME)
+        Path orFile;
+
+        @Option(names = {"--name"},  required = true, description = "Logical object name to assign")
+        String name;
+
+        @Option(names = {"--class"}, description = "Object class (default: element)")
+        String objectClass;
+
+        @Option(names = {"--step"},  description = "Step index (0-based) to import from (default: 0)",
+                defaultValue = "0")
+        int stepIndex;
+
+        @Override
+        public Integer call() throws Exception {
+            if (!Files.exists(recordingFile)) {
+                System.err.println("Recording not found: " + recordingFile);
+                return 1;
+            }
+
+            RecordedSession session = RecordingIO.read(recordingFile);
+            if (stepIndex >= session.getEventCount()) {
+                System.err.printf("Step %d out of range (0-%d)%n",
+                        stepIndex, session.getEventCount() - 1);
+                return 1;
+            }
+
+            var event = session.getEvents().get(stepIndex);
+            if (!event.hasElement()) {
+                System.err.printf("Step %d (%s) has no element info%n",
+                        stepIndex, event.getEventType());
+                return 1;
+            }
+
+            ObjectRepository or = Files.exists(orFile) ? ObjectRepository.load(orFile) : ObjectRepository.empty();
+            TestObject obj = or.importFromElementInfo(
+                    name,
+                    objectClass != null ? objectClass : "element",
+                    event.getElement(),
+                    event.getUrl());
+            or.save(orFile);
+
+            System.out.printf("Imported '%s' from step %d into %s (%d locators)%n",
+                    name, stepIndex, orFile.getFileName(), obj.getLocators().size());
+            return 0;
+        }
+    }
+
+    /** Diffs two OR files and shows objects unique to each. */
+    @Command(name = "diff", description = "Compare two Object Repository files",
+             mixinStandardHelpOptions = true)
+    static class OrDiffCommand implements Callable<Integer> {
+
+        @Parameters(index = "0", description = "First OR file (A)")
+        Path fileA;
+
+        @Parameters(index = "1", description = "Second OR file (B)")
+        Path fileB;
+
+        @Override
+        public Integer call() throws Exception {
+            ObjectRepository a = loadOr(fileA);
+            ObjectRepository b = loadOr(fileB);
+            ObjectRepository.OrdiffResult diff = a.diff(b);
+
+            System.out.printf("OR Diff: %s vs %s%n%n", fileA.getFileName(), fileB.getFileName());
+            System.out.printf("Only in A (%d): %s%n", diff.onlyInA().size(), diff.onlyInA());
+            System.out.printf("Only in B (%d): %s%n", diff.onlyInB().size(), diff.onlyInB());
+            System.out.printf("Common   (%d): %s%n", diff.common().size(),   diff.common());
+            return 0;
+        }
+    }
+
+    /** Merges source OR into target OR (last-write wins, UFT parity). */
+    @Command(name = "merge", description = "Merge source OR into target OR (last-write wins)",
+             mixinStandardHelpOptions = true)
+    static class OrMergeCommand implements Callable<Integer> {
+
+        @Parameters(index = "0", description = "Target OR file (modified in place)")
+        Path target;
+
+        @Parameters(index = "1", description = "Source OR file (merged into target)")
+        Path source;
+
+        @Override
+        public Integer call() throws Exception {
+            ObjectRepository targetOr = Files.exists(target)
+                    ? ObjectRepository.load(target) : ObjectRepository.empty();
+            ObjectRepository sourceOr = loadOr(source);
+
+            int added = targetOr.merge(sourceOr);
+            targetOr.save(target);
+
+            System.out.printf("Merged %d object(s) from %s into %s (total: %d)%n",
+                    added, source.getFileName(), target.getFileName(), targetOr.size());
+            return 0;
+        }
+    }
+
+    /** Shared helper: loads an OR or fails with a clear message. */
+    private static ObjectRepository loadOr(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            System.err.println("OR file not found: " + path.toAbsolutePath());
+            System.exit(1);
+        }
+        return ObjectRepository.load(path);
+    }
+
+    // ── Version ───────────────────────────────────────────────────────────────
 
     /**
      * Prints the version string.

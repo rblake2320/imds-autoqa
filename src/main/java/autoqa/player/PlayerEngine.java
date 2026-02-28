@@ -1,11 +1,16 @@
 package autoqa.player;
 
+import autoqa.model.CheckpointData;
+import autoqa.model.CheckpointData.CheckpointType;
+import autoqa.model.CheckpointData.MatchMode;
 import autoqa.model.ElementInfo;
 import autoqa.model.InputData;
+import autoqa.model.ObjectRepository;
 import autoqa.model.RecordedEvent;
 import autoqa.model.RecordedEvent.EventType;
 import autoqa.model.RecordedSession;
 import autoqa.model.SelectedOption;
+import autoqa.model.TestObject;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -48,6 +53,13 @@ public class PlayerEngine {
     private final FrameNavigator frameNav;
     private final PopupSentinel sentinel;
     private final EvidenceCollector evidenceCollector;
+
+    /**
+     * Optional shared Object Repository.  When non-null, events with
+     * {@code objectName} set are resolved from the OR first.
+     */
+    private ObjectRepository objectRepository;
+
     /**
      * All window handles seen and intentionally switched to during this
      * playback run. Used by {@link #handleWindowSwitch} to detect truly new
@@ -71,6 +83,11 @@ public class PlayerEngine {
         this.sentinel          = new PopupSentinel(driver);
         this.evidenceCollector = new EvidenceCollector(config.getEvidenceDir());
         this.allKnownHandles   = new HashSet<>(driver.getWindowHandles());
+    }
+
+    /** Attaches a shared Object Repository used to resolve named test objects. */
+    public void setObjectRepository(ObjectRepository or) {
+        this.objectRepository = or;
     }
 
     // ── Playback ──────────────────────────────────────────────────────────
@@ -110,16 +127,19 @@ public class PlayerEngine {
                     enteredFrame = true;
                 }
 
-                // 3. Dispatch
+                // 3. Resolve named OR object if present
+                resolveObjectName(event);
+
+                // 4. Dispatch
                 dispatch(event);
 
-                // 4. Exit frame
+                // 5. Exit frame
                 if (enteredFrame) {
                     frameNav.exitFrames();
                     enteredFrame = false;
                 }
 
-                // 5. Step pacing
+                // 6. Step pacing
                 long delay = config.getStepDelayMs();
                 if (delay > 0) {
                     Thread.sleep(delay);
@@ -176,6 +196,7 @@ public class PlayerEngine {
             case FRAME_SWITCH  -> { /* Frame switching is handled via frameChain — no-op here */ }
             case DRAG_DROP     -> log.warn("DRAG_DROP not yet implemented — skipping step");
             case WAIT          -> handleWait(event);
+            case CHECKPOINT    -> handleCheckpoint(event);
             default            -> throw new AutoQAException("Unsupported event type: " + type);
         }
     }
@@ -365,6 +386,184 @@ public class PlayerEngine {
     private void handleWait(RecordedEvent event) {
         // WAIT events are recorded pacing markers; honour step delay instead
         log.debug("WAIT event encountered — relying on configured step delay");
+    }
+
+    // ── Object Repository resolution ──────────────────────────────────────
+
+    /**
+     * If the event carries an {@code objectName} and a shared OR is attached,
+     * look up the named {@link TestObject} and copy its locators into the
+     * event's {@code element} field (only when no inline element was recorded).
+     *
+     * <p>This mirrors UFT's OR resolution: logical name → locator chain.
+     */
+    private void resolveObjectName(RecordedEvent event) {
+        if (objectRepository == null || !event.hasObjectName()) return;
+        TestObject obj = objectRepository.find(event.getObjectName());
+        if (obj == null) {
+            log.warn("Object Repository lookup: '{}' not found — using inline locators",
+                    event.getObjectName());
+            return;
+        }
+        if (event.getElement() == null) {
+            log.debug("OR resolved '{}' → {}", event.getObjectName(), obj);
+            event.setElement(obj.toElementInfo());
+        }
+    }
+
+    // ── Checkpoint handler ────────────────────────────────────────────────
+
+    /**
+     * Executes a CHECKPOINT event — the IMDS AutoQA equivalent of UFT One's
+     * text / element / image / attribute checkpoints.
+     *
+     * <p>A failing checkpoint throws {@link AutoQAException}, which the main
+     * playback loop catches and reports as a test failure (same behaviour as a
+     * UFT checkpoint failure stopping the test).
+     */
+    private void handleCheckpoint(RecordedEvent event) {
+        CheckpointData cp = event.getCheckpointData();
+        if (cp == null) {
+            log.warn("CHECKPOINT event has no checkpointData — skipping");
+            return;
+        }
+
+        String label = cp.getCheckpointName() != null
+                ? cp.getCheckpointName()
+                : cp.getCheckpointType().toString();
+        log.info("Running checkpoint '{}' (type={})", label, cp.getCheckpointType());
+
+        switch (cp.getCheckpointType()) {
+            case TEXT           -> cpText(event, cp);
+            case ELEMENT_EXISTS -> cpElementExists(event);
+            case URL            -> cpUrl(cp);
+            case TITLE          -> cpTitle(cp);
+            case ATTRIBUTE      -> cpAttribute(event, cp);
+            case SCREENSHOT     -> cpScreenshot(cp);
+            default             -> throw new AutoQAException(
+                    "Unknown checkpoint type: " + cp.getCheckpointType());
+        }
+    }
+
+    private void cpText(RecordedEvent event, CheckpointData cp) {
+        ElementInfo ei = requireElement(event, EventType.CHECKPOINT);
+        WebElement el  = resolver.findElement(ei);
+        String actual  = el.getText();
+        assertMatch("TEXT", actual, cp);
+    }
+
+    private void cpElementExists(RecordedEvent event) {
+        ElementInfo ei = requireElement(event, EventType.CHECKPOINT);
+        try {
+            resolver.findElement(ei);
+            log.info("Checkpoint ELEMENT_EXISTS: element found ✓");
+        } catch (Exception e) {
+            throw new AutoQAException(
+                    "Checkpoint ELEMENT_EXISTS failed — element not found: " + ei, e);
+        }
+    }
+
+    private void cpUrl(CheckpointData cp) {
+        String actual = driver.getCurrentUrl();
+        assertMatch("URL", actual, cp);
+    }
+
+    private void cpTitle(CheckpointData cp) {
+        String actual = driver.getTitle();
+        assertMatch("TITLE", actual, cp);
+    }
+
+    private void cpAttribute(RecordedEvent event, CheckpointData cp) {
+        String attrName = cp.getAttributeName();
+        if (attrName == null || attrName.isBlank()) {
+            throw new AutoQAException("ATTRIBUTE checkpoint has no attributeName");
+        }
+        ElementInfo ei = requireElement(event, EventType.CHECKPOINT);
+        WebElement  el = resolver.findElement(ei);
+        String actual  = el.getAttribute(attrName);
+        assertMatch("ATTRIBUTE[" + attrName + "]", actual, cp);
+    }
+
+    /**
+     * Pixel-diff screenshot checkpoint — equivalent to UFT One's bitmap/image
+     * checkpoint.  Captures the current viewport, compares it to the baseline
+     * PNG pixel-by-pixel, and fails if the diff ratio exceeds the threshold.
+     */
+    private void cpScreenshot(CheckpointData cp) {
+        String baselinePath = cp.getBaselineImagePath();
+        if (baselinePath == null || baselinePath.isBlank()) {
+            throw new AutoQAException("SCREENSHOT checkpoint has no baselineImagePath");
+        }
+
+        java.io.File shot = ((org.openqa.selenium.TakesScreenshot) driver)
+                .getScreenshotAs(org.openqa.selenium.OutputType.FILE);
+        try {
+            java.awt.image.BufferedImage actual   = javax.imageio.ImageIO.read(shot);
+            java.awt.image.BufferedImage baseline = javax.imageio.ImageIO.read(new java.io.File(baselinePath));
+
+            if (actual == null || baseline == null) {
+                throw new AutoQAException("SCREENSHOT checkpoint: could not read one or both images");
+            }
+
+            int  w          = Math.min(actual.getWidth(),  baseline.getWidth());
+            int  h          = Math.min(actual.getHeight(), baseline.getHeight());
+            long diffPixels = 0;
+            long total      = (long) w * h;
+
+            for (int x = 0; x < w; x++) {
+                for (int y = 0; y < h; y++) {
+                    if (actual.getRGB(x, y) != baseline.getRGB(x, y)) diffPixels++;
+                }
+            }
+
+            double ratio     = total > 0 ? (double) diffPixels / total : 0.0;
+            double threshold = cp.getScreenshotThreshold();
+
+            if (ratio > threshold) {
+                throw new AutoQAException(String.format(
+                        "Checkpoint SCREENSHOT failed: %.2f%% pixels differ (threshold %.2f%%)",
+                        ratio * 100, threshold * 100));
+            }
+            log.info("Checkpoint SCREENSHOT: {}% pixel diff ≤ threshold {}% ✓",
+                    String.format("%.2f", ratio * 100),
+                    String.format("%.2f", threshold * 100));
+
+        } catch (java.io.IOException e) {
+            throw new AutoQAException("SCREENSHOT checkpoint: I/O error reading images", e);
+        }
+    }
+
+    /**
+     * Asserts that {@code actual} matches {@code expected} according to the
+     * {@link MatchMode} and {@code caseSensitive} flag in {@code cp}.
+     *
+     * @throws AutoQAException with a descriptive message when the assertion fails
+     */
+    private void assertMatch(String label, String actual, CheckpointData cp) {
+        String expected = cp.getExpectedValue();
+        if (expected == null) {
+            log.warn("Checkpoint {} has no expectedValue — passing trivially", label);
+            return;
+        }
+
+        // Apply case-folding before comparison
+        String a = cp.isCaseSensitive() ? actual   : (actual   != null ? actual.toLowerCase()   : null);
+        String e = cp.isCaseSensitive() ? expected : expected.toLowerCase();
+
+        boolean match = switch (cp.getMatchMode()) {
+            case EQUALS      -> e.equals(a);
+            case CONTAINS    -> a != null && a.contains(e);
+            case STARTS_WITH -> a != null && a.startsWith(e);
+            case REGEX       -> actual != null && actual.matches(
+                    cp.isCaseSensitive() ? expected : "(?i)" + expected);
+        };
+
+        if (!match) {
+            throw new AutoQAException(String.format(
+                    "Checkpoint %s failed — expected [%s] (%s) but got [%s]",
+                    label, expected, cp.getMatchMode(), actual));
+        }
+        log.info("Checkpoint {}: '{}' {} '{}' ✓", label, actual, cp.getMatchMode(), expected);
     }
 
     // ── Auto-navigation ───────────────────────────────────────────────────
