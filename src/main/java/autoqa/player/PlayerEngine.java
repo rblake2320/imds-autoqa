@@ -274,7 +274,7 @@ public class PlayerEngine {
             case WINDOW_SWITCH -> handleWindowSwitch(event);
             case HOVER         -> handleHover(event);
             case FRAME_SWITCH  -> { /* Frame switching is handled via frameChain — no-op here */ }
-            case DRAG_DROP     -> log.warn("DRAG_DROP not yet implemented — skipping step");
+            case DRAG_DROP     -> handleDragDrop(event);
             case WAIT          -> handleWait(event);
             case CHECKPOINT    -> handleCheckpoint(event);
             default            -> throw new AutoQAException("Unsupported event type: " + type);
@@ -461,6 +461,27 @@ public class PlayerEngine {
         WebElement el = findElement(ei);
         log.debug("Hovering over element: {}", ei);
         new Actions(driver).moveToElement(el).perform();
+    }
+
+    private void handleDragDrop(RecordedEvent event) {
+        if (!event.hasElement()) {
+            throw new AutoQAException(
+                    "DRAG_DROP event has no source element and no coordinates — cannot drag");
+        }
+
+        ElementInfo sourceInfo = event.getElement();
+        WebElement source = findElement(sourceInfo);
+
+        // Determine drop-target offset from coordinates, defaulting to (0, 0)
+        int xOffset = 0;
+        int yOffset = 0;
+        if (event.getCoordinates() != null) {
+            xOffset = (int) Math.round(event.getCoordinates().getX());
+            yOffset = (int) Math.round(event.getCoordinates().getY());
+        }
+
+        log.info("Drag-and-drop: {} → offset ({}, {})", sourceInfo, xOffset, yOffset);
+        new Actions(driver).dragAndDropBy(source, xOffset, yOffset).perform();
     }
 
     private void handleWait(RecordedEvent event) {

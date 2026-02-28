@@ -610,17 +610,43 @@ public class PlayerEngineTest {
 
     // ── DRAG_DROP ─────────────────────────────────────────────────────────
 
-    @Test(description = "DRAG_DROP is skipped with a warning and does not fail playback")
-    public void dragDrop_isSkipped_doesNotFail() {
-        RecordedEvent nav = event(EventType.NAVIGATE);
-        nav.setUrl("https://example.com");
+    @Test(description = "DRAG_DROP with source element and coordinates performs dragAndDropBy")
+    public void dragDrop_withElementAndCoordinates_performsAction() {
+        RecordedEvent ev = event(EventType.DRAG_DROP);
+        ev.setElement(ei("draggable"));
+        ev.setCoordinates(new Coordinates(150.0, 75.0));
+        when(resolver.findElement(any())).thenReturn(element);
 
-        RecordedEvent drag = event(EventType.DRAG_DROP);
-
-        PlayerEngine.PlaybackResult result = engine.play(session(nav, drag));
+        PlayerEngine.PlaybackResult result = engine.play(session(ev));
 
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getStepsCompleted()).isEqualTo(2);
+        verify(resolver).findElement(any());
+        verify(driver).perform(any());
+    }
+
+    @Test(description = "DRAG_DROP with no element and no coordinates records a failure")
+    public void dragDrop_noElementNoCoordinates_recordsFailure() {
+        RecordedEvent ev = event(EventType.DRAG_DROP);
+        // no element, no coordinates
+
+        PlayerEngine.PlaybackResult result = engine.play(session(ev));
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getFailureReason()).containsIgnoringCase("DRAG_DROP");
+    }
+
+    @Test(description = "DRAG_DROP with source element but null coordinates uses 0,0 offset")
+    public void dragDrop_sourceElementOnly_usesDefaultOffset() {
+        RecordedEvent ev = event(EventType.DRAG_DROP);
+        ev.setElement(ei("slider"));
+        // no coordinates → should default to (0, 0)
+        when(resolver.findElement(any())).thenReturn(element);
+
+        PlayerEngine.PlaybackResult result = engine.play(session(ev));
+
+        assertThat(result.isSuccess()).isTrue();
+        verify(resolver).findElement(any());
+        verify(driver).perform(any());
     }
 
     // ── Empty session ──────────────────────────────────────────────────────
