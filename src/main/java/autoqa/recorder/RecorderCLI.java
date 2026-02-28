@@ -82,12 +82,10 @@ public class RecorderCLI implements Callable<Integer> {
         @Override
         public Integer call() throws Exception {
             // RecorderConfig loads from classpath config.properties.
-            // CLI flags for port/output can supplement or document the config;
-            // the actual wiring (port, output dir) is handled by RecorderConfig
-            // values unless a future version of RecorderConfig exposes setters.
-            // For now we honour config.properties and document the CLI values.
+            // --url-filter is passed directly to RecordingSession at runtime so
+            // the user can focus recording on a specific URL without editing config.
             RecorderConfig config = new RecorderConfig();
-            RecordingSession session = new RecordingSession(config);
+            RecordingSession session = new RecordingSession(config, urlFilter);
 
             // Shutdown hook: invoked by JVM when Ctrl+C is received.
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -110,7 +108,7 @@ public class RecorderCLI implements Callable<Integer> {
             System.out.printf("  Output dir : %s (override via recorder.output.dir in config.properties)%n",
                     Path.of(config.getOutputDir()).toAbsolutePath());
             if (urlFilter != null) {
-                System.out.printf("  URL filter : *%s* (note: add to recorder.url.whitelist for full effect)%n",
+                System.out.printf("  URL filter : *%s* (only URLs containing this string will be recorded)%n",
                         urlFilter);
             }
 

@@ -88,6 +88,12 @@ public class PlayerEngine {
 
         log.info("Starting playback of session '{}' — {} step(s)", sessionId, total);
 
+        // Ensure we're on the right page before step 1 runs.
+        // If the recording has no leading NAVIGATE event (the common case when the
+        // user just starts recording on an already-open page), drive the browser to
+        // the URL of the first event so elements can actually be found.
+        autoNavigateIfNeeded(events);
+
         for (int i = 0; i < total; i++) {
             RecordedEvent event = events.get(i);
             log.info("Step {}/{}: {} — {}", i + 1, total, event.getEventType(),
@@ -338,6 +344,39 @@ public class PlayerEngine {
     private void handleWait(RecordedEvent event) {
         // WAIT events are recorded pacing markers; honour step delay instead
         log.debug("WAIT event encountered — relying on configured step delay");
+    }
+
+    // ── Auto-navigation ───────────────────────────────────────────────────
+
+    /**
+     * If the recording does not begin with a {@code NAVIGATE} event, drives the
+     * browser to the URL of the first event that has one.  This handles the
+     * common case where the user started recording after the page was already
+     * open, so no navigation event was captured.
+     *
+     * <p>Without this, the player would start on {@code about:blank} and every
+     * element look-up would fail immediately.
+     */
+    private void autoNavigateIfNeeded(List<RecordedEvent> events) {
+        if (events.isEmpty()) return;
+
+        // If the recording already starts with a NAVIGATE, nothing to do.
+        if (events.get(0).getEventType() == EventType.NAVIGATE) return;
+
+        // Find the URL carried by the earliest event.
+        String startUrl = events.stream()
+                .map(RecordedEvent::getUrl)
+                .filter(u -> u != null && !u.isBlank()
+                             && !u.equalsIgnoreCase("about:blank")
+                             && !u.equalsIgnoreCase("about:newtab"))
+                .findFirst()
+                .orElse(null);
+
+        if (startUrl != null) {
+            log.info("Auto-navigating to recording start URL: {}", startUrl);
+            driver.get(startUrl);
+            wait.waitForPageLoad();
+        }
     }
 
     // ── Convenience helpers ───────────────────────────────────────────────

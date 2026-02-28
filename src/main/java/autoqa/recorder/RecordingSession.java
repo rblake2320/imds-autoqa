@@ -55,6 +55,12 @@ public class RecordingSession {
     private final FieldRedactor redactor;
     private final InputCaptureAdapter inputCapture;
 
+    /**
+     * Optional runtime URL filter supplied via CLI {@code --url-filter}.
+     * When non-null, only events whose page URL contains this substring are kept.
+     */
+    private final String urlFilter;
+
     private final RecordedSession data;
     private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -70,10 +76,22 @@ public class RecordingSession {
      * @param config recorder configuration
      */
     public RecordingSession(RecorderConfig config) {
-        this(config, new OSInputCapture(
-                config.getUrlWhitelist().isEmpty()
-                        ? java.util.Collections.emptySet()
-                        : new java.util.HashSet<>(config.getUrlWhitelist())));
+        this(config, (String) null);
+    }
+
+    /**
+     * Creates a recording session with an explicit runtime URL filter.
+     *
+     * <p>Only events whose page URL contains {@code urlFilter} as a substring
+     * will be kept; all others are silently dropped.  If {@code urlFilter} is
+     * {@code null} or blank the whitelist falls back to
+     * {@code RecorderConfig#getUrlWhitelist()}.
+     *
+     * @param config    recorder configuration
+     * @param urlFilter URL substring filter, or {@code null} to disable
+     */
+    public RecordingSession(RecorderConfig config, String urlFilter) {
+        this(config, new OSInputCapture(buildWhiteset(config, urlFilter)), urlFilter);
     }
 
     /**
@@ -84,8 +102,16 @@ public class RecordingSession {
      * @param inputCapture OS-level input hook implementation
      */
     RecordingSession(RecorderConfig config, InputCaptureAdapter inputCapture) {
+        this(config, inputCapture, null);
+    }
+
+    /** Base constructor — all public/package constructors delegate here. */
+    private RecordingSession(RecorderConfig config,
+                             InputCaptureAdapter inputCapture,
+                             String urlFilter) {
         this.config       = config;
         this.inputCapture = inputCapture;
+        this.urlFilter    = (urlFilter != null && !urlFilter.isBlank()) ? urlFilter : null;
         this.cdp          = new CDPConnector(config.getCdpPort(), config.getCdpWsTimeoutSec());
         this.domEnricher  = new DOMEnricher(cdp);
         this.redactor     = new FieldRedactor(config.getRedactTypes(), config.getRedactSelectors());
@@ -95,6 +121,16 @@ public class RecordingSession {
         data.setSessionId(UUID.randomUUID().toString());
         data.setOsName(System.getProperty("os.name", "unknown"));
         data.setRecordedBy(System.getProperty("user.name", "unknown"));
+    }
+
+    /** Builds the URL whitelist for {@link OSInputCapture}. */
+    private static java.util.Set<String> buildWhiteset(RecorderConfig config, String urlFilter) {
+        if (urlFilter != null && !urlFilter.isBlank()) {
+            return new java.util.HashSet<>(java.util.List.of(urlFilter.trim()));
+        }
+        return config.getUrlWhitelist().isEmpty()
+                ? java.util.Collections.emptySet()
+                : new java.util.HashSet<>(config.getUrlWhitelist());
     }
 
     // ── Public API ────────────────────────────────────────────────────────
@@ -229,13 +265,22 @@ public class RecordingSession {
         }
 
         // Capture current URL and page title via CDP
+        String href = null;
         try {
-            String href  = evaluateStringExpression(JS_HREF);
+            href  = evaluateStringExpression(JS_HREF);
             String title = evaluateStringExpression(JS_TITLE);
             event.setUrl(href);
             event.setPageTitle(title);
         } catch (Exception e) {
             log.debug("Failed to read current URL/title: {}", e.getMessage());
+        }
+
+        // URL filter: drop events that don't match the configured focus URL
+        if (urlFilter != null) {
+            if (href == null || !href.contains(urlFilter)) {
+                log.debug("Event dropped — URL '{}' does not match filter '{}'", href, urlFilter);
+                return;
+            }
         }
 
         // Redact sensitive input

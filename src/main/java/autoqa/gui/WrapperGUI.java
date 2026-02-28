@@ -34,6 +34,8 @@ public class WrapperGUI extends JFrame {
     private final JLabel     statusLabel;
     private final JLabel     recordingFileLabel;
 
+    private final JTextField urlFilterField;
+
     private final JButton btnStartRecord;
     private final JButton btnStopRecord;
     private final JButton btnBrowse;
@@ -84,6 +86,8 @@ public class WrapperGUI extends JFrame {
         logScroll.setBorder(BorderFactory.createEmptyBorder());
 
         // ── Build sidebar and status bar ─────────────────────────────────────
+        urlFilterField     = new JTextField();
+
         btnStartRecord     = makeButton("▶  Start Recording",  new Color(0, 130, 0));
         btnStopRecord      = makeButton("■  Stop Recording",   new Color(190, 0, 0));
         btnBrowse          = makeButton("📁  Browse…",          Color.DARK_GRAY);
@@ -162,6 +166,23 @@ public class WrapperGUI extends JFrame {
         // ── Recording ──────────────────────────────────────────────────────
         p.add(sectionLabel("RECORDING"));
         p.add(vGap(4));
+
+        // URL focus filter
+        JLabel urlLabel = new JLabel("Focus URL (optional)");
+        urlLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+        urlLabel.setForeground(new Color(110, 110, 120));
+        urlLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        urlLabel.setBorder(new EmptyBorder(0, 2, 1, 0));
+        p.add(urlLabel);
+
+        urlFilterField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        urlFilterField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        urlFilterField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 11));
+        urlFilterField.setToolTipText("Only record events on pages whose URL contains this text");
+        urlFilterField.setForeground(new Color(40, 40, 40));
+        p.add(urlFilterField);
+        p.add(vGap(5));
+
         p.add(btnStartRecord);
         p.add(vGap(5));
         p.add(btnStopRecord);
@@ -246,8 +267,15 @@ public class WrapperGUI extends JFrame {
         btnStartRecord.setEnabled(false);
         btnStopRecord.setEnabled(true);
         log("");
-        log("▶  Recording started — interact with Edge, then click Stop.");
-        runCliAsync(true, "record", "start");
+
+        String filter = urlFilterField.getText().trim();
+        if (!filter.isEmpty()) {
+            log("▶  Recording started — focused on URLs containing: " + filter);
+            runCliAsync(true, "record", "start", "--url-filter", filter);
+        } else {
+            log("▶  Recording started — interact with Edge, then click Stop.");
+            runCliAsync(true, "record", "start");
+        }
     }
 
     private void stopRecording() {
@@ -402,12 +430,18 @@ public class WrapperGUI extends JFrame {
             }
         } catch (Exception ignored) {}
 
-        // Running from IDE / dev: scan target/ for the shaded JAR
+        // Running from IDE / dev: scan project root and target/ for the shaded JAR
         try {
+            // Project-root portable JAR (produced by mvn package + copied by hand)
+            Path rootJar = Path.of("autoqa.jar").toAbsolutePath();
+            if (Files.exists(rootJar)) return rootJar.toString();
+
+            // target/ shaded JAR (either new name or legacy name)
             return Files.walk(Path.of("target").toAbsolutePath(), 1)
                     .filter(p -> {
                         String n = p.getFileName().toString();
-                        return n.startsWith("imds-autoqa-") && n.endsWith(".jar")
+                        return (n.equals("autoqa.jar") ||
+                                (n.startsWith("imds-autoqa-") && n.endsWith(".jar")))
                                 && !n.startsWith("original-");
                     })
                     .map(Path::toAbsolutePath)
