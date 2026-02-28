@@ -59,4 +59,10 @@
     </packages>
   </test>
 
+  <test name="Accessibility Tests">
+    <packages>
+      <package name="autoqa.accessibility"/>
+    </packages>
+  </test>
+
 </suite>
