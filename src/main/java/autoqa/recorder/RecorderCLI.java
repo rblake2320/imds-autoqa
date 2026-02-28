@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * PicoCLI entry-point for the recorder subsystem.
@@ -81,14 +82,39 @@ public class RecorderCLI implements Callable<Integer> {
 
         @Override
         public Integer call() throws Exception {
-            // RecorderConfig loads from classpath config.properties.
-            // --url-filter is passed directly to RecordingSession at runtime so
-            // the user can focus recording on a specific URL without editing config.
+            // Load config and apply the --port CLI flag (A2 fix: port was parsed but never used)
             RecorderConfig config = new RecorderConfig();
+            config.setCdpPort(port);  // override config-file value with CLI argument
+
+            // A3: Create sentinel lock file so 'record stop' can signal graceful shutdown
+            Path lockFile = Path.of(config.getOutputDir()).resolve(".autoqa-recording.lock");
+            Files.createDirectories(lockFile.getParent());
+            Files.writeString(lockFile, String.valueOf(ProcessHandle.current().pid()));
+
             RecordingSession session = new RecordingSession(config, urlFilter);
 
-            // Shutdown hook: invoked by JVM when Ctrl+C is received.
+            Thread mainThread = Thread.currentThread();
+            AtomicBoolean stoppedByLock = new AtomicBoolean(false);
+
+            // Background thread: polls sentinel file every 500ms; when gone → signal main thread
+            Thread watcher = new Thread(() -> {
+                try {
+                    while (Files.exists(lockFile)) {
+                        Thread.sleep(500);
+                    }
+                    log.info("Sentinel lock file removed — signaling graceful recording stop");
+                    stoppedByLock.set(true);
+                    mainThread.interrupt();
+                } catch (InterruptedException ie) {
+                    // Ctrl+C interrupted the watcher — shutdown hook handles cleanup
+                }
+            }, "sentinel-watcher");
+            watcher.setDaemon(true);
+            watcher.start();
+
+            // Shutdown hook: handles both Ctrl+C and sentinel-file stop
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                watcher.interrupt();
                 try {
                     Path saved = session.stop();
                     if (saved != null) {
@@ -96,6 +122,7 @@ public class RecorderCLI implements Callable<Integer> {
                     } else {
                         System.out.println("\nRecording stopped (no events captured or already stopped).");
                     }
+                    Files.deleteIfExists(lockFile);
                 } catch (Exception e) {
                     System.err.println("Error saving recording: " + e.getMessage());
                     log.error("Shutdown hook error", e);
@@ -103,37 +130,59 @@ public class RecorderCLI implements Callable<Integer> {
             }, "recorder-shutdown"));
 
             session.start();
-            System.out.println("Recording started. Interact with Edge, then press Ctrl+C to stop.");
-            System.out.printf("  CDP port   : %d (override via recorder.cdp.port in config.properties)%n", port);
-            System.out.printf("  Output dir : %s (override via recorder.output.dir in config.properties)%n",
-                    Path.of(config.getOutputDir()).toAbsolutePath());
+            System.out.println("Recording started. Interact with Edge, then press Ctrl+C or run 'autoqa record stop'.");
+            System.out.printf("  CDP port   : %d%n", port);
+            System.out.printf("  Output dir : %s%n", Path.of(config.getOutputDir()).toAbsolutePath());
+            System.out.printf("  Lock file  : %s%n", lockFile.toAbsolutePath());
             if (urlFilter != null) {
-                System.out.printf("  URL filter : *%s* (only URLs containing this string will be recorded)%n",
-                        urlFilter);
+                System.out.printf("  URL filter : *%s*%n", urlFilter);
             }
 
-            // Block the main thread indefinitely; the shutdown hook handles exit.
-            Thread.currentThread().join();
+            // Block the main thread; sentinel watcher or Ctrl+C will interrupt it
+            try {
+                Thread.currentThread().join();
+            } catch (InterruptedException e) {
+                if (stoppedByLock.get()) {
+                    // Sentinel file was deleted by 'record stop' — exit cleanly (shutdown hook runs)
+                    System.exit(0);
+                }
+                // else: Ctrl+C, shutdown hook runs automatically
+            }
             return 0;
         }
     }
 
     /**
-     * Informational command: there is no IPC stop mechanism in phase 3B.
-     * Users should send Ctrl+C to the recording process.
+     * Stops an active recording by deleting the sentinel lock file.
+     *
+     * <p>The running {@code record start} process watches for the lock file to
+     * disappear and triggers a graceful save when it does.  This command is
+     * Windows-compatible (no POSIX signals required).
      */
     @Command(
             name        = "stop",
-            description = "Stop an active recording (send Ctrl+C to the recording process)",
+            description = "Stop an active recording by removing the sentinel lock file",
             mixinStandardHelpOptions = true
     )
     static class StopCommand implements Callable<Integer> {
 
+        @Option(
+                names       = {"-d", "--dir"},
+                description = "Recordings directory (default: recordings)",
+                defaultValue = "recordings"
+        )
+        String dir;
+
         @Override
-        public Integer call() {
-            System.out.println(
-                    "To stop a recording, switch to the terminal running 'record start' " +
-                    "and press Ctrl+C.\nThe recording will be saved automatically.");
+        public Integer call() throws Exception {
+            Path lockFile = Path.of(dir, ".autoqa-recording.lock");
+            if (Files.deleteIfExists(lockFile)) {
+                System.out.println("Stop signal sent. The recording will be saved automatically.");
+                System.out.println("(Lock file removed: " + lockFile.toAbsolutePath() + ")");
+            } else {
+                System.out.println("No active recording lock file found at: " + lockFile.toAbsolutePath());
+                System.out.println("The recording may have already stopped, or press Ctrl+C in the recording terminal.");
+            }
             return 0;
         }
     }

@@ -30,6 +30,7 @@ public class PlayerConfig {
     private static final String KEY_SCREENSHOT_FAIL    = "player.screenshot.on.failure";
     private static final String KEY_PAGE_SOURCE_FAIL   = "player.page.source.on.failure";
     private static final String KEY_CONSOLE_LOGS_FAIL  = "player.console.logs.on.failure";
+    private static final String KEY_HEALING_ENABLED    = "player.healing.enabled";
 
     // Defaults
     private static final int     DEFAULT_EXPLICIT_WAIT     = 15;
@@ -40,6 +41,7 @@ public class PlayerConfig {
     private static final boolean DEFAULT_SCREENSHOT_FAIL   = true;
     private static final boolean DEFAULT_PAGE_SOURCE_FAIL  = true;
     private static final boolean DEFAULT_CONSOLE_LOGS_FAIL = true;
+    private static final boolean DEFAULT_HEALING_ENABLED   = false;
 
     private final Properties props;
 
@@ -127,6 +129,11 @@ public class PlayerConfig {
     /** Whether to capture browser console logs on step failure (default: true). */
     public boolean isConsoleLogsOnFailure() {
         return getBool(KEY_CONSOLE_LOGS_FAIL, DEFAULT_CONSOLE_LOGS_FAIL);
+    }
+
+    /** Whether AI self-healing via {@code HealingInterceptor} is enabled (default: false). */
+    public boolean isHealingEnabled() {
+        return getBool(KEY_HEALING_ENABLED, DEFAULT_HEALING_ENABLED);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────

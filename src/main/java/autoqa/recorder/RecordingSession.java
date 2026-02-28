@@ -106,7 +106,7 @@ public class RecordingSession {
     }
 
     /** Base constructor — all public/package constructors delegate here. */
-    private RecordingSession(RecorderConfig config,
+    RecordingSession(RecorderConfig config,
                              InputCaptureAdapter inputCapture,
                              String urlFilter) {
         this.config       = config;

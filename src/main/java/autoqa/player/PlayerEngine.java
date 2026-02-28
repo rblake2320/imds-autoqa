@@ -12,6 +12,8 @@ import autoqa.model.RecordedSession;
 import autoqa.model.SelectedOption;
 import autoqa.model.TestObject;
 
+import autoqa.ai.AIConfig;
+import autoqa.ai.HealingInterceptor;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -61,6 +63,13 @@ public class PlayerEngine {
     private ObjectRepository objectRepository;
 
     /**
+     * Optional AI self-healing interceptor.  When non-null, element lookups are
+     * routed through the LLM-backed healing cascade on {@link NoSuchElementException}.
+     * Wired when {@code player.healing.enabled=true} and an {@link AIConfig} is provided.
+     */
+    private final HealingInterceptor healingInterceptor;
+
+    /**
      * Optional screen recorder.  When non-null, a screenshot is taken after
      * each step — equivalent to UFT One's "Screen Recorder" run setting.
      */
@@ -77,10 +86,28 @@ public class PlayerEngine {
 
     /**
      * Creates a fully initialised engine using default component wiring.
+     * AI self-healing is disabled; use {@link #PlayerEngine(WebDriver, AIConfig)}
+     * to enable the healing cascade.
      *
      * @param driver a configured, ready-to-use WebDriver session
      */
     public PlayerEngine(WebDriver driver) {
+        this(driver, (AIConfig) null);
+    }
+
+    /**
+     * Creates a fully initialised engine with optional AI self-healing.
+     *
+     * <p>When {@code aiConfig} is non-null, {@code ai.enabled=true}, and
+     * {@code player.healing.enabled=true} in config.properties, a
+     * {@link HealingInterceptor} is wired around the {@link LocatorResolver}
+     * so that element-not-found errors trigger the LLM healing cascade before
+     * raising an exception.
+     *
+     * @param driver   a configured, ready-to-use WebDriver session
+     * @param aiConfig AI configuration, or {@code null} to disable healing
+     */
+    public PlayerEngine(WebDriver driver, AIConfig aiConfig) {
         this.driver            = driver;
         this.config            = new PlayerConfig();
         this.wait              = new WaitStrategy(driver, config.getExplicitWaitSec());
@@ -89,6 +116,36 @@ public class PlayerEngine {
         this.sentinel          = new PopupSentinel(driver);
         this.evidenceCollector = new EvidenceCollector(config.getEvidenceDir());
         this.allKnownHandles   = new HashSet<>(driver.getWindowHandles());
+
+        // Wire AI healing chain when both config and AIConfig allow it
+        if (aiConfig != null && aiConfig.isAiEnabled() && config.isHealingEnabled()) {
+            autoqa.ai.LocatorHealer healer = aiConfig.createLocatorHealer();
+            this.healingInterceptor = new HealingInterceptor(resolver, healer, driver);
+            log.info("AI self-healing enabled for this playback session");
+        } else {
+            this.healingInterceptor = null;
+        }
+    }
+
+    /**
+     * Package-private constructor for unit tests — accepts pre-built collaborators
+     * so Mockito mocks can be injected without starting a real browser.
+     *
+     * <p>The healing interceptor is always {@code null} in this path; AI healing
+     * is tested separately via the {@link #PlayerEngine(WebDriver, AIConfig)} path.
+     */
+    PlayerEngine(WebDriver driver, WaitStrategy wait, LocatorResolver resolver,
+                 FrameNavigator frameNav, PopupSentinel sentinel,
+                 EvidenceCollector evidenceCollector) {
+        this.driver            = driver;
+        this.config            = new PlayerConfig(new java.util.Properties());
+        this.wait              = wait;
+        this.resolver          = resolver;
+        this.frameNav          = frameNav;
+        this.sentinel          = sentinel;
+        this.evidenceCollector = evidenceCollector;
+        this.allKnownHandles   = new HashSet<>(driver.getWindowHandles());
+        this.healingInterceptor = null;
     }
 
     /** Attaches a shared Object Repository used to resolve named test objects. */
@@ -269,14 +326,14 @@ public class PlayerEngine {
 
     private void handleDoubleClick(RecordedEvent event) {
         ElementInfo ei = requireElement(event, EventType.DOUBLE_CLICK);
-        WebElement el = resolver.findElement(ei);
+        WebElement el = findElement(ei);
         log.debug("Double-clicking element: {}", ei);
         new Actions(driver).doubleClick(el).perform();
     }
 
     private void handleContextMenu(RecordedEvent event) {
         ElementInfo ei = requireElement(event, EventType.CONTEXT_MENU);
-        WebElement el = resolver.findElement(ei);
+        WebElement el = findElement(ei);
         log.debug("Context-clicking element: {}", ei);
         new Actions(driver).contextClick(el).perform();
     }
@@ -284,7 +341,7 @@ public class PlayerEngine {
     private void handleInput(RecordedEvent event) {
         ElementInfo ei = requireElement(event, EventType.INPUT);
         InputData inputData = requireInputData(event, EventType.INPUT);
-        WebElement el = resolver.findElement(ei);
+        WebElement el = findElement(ei);
         String keys = inputData.getKeys() != null ? inputData.getKeys() : "";
         log.debug("Typing '{}' into: {}", keys, ei);
         el.clear();
@@ -306,7 +363,7 @@ public class PlayerEngine {
         }
 
         if (event.hasElement()) {
-            WebElement el = resolver.findElement(event.getElement());
+            WebElement el = findElement(event.getElement());
             log.debug("Sending key {} to element: {}", keyCode, event.getElement());
             el.sendKeys(key);
         } else {
@@ -323,7 +380,7 @@ public class PlayerEngine {
             throw new AutoQAException("SELECT event has no selectedOption in inputData");
         }
 
-        WebElement el = resolver.findElement(ei);
+        WebElement el = findElement(ei);
         Select select = new Select(el);
 
         if (option.getText() != null && !option.getText().isBlank()) {
@@ -344,7 +401,7 @@ public class PlayerEngine {
         if (event.hasElement()) {
             // Element-targeted scroll: scroll the specific element into view.
             ElementInfo ei = event.getElement();
-            WebElement el = resolver.findElement(ei);
+            WebElement el = findElement(ei);
             log.debug("Scrolling element into view: {}", ei);
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
         } else {
@@ -401,7 +458,7 @@ public class PlayerEngine {
 
     private void handleHover(RecordedEvent event) {
         ElementInfo ei = requireElement(event, EventType.HOVER);
-        WebElement el = resolver.findElement(ei);
+        WebElement el = findElement(ei);
         log.debug("Hovering over element: {}", ei);
         new Actions(driver).moveToElement(el).perform();
     }
@@ -470,7 +527,7 @@ public class PlayerEngine {
 
     private void cpText(RecordedEvent event, CheckpointData cp) {
         ElementInfo ei = requireElement(event, EventType.CHECKPOINT);
-        WebElement el  = resolver.findElement(ei);
+        WebElement el  = findElement(ei);
         String actual  = el.getText();
         assertMatch("TEXT", actual, cp);
     }
@@ -478,7 +535,7 @@ public class PlayerEngine {
     private void cpElementExists(RecordedEvent event) {
         ElementInfo ei = requireElement(event, EventType.CHECKPOINT);
         try {
-            resolver.findElement(ei);
+            findElement(ei);
             log.info("Checkpoint ELEMENT_EXISTS: element found ✓");
         } catch (Exception e) {
             throw new AutoQAException(
@@ -502,7 +559,7 @@ public class PlayerEngine {
             throw new AutoQAException("ATTRIBUTE checkpoint has no attributeName");
         }
         ElementInfo ei = requireElement(event, EventType.CHECKPOINT);
-        WebElement  el = resolver.findElement(ei);
+        WebElement  el = findElement(ei);
         String actual  = el.getAttribute(attrName);
         assertMatch("ATTRIBUTE[" + attrName + "]", actual, cp);
     }
@@ -636,6 +693,20 @@ public class PlayerEngine {
             throw new AutoQAException(type + " event has no inputData");
         }
         return event.getInputData();
+    }
+
+    /**
+     * Finds the DOM element described by {@code ei}, routing through the
+     * {@link HealingInterceptor} when AI self-healing is enabled, or falling
+     * back to the bare {@link LocatorResolver} otherwise.
+     *
+     * <p>All handler methods that need an element should use this helper
+     * rather than calling {@code resolver.findElement()} directly.
+     */
+    private WebElement findElement(ElementInfo ei) {
+        return healingInterceptor != null
+                ? healingInterceptor.findElement(ei)
+                : resolver.findElement(ei);
     }
 
     /**

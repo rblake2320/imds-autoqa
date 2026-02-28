@@ -126,6 +126,16 @@ public class RecorderConfig {
     }
 
     /**
+     * Overrides the CDP port at runtime (e.g., from the {@code --port} CLI option).
+     * Call after construction to take precedence over the config-file value.
+     *
+     * @param port the Edge remote-debug port to connect to
+     */
+    public void setCdpPort(int port) {
+        props.setProperty(KEY_CDP_PORT, String.valueOf(port));
+    }
+
+    /**
      * CDP WebSocket connection and command timeout in seconds.
      * Default: {@code 10}.
      */
