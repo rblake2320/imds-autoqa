@@ -77,4 +77,10 @@
     </packages>
   </test>
 
+  <test name="Server Tests">
+    <packages>
+      <package name="autoqa.server"/>
+    </packages>
+  </test>
+
 </suite>
