@@ -71,7 +71,32 @@
   .tb-btn.spy     { background: #9b59b6; }
   .tb-btn:hover   { filter: brightness(1.15); transform: translateY(-1px); }
   .tb-btn.stop:hover { background: #666; color: #ccc; }
-  .tb-status { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 12px; }
+
+  /* ── URL bar ── */
+  #url-bar-wrap {
+    flex: 1; display: flex; align-items: center; gap: 0;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0 10px; height: 30px;
+    min-width: 0; transition: border-color .15s;
+  }
+  #url-bar-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(124,106,247,.25); }
+  #url-bar-wrap .url-icon { color: var(--text2); font-size: 13px; margin-right: 6px; flex-shrink: 0; }
+  #url-bar {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-size: 13px; font-family: 'Consolas','Segoe UI',monospace;
+    min-width: 0;
+  }
+  #url-bar::placeholder { color: var(--text2); }
+  #url-bar-go {
+    background: var(--red); border: none; border-radius: 4px; color: #fff;
+    padding: 3px 10px; font-size: 12px; font-weight: 700; cursor: pointer;
+    flex-shrink: 0; margin-left: 6px; display: flex; align-items: center; gap: 4px;
+  }
+  #url-bar-go:hover { filter: brightness(1.2); }
+  #url-bar-go.recording { background: #c0392b; animation: recpulse 1.2s infinite; }
+  @keyframes recpulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+  .tb-status { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 12px; flex-shrink: 0; }
   .tb-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
@@ -328,9 +353,16 @@
 
 <!-- ══ TOOLBAR ══ -->
 <div id="toolbar">
-  <button class="tb-btn record" onclick="startRecord()">⏺ Record</button>
   <button class="tb-btn play"   onclick="runPlay()">▶ Play</button>
   <button class="tb-btn stop"   id="stopBtn" onclick="stopAll()">⏹ Stop</button>
+  <div class="tb-sep"></div>
+  <div id="url-bar-wrap">
+    <span class="url-icon">⏺</span>
+    <input id="url-bar" type="text" placeholder="Enter URL and press Enter to record…"
+           onkeydown="if(event.key==='Enter'){event.preventDefault();startRecord();}"
+           onfocus="this.select()"/>
+    <button id="url-bar-go" onclick="startRecord()">▶ Record</button>
+  </div>
   <div class="tb-sep"></div>
   <button class="tb-btn gen"    onclick="showGen()">⚡ Generate</button>
   <button class="tb-btn heal"   onclick="showHeal()">🔧 Heal</button>
@@ -796,12 +828,29 @@ function stopLogPolling() {
 // ══════════════════════════════════════════════
 
 async function startRecord() {
-  const url  = prompt('Target URL to record:', 'https://');
-  if (!url) return;
-  const name = prompt('Recording name (no spaces, no extension):', 'my-recording');
-  if (!name) return;
+  const urlInput = document.getElementById('url-bar');
+  let url = urlInput ? urlInput.value.trim() : '';
 
-  appendLog(`[RECORD] Starting recording "${name}" on ${url}…`);
+  // Prepend https:// if user typed a bare hostname
+  if (url && !url.match(/^https?:\/\//i)) url = 'https://' + url;
+
+  if (!url) {
+    if (urlInput) { urlInput.focus(); urlInput.placeholder = '⚠ Enter a URL first…'; }
+    return;
+  }
+
+  // Auto-generate a name from the hostname + timestamp
+  let host = url;
+  try { host = new URL(url).hostname.replace(/\./g, '-'); } catch(e) {}
+  const name = host + '-' + Date.now();
+
+  // Visual feedback: URL bar goes red, button pulses
+  if (urlInput) urlInput.disabled = true;
+  const goBtn = document.getElementById('url-bar-go');
+  if (goBtn) { goBtn.classList.add('recording'); goBtn.textContent = '⏺ Recording…'; }
+
+  appendLog(`[RECORD] Opening Edge → ${url}`);
+  appendLog(`[RECORD] Session: ${name}`);
   setStatus('recording');
 
   const result = await apiFetch('/api/record/start', {
@@ -810,10 +859,13 @@ async function startRecord() {
   });
 
   if (result) {
-    appendLog(`[RECORD] CDP + OSHook active — recording started`);
-    const btn = document.querySelector('.tb-btn.record');
-    if (btn) { btn.style.background = '#c0392b'; btn.innerHTML = '⏺ Recording…'; }
+    appendLog(`[RECORD] CDP + OSHook active — tracking all interactions`);
     startLogPolling();
+  } else {
+    // Reset on failure
+    if (urlInput) urlInput.disabled = false;
+    if (goBtn) { goBtn.classList.remove('recording'); goBtn.textContent = '▶ Record'; }
+    setStatus('idle');
   }
 }
 
@@ -829,8 +881,10 @@ async function stopAll() {
   await apiFetch('/api/record/stop', {method: 'POST'});
 
   setStatus('idle');
-  const btn = document.querySelector('.tb-btn.record');
-  if (btn) { btn.style.background = 'var(--red)'; btn.innerHTML = '⏺ Record'; }
+  const urlInput = document.getElementById('url-bar');
+  if (urlInput) { urlInput.disabled = false; urlInput.placeholder = 'Enter URL and press Enter to record…'; }
+  const goBtn = document.getElementById('url-bar-go');
+  if (goBtn) { goBtn.classList.remove('recording'); goBtn.textContent = '▶ Record'; }
   appendLog('[STOP] All operations halted');
   loadRecordings();
 }

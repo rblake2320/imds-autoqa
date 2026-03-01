@@ -136,6 +136,25 @@ public class RecorderConfig {
     }
 
     /**
+     * Overrides the session filename prefix at runtime (e.g., from the {@code --name} CLI option).
+     * The output file will be named {@code <prefix>-<epochMillis>.json}.
+     *
+     * @param prefix the recording name / file prefix
+     */
+    public void setSessionPrefix(String prefix) {
+        props.setProperty(KEY_SESSION_PREFIX, prefix);
+    }
+
+    /**
+     * Overrides the output directory at runtime.
+     *
+     * @param dir the directory path for saved recordings
+     */
+    public void setOutputDir(String dir) {
+        props.setProperty(KEY_OUTPUT_DIR, dir);
+    }
+
+    /**
      * CDP WebSocket connection and command timeout in seconds.
      * Default: {@code 10}.
      */

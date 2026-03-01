@@ -7,6 +7,7 @@ import picocli.CommandLine.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
@@ -80,11 +81,40 @@ public class RecorderCLI implements Callable<Integer> {
         )
         String urlFilter;
 
+        @Option(
+                names       = {"--url"},
+                description = "Open Edge at this URL before recording starts"
+        )
+        String targetUrl;
+
+        @Option(
+                names       = {"--name"},
+                description = "Recording name / output file prefix (default: recording)"
+        )
+        String sessionName;
+
         @Override
         public Integer call() throws Exception {
-            // Load config and apply the --port CLI flag (A2 fix: port was parsed but never used)
+            // Load config and apply CLI overrides
             RecorderConfig config = new RecorderConfig();
-            config.setCdpPort(port);  // override config-file value with CLI argument
+            config.setCdpPort(port);
+            if (sessionName != null && !sessionName.isBlank()) {
+                config.setSessionPrefix(sessionName);
+            }
+
+            // Launch Edge at the target URL when --url is given
+            if (targetUrl != null && !targetUrl.isBlank()) {
+                launchEdge(targetUrl, port);
+                // Give Edge time to start and expose the CDP endpoint
+                try { Thread.sleep(4000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+                // Use URL as filter so only events on this site are recorded
+                if (urlFilter == null) {
+                    try {
+                        java.net.URI uri = java.net.URI.create(targetUrl);
+                        urlFilter = uri.getHost();
+                    } catch (Exception ignored) { /* keep null filter */ }
+                }
+            }
 
             // A3: Create sentinel lock file so 'record stop' can signal graceful shutdown
             Path lockFile = Path.of(config.getOutputDir()).resolve(".autoqa-recording.lock");
@@ -149,6 +179,51 @@ public class RecorderCLI implements Callable<Integer> {
                 // else: Ctrl+C, shutdown hook runs automatically
             }
             return 0;
+        }
+
+        /**
+         * Launches Microsoft Edge with remote debugging enabled on the given port
+         * and navigates to {@code url}.  Searches common installation paths.
+         */
+        private static void launchEdge(String url, int port) {
+            String[] candidates = {
+                "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+                "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
+                System.getenv("LOCALAPPDATA") != null
+                    ? System.getenv("LOCALAPPDATA") + "/Microsoft/Edge/Application/msedge.exe"
+                    : ""
+            };
+            // Use a dedicated temp profile so the debug-port flag is always honoured
+            // even when another Edge window is already open.
+            String userDataDir = System.getProperty("java.io.tmpdir") + "/autoqa-edge-debug-" + port;
+
+            for (String path : candidates) {
+                if (path == null || path.isBlank()) continue;
+                File exe = new File(path.replace('/', java.io.File.separatorChar));
+                if (exe.exists()) {
+                    try {
+                        new ProcessBuilder(
+                            exe.getAbsolutePath(),
+                            "--remote-debugging-port=" + port,
+                            "--user-data-dir=" + userDataDir,
+                            "--no-first-run",
+                            "--no-default-browser-check",
+                            "--disable-background-mode",
+                            "--disable-popup-blocking",
+                            url
+                        ).start();
+                        log.info("Launched Edge → {} (CDP port {}, profile: {})", url, port, userDataDir);
+                        return;
+                    } catch (Exception e) {
+                        log.warn("Failed to launch Edge from {}: {}", path, e.getMessage());
+                    }
+                }
+            }
+            log.warn("msedge.exe not found — open Edge manually with: " +
+                     "msedge.exe --remote-debugging-port={} {}", port, url);
+            System.out.println("WARNING: Could not launch Edge automatically.");
+            System.out.println("Please open Edge and navigate to: " + url);
+            System.out.println("Make sure Edge is started with: --remote-debugging-port=" + port);
         }
     }
 

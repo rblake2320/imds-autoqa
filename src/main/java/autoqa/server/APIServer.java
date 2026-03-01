@@ -79,7 +79,7 @@ public class APIServer {
     private HttpServer httpServer;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private static final String RECORDINGS_DIR = "D:/imds-autoqa/recordings";
+    private static final String RECORDINGS_DIR = resolveRecordingsDir();
     private static final DateTimeFormatter ISO_FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -209,14 +209,19 @@ public class APIServer {
 
         String jarPath = resolveJarPath();
         currentState = ServerState.recording;
+        // The actual file will be <name>-<timestamp>.json; we store the prefix for status
         currentRecordingPath = RECORDINGS_DIR + "/" + name + ".json";
 
-        runBackground(resolveJavaExe(), "-jar", jarPath, "record", "start", "--url", url, "--name", name);
+        runBackground(resolveJavaExe(), "-jar", jarPath,
+                "record", "start",
+                "--url",  url,
+                "--name", name,
+                "--output", RECORDINGS_DIR);
 
         ObjectNode resp = mapper.createObjectNode();
         resp.put("ok", true);
         resp.put("state", "recording");
-        resp.put("message", "Recording started");
+        resp.put("message", "Recording started — Edge opening at " + url);
         sendJson(exchange, 200, resp);
     }
 
@@ -391,15 +396,36 @@ public class APIServer {
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /**
+     * Resolves the recordings directory dynamically.
+     * Uses the running JAR's parent directory, falling back to current working directory.
+     */
+    private static String resolveRecordingsDir() {
+        // Try to find recordings/ relative to the running JAR
+        try {
+            String jarLoc = APIServer.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()
+                    .getPath();
+            if (jarLoc != null && jarLoc.endsWith(".jar")) {
+                File jarFile = new File(jarLoc);
+                // JAR is in target/ — go up one level to project root, then recordings/
+                File projectRoot = jarFile.getParentFile().getParentFile();
+                File recDir = new File(projectRoot, "recordings");
+                return recDir.getAbsolutePath().replace('\\', '/');
+            }
+        } catch (Exception ignored) { /* fall through */ }
+        // Fall back to recordings/ relative to working directory
+        return new File("recordings").getAbsolutePath().replace('\\', '/');
+    }
+
+    /**
      * Resolves the JAR path to use for sub-process invocations.
-     * Prefers the built target JAR; falls back to the currently running JAR.
+     * Uses the currently running JAR's own location; falls back to working dir.
      */
     private String resolveJarPath() {
-        File primary = new File("D:/imds-autoqa/target/autoqa.jar");
-        if (primary.exists()) {
-            return primary.getAbsolutePath();
-        }
-        // Fall back to the location of the currently running JAR
+        // Prefer the currently-running JAR (works wherever it is installed)
         try {
             String codeSource = APIServer.class
                     .getProtectionDomain()
@@ -408,11 +434,14 @@ public class APIServer {
                     .toURI()
                     .getPath();
             if (codeSource != null && codeSource.endsWith(".jar")) {
-                return codeSource;
+                File f = new File(codeSource);
+                if (f.exists()) return f.getAbsolutePath();
             }
-        } catch (Exception ignored) { /* use fallback */ }
-        // Last resort: assume standard build output path
-        return "D:/imds-autoqa/target/autoqa.jar";
+        } catch (Exception ignored) { /* fall through */ }
+        // Fall back to autoqa.jar in current working directory
+        File local = new File("autoqa.jar");
+        if (local.exists()) return local.getAbsolutePath();
+        return "autoqa.jar";
     }
 
     /**
